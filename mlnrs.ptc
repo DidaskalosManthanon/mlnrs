@@ -1,0 +1,212 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}À qui s'adresse ce livre}{3}{section.1}%
+\contentsline {section}{\numberline {2}Contenus}{4}{section.2}%
+\ttl@starttoc {level-1@1}
+\contentsline {subsection}{\numberline {2.1}Contenu 1 : Nombres réels, droite numérique}{4}{subsection.2.1}%
+\ttl@starttoc {level-2@1}
+\contentsline {subsubsection}{\numberline {2.1.1}Savez-vous compter sur vos doigts ?}{5}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Tout est relatif}{5}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Les ordinateurs s'en contentent}{6}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}Êtes-vous rationnels ?}{7}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.1.5}Au-delà du réel}{8}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.1.6}Raisonnement par contraposition}{12}{subsubsection.2.1.6}%
+\contentsline {subsubsection}{\numberline {2.1.7}Exercice}{12}{subsubsection.2.1.7}%
+\contentsline {subsubsection}{\numberline {2.1.8}Exercice Python}{12}{subsubsection.2.1.8}%
+\ttl@stoptoc {level-2@1}
+\contentsline {subsection}{\numberline {2.2}Contenu 2 : Intervalles de nombres réels}{13}{subsection.2.2}%
+\ttl@stoptoc {level-2@1}
+\ttl@starttoc {level-2@2}
+\contentsline {subsubsection}{\numberline {2.2.1}Introduction de la notion d'intervalle}{13}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Exercice}{18}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Exercice}{19}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Petit jeu}{19}{subsubsection.2.2.4}%
+\ttl@stoptoc {level-2@2}
+\contentsline {subsection}{\numberline {2.3}Contenu 3 : Distances}{20}{subsection.2.3}%
+\ttl@stoptoc {level-2@2}
+\ttl@starttoc {level-2@3}
+\contentsline {subsubsection}{\numberline {2.3.1}Introduction de la notion de distance}{20}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Exercice}{22}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Exercice}{23}{subsubsection.2.3.3}%
+\ttl@stoptoc {level-2@3}
+\contentsline {subsection}{\numberline {2.4}Contenu 4 : Disques sur la droite réelle}{23}{subsection.2.4}%
+\ttl@stoptoc {level-2@3}
+\ttl@starttoc {level-2@4}
+\contentsline {subsubsection}{\numberline {2.4.1}Introduction du concept d'intervalle centré}{24}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Exercice}{25}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Une autre perspective}{25}{subsubsection.2.4.3}%
+\contentsline {subsubsection}{\numberline {2.4.4}Faisons un peu de programmation Python}{26}{subsubsection.2.4.4}%
+\contentsline {subsubsection}{\numberline {2.4.5}Exercice}{27}{subsubsection.2.4.5}%
+\ttl@stoptoc {level-2@4}
+\contentsline {subsection}{\numberline {2.5}Contenu 5 : Nombres décimaux}{27}{subsection.2.5}%
+\ttl@stoptoc {level-2@4}
+\ttl@starttoc {level-2@5}
+\contentsline {subsubsection}{\numberline {2.5.1}Introduction sur les nombres décimaux}{27}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {2.5.2}Exercice}{28}{subsubsection.2.5.2}%
+\contentsline {subsubsection}{\numberline {2.5.3}Souvenirs souvenirs}{29}{subsubsection.2.5.3}%
+\ttl@stoptoc {level-2@5}
+\contentsline {subsection}{\numberline {2.6}Contenu 6 : Nombres rationnels}{31}{subsection.2.6}%
+\ttl@stoptoc {level-2@5}
+\ttl@starttoc {level-2@6}
+\contentsline {subsubsection}{\numberline {2.6.1}Introduction aux nombres rationnels}{32}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {2.6.2}Exercice}{32}{subsubsection.2.6.2}%
+\contentsline {subsubsection}{\numberline {2.6.3}Petite astuce}{32}{subsubsection.2.6.3}%
+\contentsline {subsubsection}{\numberline {2.6.4}Les nombres irrationnels}{33}{subsubsection.2.6.4}%
+\contentsline {subsubsection}{\numberline {2.6.5}Exercice}{34}{subsubsection.2.6.5}%
+\contentsline {subsubsection}{\numberline {2.6.6}Généralisation}{34}{subsubsection.2.6.6}%
+\contentsline {subsubsection}{\numberline {2.6.7}Exercice}{35}{subsubsection.2.6.7}%
+\contentsline {subsubsection}{\numberline {2.6.8}Probablement irrationnel}{35}{subsubsection.2.6.8}%
+\ttl@stoptoc {level-2@6}
+\ttl@stoptoc {level-1@1}
+\contentsline {section}{\numberline {3}Capacités attendues}{35}{section.3}%
+\ttl@stoptoc {level-1@1}
+\ttl@starttoc {level-1@2}
+\contentsline {subsection}{\numberline {3.1}Rappels concernant les capacités attendues}{36}{subsection.3.1}%
+\ttl@stoptoc {level-2@6}
+\ttl@starttoc {level-2@7}
+\ttl@stoptoc {level-2@7}
+\contentsline {subsection}{\numberline {3.2}Capacité attendue numéro 1}{36}{subsection.3.2}%
+\ttl@stoptoc {level-2@7}
+\ttl@starttoc {level-2@8}
+\contentsline {subsubsection}{\numberline {3.2.1}Code pour construire les points}{37}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Exercice}{38}{subsubsection.3.2.2}%
+\ttl@stoptoc {level-2@8}
+\contentsline {subsection}{\numberline {3.3}Capacité attendue numéro 2}{38}{subsection.3.3}%
+\ttl@stoptoc {level-2@8}
+\ttl@starttoc {level-2@9}
+\contentsline {subsubsection}{\numberline {3.3.1}Placement des abscisses sur la droite réelle}{38}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Exercice}{39}{subsubsection.3.3.2}%
+\ttl@stoptoc {level-2@9}
+\contentsline {subsection}{\numberline {3.4}Capacité attendue numéro 3}{40}{subsection.3.4}%
+\ttl@stoptoc {level-2@9}
+\ttl@starttoc {level-2@10}
+\contentsline {subsubsection}{\numberline {3.4.1}Exercice}{40}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Exercice}{41}{subsubsection.3.4.2}%
+\ttl@stoptoc {level-2@10}
+\contentsline {subsection}{\numberline {3.5}Capacité attendue numéro 4}{43}{subsection.3.5}%
+\ttl@stoptoc {level-2@10}
+\ttl@starttoc {level-2@11}
+\contentsline {subsubsection}{\numberline {3.5.1}Exemple}{43}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Exercice}{44}{subsubsection.3.5.2}%
+\ttl@stoptoc {level-2@11}
+\ttl@stoptoc {level-1@2}
+\contentsline {section}{\numberline {4}Démonstrations}{44}{section.4}%
+\ttl@stoptoc {level-1@2}
+\ttl@starttoc {level-1@3}
+\contentsline {subsection}{\numberline {4.1}Rappels des éléments du programme officiel}{45}{subsection.4.1}%
+\ttl@stoptoc {level-2@11}
+\ttl@starttoc {level-2@12}
+\ttl@stoptoc {level-2@12}
+\contentsline {subsection}{\numberline {4.2}Démonstration numéro 1}{45}{subsection.4.2}%
+\ttl@stoptoc {level-2@12}
+\ttl@starttoc {level-2@13}
+\contentsline {subsubsection}{\numberline {4.2.1}À la main}{45}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Avec Python}{46}{subsubsection.4.2.2}%
+\ttl@stoptoc {level-2@13}
+\ttl@stoptoc {level-1@3}
+\contentsline {section}{\numberline {5}Exemple d'algorithme}{47}{section.5}%
+\ttl@stoptoc {level-1@3}
+\ttl@starttoc {level-1@4}
+\contentsline {subsection}{\numberline {5.1}Rappel des éléments du programme officiel}{47}{subsection.5.1}%
+\ttl@stoptoc {level-2@13}
+\ttl@starttoc {level-2@14}
+\ttl@stoptoc {level-2@14}
+\contentsline {subsection}{\numberline {5.2}Petites explications}{48}{subsection.5.2}%
+\ttl@stoptoc {level-2@14}
+\ttl@starttoc {level-2@15}
+\ttl@stoptoc {level-2@15}
+\contentsline {subsection}{\numberline {5.3}Le code}{48}{subsection.5.3}%
+\ttl@stoptoc {level-2@15}
+\ttl@starttoc {level-2@16}
+\ttl@stoptoc {level-2@16}
+\ttl@stoptoc {level-1@4}
+\contentsline {section}{\numberline {6}Approfondissements possibles}{49}{section.6}%
+\ttl@stoptoc {level-1@4}
+\ttl@starttoc {level-1@5}
+\contentsline {subsection}{\numberline {6.1}Rappel des éléments du programme officiel}{49}{subsection.6.1}%
+\ttl@stoptoc {level-2@16}
+\ttl@starttoc {level-2@17}
+\ttl@stoptoc {level-2@17}
+\contentsline {subsection}{\numberline {6.2}Petit bilan}{49}{subsection.6.2}%
+\ttl@stoptoc {level-2@17}
+\ttl@starttoc {level-2@18}
+\ttl@stoptoc {level-2@18}
+\contentsline {subsection}{\numberline {6.3}Et pour quelques exemples de plus}{50}{subsection.6.3}%
+\ttl@stoptoc {level-2@18}
+\ttl@starttoc {level-2@19}
+\ttl@stoptoc {level-2@19}
+\ttl@stoptoc {level-1@5}
+\contentsline {section}{\numberline {7}Après ce livre}{50}{section.7}%
+\ttl@stoptoc {level-1@5}
+\ttl@starttoc {level-1@6}
+\contentsline {subsection}{\numberline {7.1}Conclusion}{51}{subsection.7.1}%
+\ttl@stoptoc {level-2@19}
+\ttl@starttoc {level-2@20}
+\ttl@stoptoc {level-2@20}
+\ttl@stoptoc {level-1@6}
+\contentsline {section}{\numberline {8}Solutions des exercices de la section : \ref {sec:orgda3f058}}{51}{section.8}%
+\ttl@stoptoc {level-1@6}
+\ttl@starttoc {level-1@7}
+\contentsline {subsection}{\numberline {8.1}Solutions des exercices de la section : \ref {sec:org9ec1b06}}{52}{subsection.8.1}%
+\ttl@stoptoc {level-2@20}
+\ttl@starttoc {level-2@21}
+\contentsline {subsubsection}{\numberline {8.1.1}Solution de l'exercice \ref {sec:org09bf59f}}{52}{subsubsection.8.1.1}%
+\contentsline {subsubsection}{\numberline {8.1.2}Solution Python de l'exercice \ref {sec:org1d3ea27}}{52}{subsubsection.8.1.2}%
+\ttl@stoptoc {level-2@21}
+\contentsline {subsection}{\numberline {8.2}Solutions des exercices de la section : \ref {sec:org74265cf}}{53}{subsection.8.2}%
+\ttl@stoptoc {level-2@21}
+\ttl@starttoc {level-2@22}
+\contentsline {subsubsection}{\numberline {8.2.1}Solutions de l'exercice \ref {sec:orgb387ab9}}{54}{subsubsection.8.2.1}%
+\contentsline {subsubsection}{\numberline {8.2.2}Solutions de l'exercice \ref {sec:orgc61202f}}{56}{subsubsection.8.2.2}%
+\contentsline {subsubsection}{\numberline {8.2.3}Solution du petit jeu \ref {sec:org5375956}}{57}{subsubsection.8.2.3}%
+\ttl@stoptoc {level-2@22}
+\contentsline {subsection}{\numberline {8.3}Solutions des exercices de la section : \ref {sec:org112f093}}{59}{subsection.8.3}%
+\ttl@stoptoc {level-2@22}
+\ttl@starttoc {level-2@23}
+\contentsline {subsubsection}{\numberline {8.3.1}Solution de l'exercice \ref {sec:org8920b07}}{59}{subsubsection.8.3.1}%
+\contentsline {subsubsection}{\numberline {8.3.2}Solution de l'exercice \ref {sec:org275d8c1}}{60}{subsubsection.8.3.2}%
+\ttl@stoptoc {level-2@23}
+\contentsline {subsection}{\numberline {8.4}Solutions des exercices de la section : \ref {sec:org8448569}}{61}{subsection.8.4}%
+\ttl@stoptoc {level-2@23}
+\ttl@starttoc {level-2@24}
+\contentsline {subsubsection}{\numberline {8.4.1}Solution de l'exercice \ref {sec:orga80e08b}}{61}{subsubsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.2}Solution de l'exercice \ref {sec:org48657a1}}{62}{subsubsection.8.4.2}%
+\ttl@stoptoc {level-2@24}
+\contentsline {subsection}{\numberline {8.5}Solutions des exercices de la section : \ref {sec:org38c43bc}}{64}{subsection.8.5}%
+\ttl@stoptoc {level-2@24}
+\ttl@starttoc {level-2@25}
+\contentsline {subsubsection}{\numberline {8.5.1}Solution avec Python de l'exercice \ref {sec:org23137bc}}{64}{subsubsection.8.5.1}%
+\ttl@stoptoc {level-2@25}
+\contentsline {subsection}{\numberline {8.6}Solutions des exercices de la section : \ref {sec:orgdee9ad7}}{65}{subsection.8.6}%
+\ttl@stoptoc {level-2@25}
+\ttl@starttoc {level-2@26}
+\contentsline {subsubsection}{\numberline {8.6.1}Solution de l'exercice \ref {sec:orgca24f0a}}{65}{subsubsection.8.6.1}%
+\contentsline {subsubsection}{\numberline {8.6.2}Solution de l'exercice \ref {sec:org1191128}}{66}{subsubsection.8.6.2}%
+\contentsline {subsubsection}{\numberline {8.6.3}Solution de l'exercice \ref {sec:org0527421}}{66}{subsubsection.8.6.3}%
+\ttl@stoptoc {level-2@26}
+\ttl@stoptoc {level-1@7}
+\contentsline {section}{\numberline {9}Solutions des exercices de la section : \ref {sec:org5737607}}{67}{section.9}%
+\ttl@stoptoc {level-1@7}
+\ttl@starttoc {level-1@8}
+\contentsline {subsection}{\numberline {9.1}Solutions des exercices de la section : \ref {sec:org5bec0e4}}{67}{subsection.9.1}%
+\ttl@stoptoc {level-2@26}
+\ttl@starttoc {level-2@27}
+\contentsline {subsubsection}{\numberline {9.1.1}Solution de l'exercice \ref {sec:orgd573e54}}{67}{subsubsection.9.1.1}%
+\ttl@stoptoc {level-2@27}
+\contentsline {subsection}{\numberline {9.2}Solutions des exercices de la section : \ref {sec:orga5f1d95}}{68}{subsection.9.2}%
+\ttl@stoptoc {level-2@27}
+\ttl@starttoc {level-2@28}
+\contentsline {subsubsection}{\numberline {9.2.1}Solution de l'exercice \ref {sec:org083f20c}}{68}{subsubsection.9.2.1}%
+\ttl@stoptoc {level-2@28}
+\contentsline {subsection}{\numberline {9.3}Solutions des exercices de la section : \ref {sec:org53eb07f}}{70}{subsection.9.3}%
+\ttl@stoptoc {level-2@28}
+\ttl@starttoc {level-2@29}
+\contentsline {subsubsection}{\numberline {9.3.1}Solution de l'exercice \ref {sec:orgdb5a92b}}{70}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}Solution de l'exercice \ref {sec:org03939ae}}{71}{subsubsection.9.3.2}%
+\ttl@stoptoc {level-2@29}
+\contentsline {subsection}{\numberline {9.4}Solutions des exercices de la section : \ref {sec:orgc5ac9eb}}{71}{subsection.9.4}%
+\ttl@stoptoc {level-2@29}
+\ttl@starttoc {level-2@30}
+\contentsline {subsubsection}{\numberline {9.4.1}Solution de l'exercice \ref {sec:orgf2086dc}}{71}{subsubsection.9.4.1}%
+\ttl@stoptoc {level-2@30}
+\ttl@stoptoc {level-1@8}
+\contentsfinish 

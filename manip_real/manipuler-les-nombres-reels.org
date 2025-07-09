@@ -1,0 +1,607 @@
+#+TITLE: Manipuler les nombres réels
+#+AUTHOR: Laurent Garnier
+
+* À qui s'adresse ce livre
+
+  Ce livre s'adresse initialement aux élèves de seconde du système
+  scolaire français. Mais il sera probablement très utile à un élève
+  de fin de collège qui voudrait assurer son entrée au lycée. Il sera
+  également très utile à un élève de première qui voudrait s'assurer
+  qu'il maîtrise bien les notions de la classe de seconde. Enfin un
+  quatrième public qui pourrait directement être visé est celui des
+  enseignants, profs particuliers ou encore tuteurs (professionnels ou
+  amateurs) qui souhaiteraient consulter des ressources utiles et
+  utilisables pour aider les lycéens.
+
+  De façon plus générale, même si je reprends exactement la structure
+  du programme officiel que vous pouvez consulter ici :
+  [[https://eduscol.education.fr/document/24553/download]]
+
+  Il me semble que ce livre pourrait être utile à quiconque souhaite
+  approcher les mathématiques de façon honnête, rigoureuse et avec un
+  soucis de compréhension. Tout en respectant le niveau du programme
+  j'essaierai dès que possibles de prolonger la perspective.
+
+  Vous pouvez d'ores et déjà mettre en pratique de façon interactive
+  toutes les notions abordées grâce aux codes Python accessible sur
+  Google Colab à l'adresse communiquée dans la section concernée
+  lorsque vous aurez rempli ce petit formulaire :
+  [[https://forms.gle/pT3GVr8PdNYCeVir7]] (vous trouverez également les
+  corrections de tous les exercices du livre).
+  
+
+  Bonne lecture.
+  
+* Contenus
+** Ensemble $\mathbb{R}$ des nombres réels, droite numérique
+
+   Savez-vous résoudre l'équation $x - 1 = 0$ ? Je vous laisse
+   réfléchir et je vous donnerai la solution plus tard.
+
+   Imaginez que vous êtes en train de jouer à votre jeu vidéo
+   préféré. Il vous reste 3 points de vie, combien pouvez-vous en
+   perdre avant de mourir (dans le jeu) ? Idem, je vous laisse
+   réfléchir.
+
+   En général, lorsque vous entrez en seconde vous êtes âgé de 15 ans,
+   du coup combien d'années vous séparent de votre majorité ?
+
+   Ces trois questions traitent du même genre de problèmes, la
+   résolution des équations algébriques du premier degré impliquant
+   les nombres les plus simples que vous connaissez à savoir les
+   nombres entiers naturels. Pour la faire simple il s'agit des
+   nombres utiles pour compter le nombre de doigts que vous possédez,
+   le nombre d'enfants dans une famille et toutes les choses qu'on
+   peut dénombrer de zéro à l'infini.
+
+   On note l'ensemble des entiers naturels $\mathbb{N} = \{0, 1, 2, 3,
+   \dots \}$.
+
+   \begin{align}
+   x - 1 &= 0 \Rightarrow x = 1\in\mathbb{N}\\
+   3 - x &= 0 \Rightarrow x = 3\in\mathbb{N}\\
+   15 + x&= 18\Rightarrow x = 3\in\mathbb{N}
+   \end{align}
+
+   Mais ces nombres sont insuffisants pour exprimer des températures
+   par exemple dans une ville d'Europe du Nord comme Saint Pétersbourg
+   en Russie ou Oslo en Norvège. En fait, même en France
+   métropolitaine si vous allez en Savoie vous observerez des
+   températures négatives en hiver et positive en été. Le signe de ces
+   températures est /relatif/ à la position du zéro.
+
+   Les nombres entiers relatifs sont constitués des nombres entiers
+   naturels (les nombres positifs qu'on a vu précédemment) auquels on
+   ajoute leurs symétriques par rapport à zéro.
+
+   On les notes $\mathbb{Z} = \{\dots, -2, -1, 0, 1, 2, \dots\}$.
+
+   Ce sont également ces nombres qu'on utilise dans un ascenseur pour
+   indiquer si on va au sous-sol (nombre négatif) ou aux étages
+   supérieurs (nombres positifs).
+
+   Dans le langage de programmation Python les nombres entiers
+   relatifs sont représentés par le type =int= pour /integer/ (qui
+   veut dire entier relatif en anglais).
+
+   Mais ces nombres sont encore en nombre insuffisant pour exprimer
+   par exemple les unités monétaires. Quand vous achetez une baguette,
+   du carburant, des fournitures scolaires ou quoique ce soit ; la
+   plupart du temps vous utilisez des nombres à virgules qu'on appelle
+   les nombres décimaux.
+
+   Contrairement aux deux ensembles précédents, l'ensemble des nombres
+   décimaux ne peut pas être représenté de façon explicite avec des
+   points de suspension, il doit être définit en
+   /compréhension/. Définir un ensemble en compréhension signifie que
+   vous devez expliquer la règle de construction.
+
+   On note $\mathbb{D} = \left\{ \dfrac{a}{10^n}\,|\,(a,
+   n)\in\mathbb{Z}^2\right\}$
+
+   Commençons par la fin $(a, n)\in\mathbb{Z}^2$ signifie que $a$ et
+   $n$ sont tous les deux des entiers relatifs. Ainsi, les décimaux
+   sont les nombres fractionnaires dont le numérateur est un entier
+   relatif et le dénominateur un puissance de 10. Donnons quelques
+   exemples :
+   \begin{align}
+   (a, n) &= (1, 2)\Rightarrow \dfrac{1}{10^2} = 0,01\\
+   (a, n) &= (3, 4)\Rightarrow \dfrac{3}{10^4} = 0,0003\\
+   (a, n) &= (2, -1)\Rightarrow \dfrac{2}{10^{-1}} = 20\\
+   (a, n) &= (3, 0)\Rightarrow \dfrac{3}{10^0} = 3\\
+   (a, n) &= (-1, 2)\Rightarrow \dfrac{-1}{10^2} = -0,01
+   \end{align}
+
+   Dans la programmation Python on parle du type =float= pour
+   /floating point number/ ou nombre à virgule flottante en bon
+   français (puisque les anglo-saxons utilisent un point comme
+   séparateur décimal). En prenant $n = 0$ on obtient tous les entiers
+   relatifs. Mais ce n'est pas suffisant pour décrire le réel (en
+   théorie, parce qu'en pratique les ordinateurs s'en contentent).
+
+   Imaginez que vous avez un budget pour une semaine et que vous
+   souhaitiez allouer une part équitable pour chaque jour. Et bien
+   sachez que le nombre $\dfrac{1}{7}$ n'est pas un décimal, pas plus
+   que le nombre $\dfrac{1}{6}$. En effet si vous posez la division ou
+   que vous utilisez une machine (calculatrice, ordinateur, tablette
+   ou téléphone peu importe) vous verrez que $\dfrac{1}{7} \simeq
+   0,142857\dots$ et que cette séquence $142857\dots$ se répètent à
+   l'infini. De même, de façon plus simple, si vous prenez
+   $\dfrac{1}{6} \simeq 0,16\dots$ les 6 se répètent à l'infini.
+
+   Posons $x = 0,16\dots 6\dots$ où les 6 se répètent à
+   l'infini. Multiplions par 100 ainsi on obtient $100x = 16,6\dots
+   6\dots$. Multiplions par 10 ainsi on obtient $10x = 1,6\dots
+   6\dots$. Faisons maintenant la soustraction $90x = 15$ d'où $x =
+   \dfrac{15}{90} = \dfrac{3\times 5}{2\times 3\times 3\times 5} =
+   \dfrac{1}{6}$. Le nombre $\dfrac{1}{6}$ est bien un nombre qui sort
+   de la définition des décimaux et justifie une nouvelle classe de
+   nombres, les nombres rationnels (ratio en latin veut dire
+   quotient).
+
+   Les nombres rationnels sont notés \[\mathbb{Q} =
+   \left\{\dfrac{a}{b}\,|\,(a,
+   b)\in\mathbb{Z}\times\mathbb{N}^*\right\}\]
+
+   Ici le numérateur $a$ est un entier relatif et le dénominateur $b$
+   est un entier naturel strictement positif parce qu'on ne peut pas
+   diviser par zéro.
+
+   Prouvons ce dernier résultat. Imaginez que l'on puisse trouver un
+   nombre entier $a$ qui soit divisible par zéro. Alors il existerait
+   un entier $q$ tel que $a = 0\times q$. Le problème c'est que zéro
+   est un élément absorbant, tel le trou noir de la multiplication,
+   tout nombre multiplié par zéro donne zéro. La division par zéro n'a
+   donc pas de sens.
+
+   Donnons quelques exemples de nombre rationnels :
+   
+   \begin{align}
+   (a, b) &= (1, 2)\Rightarrow \dfrac{1}{2} = 0,5\in\mathbb{D}\\
+   (a, b) &= (8, 9)\Rightarrow \dfrac{8}{9} = 0,8\dots 8\dots\in\mathbb{Q}\\
+   (a, b) &= (3, 4)\Rightarrow \dfrac{3}{4} = 0,75\in\mathbb{D}\\
+   (a, b) &= (19, 11)\Rightarrow \dfrac{19}{11} = 1,72\dots \in\mathbb{Q}\\
+   (a, b) &= (2, 7)\Rightarrow \dfrac{2}{7} = 0,285714\dots \in\mathbb{Q}
+   \end{align}
+   
+
+   Les nombres rationnels sont très intéressants mais ils restent
+   insuffisants pour capturer le réel. Imaginez que l'écran de votre
+   ordinateur portable soit un rectangle de longueur 16 cm pour une
+   largeur de 9 cm (c'est le fameux format 16/9). Alors pour calculer
+   la diagonale nous allons utiliser le théorème de Pythagore :
+   \begin{align*}
+   d^2 &= 16^2 + 9^2\\
+   d^2 &= 256 + 81\\
+   d^2 &= 337\\
+   d &= \sqrt{337} \simeq 18,36
+   \end{align*}
+
+   Tout d'abord le nombre 337 est un nombre premier (prouvez-le, c'est
+   un bon exercice). Et ensuite la racine carrée d'un nombre premier
+   ne peut pas s'écrire sous la forme d'un nombre rationnel.
+
+   Pour des raisons de concordance avec le programme de seconde je
+   vous propose de démontrer que $\sqrt{2}$ n'est pas un nombre
+   rationnel et pour le résultat (plus général) énoncé précédemment,
+   je vous renvoie aux approfondissements (mais vous pouvez déjà
+   commencer à chercher).
+
+   Pour démontrer que $\sqrt{2}$ n'est pas un nombre rationnel on va
+   utiliser plusieurs types de raisonnement. Tout d'abord nous allons
+   utiliser le raisonnement par l'absurde. Le raisonnement par
+   l'absurde repose sur un principe de la logique classique qui dit
+   qu'une affirmation est soit vraie soit fausse. En logique
+   mathématique on ne s'occupe que de ce genre d'affirmation donc nous
+   sommes dans un système *beaucoup* plus simple que la réalité. Du
+   coup, si le contraire de ce que je veux montrer est faux alors ce
+   que je veux montrer est vrai. Prenons un exemple concret un peu
+   simpliste, si ce n'est pas le matin alors c'est l'après-midi. Si
+   vous n'êtes pas majeur alors vous êtes mineur. Ce genre de logique
+   fonctionne bien avec les systèmes binaires.
+
+   Revenons à nos moutons, on veut montrer que $\sqrt{2}$ n'est pas
+   rationnel donc on va supposons le contraire et montrer que ce
+   contraire est faux donc que notre affirmation sera vraie.
+
+   Supposons donc par l'absurde que $\sqrt{2}$ soit rationnel donc
+   d'après la définition de $\mathbb{Q}$ il devrait exister un entier
+   relatif $a$ et un entier naturel strictement positif $b$ tels que
+   $\sqrt{2} = \frac{a}{b}$. Comme toute fraction peut se ramener
+   (après simplification) à une fraction irréductible on peut donc
+   considérer que $a$ et $b$ n'ont pas de diviseurs communs et que la
+   fraction est irréductible. Dire que $a$ et $b$ n'ont pas de
+   diviseurs communs revient à dire que leur pgcd vaut un c'est-à-dire
+   $pgcd(a, b) = 1$. Le PGCD est le Plus Grand Commun Diviseur. Bon on
+   devrait l'appeler le PGDC parce qu'en français on dit diviseur
+   commun car l'adjectif vient après le nom mais en anglais ils disent
+   /greatest common divisor/ et bien souvent les gens importent les
+   concepts anglophones en oubliant les règles du français c'est pour
+   ça que sur certaines calculatrices et logiciels vous pouvez voir
+   GCD ou gcd.
+
+   Faisons un bref récapitulatif :
+   + Objectif : Montrer que $\sqrt{2}$ n'est pas rationnel
+   + Méthode : Raisonnement par l'absurde, on pose $\sqrt{2} =
+     \frac{a}{b}$ et avec $pgcd(a, b) = 1$
+
+   Du coup, on va élever au carré ce qui nous donne $2 =
+   \frac{a^2}{b^2}$ et qu'on peut mettre sous la forme $a^2 = 2b^2$.
+
+   On peut classer les nombres entiers en deux catégories :
+   1. Les nombres pairs de la forme $p = 2n$ où $n$ est un entier.
+   2. Les nombres impairs de la forme $i = 2n + 1$ où $n$ est un
+      entier.
+
+   On en déduit que le nombre $a^2 = 2b^2$ appartient à la première
+   catégorie avec $n = b^2$.
+
+   Désormais on va avoir besoin d'un résultat intermédiaire qui va
+   faire intervenir un autre type de raisonnement (pour voir les
+   différents types de raisonnement consulter la playlist éponyme en
+   cliquant [[https://www.youtube.com/watch?v=R_L4NEgIxPM&list=PLwWStLtwGECb-3dJmBXOYc8oQw1mRsrep&pp=iAQB][ici]]).
+
+   Voici le résultat intermédiaire qu'on veut montrer : /si le carré
+   d'un nombre est pair alors le nombre initial est aussi pair/.
+
+   On va formaliser cette affirmation :
+   + A = "le carré d'un nombre est pair"
+   + B = "le nombre initial est pair"
+   + $P = A\Rightarrow B$
+
+   Le nouveau type de raisonnement qu'on va utiliser s'appelle le
+   raisonnement par contraposée.
+
+   Prenons un exemple concret fictif (et simpliste). Imaginez que
+   chaque fois qu'il pleut je prenne mon parapluie (sans *aucune*
+   exception). Si vous me croisez *sans* parapluie alors vous en
+   déduirez qu'il ne pleut pas. C'est une proposition logiquement
+   équivalente à la première formulation.
+
+   + A = "Il pleut"
+   + B = "Je prend mon parapluie"
+   + $P = A\Rightarrow B$
+   + non B = "Je n'ai pas de parapluie"
+   + non A = "Il ne pleut pas"
+   + $CP(P) = non(B)\Rightarrow non(A)$
+
+   Revenons à nos nombres entiers. La contraposée de : "si le carré
+   d'un nombre est pair alors le nombre initial est aussi pair" est
+   "Si le nombre initial est impair alors son carré aussi."
+
+   Décomposons :
+   + A = "le carré d'un nombre est pair"
+   + B = "le nombre initial est pair"
+   + $P = A\Rightarrow B$
+   + non B = "le nombre initial est impair"
+   + non A = "le carré est impair"
+   + $CP(P) = non(B)\Rightarrow non(A)$
+
+   Ce raisonnement nous permet de ramener la proposition à montrer à
+   une proposition plus simple et qu'on peut montrer directement.
+
+   Si le nombre initial est impair alors il est de la forme $i = 2n +
+   1$. Il vient que son carré satisfait :
+   \begin{align*}
+   i^2 &= (2n + 1)^2\\
+   i^2 &= (2n)^2 + 2\times 2n\times 1 + 1^2\\
+   i^2 &= 2(2n^2 + 2n) + 1
+   \end{align*}
+
+   On a bien obtenu un nombre impair. Par équivalence logique la
+   proposition initiale est vraie.
+
+   Faisons un bilan d'étape.
+   + Objectif final : Montrer que $\sqrt{2}$ n'est pas rationnel
+   + Méthode : Raisonnement par l'absurde, on pose $\sqrt{2} =
+     \frac{a}{b}$ et avec $pgcd(a, b) = 1$
+   + Objectif intermédiaire : $a^2 = 2b^2$ est pair donc $a$ est pair.
+   + Méthode pour l'objectif intermédiaire : raisonnement par
+     contraposée, si $a$ est impair alors $a^2$ aussi
+
+   À ce stade nous avons bien montré que $a^2 = 2b^2$ entraîne que
+   $a = 2n$. De cette nouvelle écriture on tire $a^2 = 4n^2$ et on
+   peut établir une nouvelle égalité $2b^2 = 4n^2$ qui donne $b^2 =
+   2n^2$. Par conséquent, en utilisant notre résultat intermédiaire,
+   on constate que $b$ est aussi pair.
+
+   Mais si $a$ et $b$ sont pairs alors ils sont divisibles par deux ce
+   qui contredit $pgcd(a, b) = 1$. Ce résultat est absurde donc
+   l'hypothèse initiale aussi et finalement $\sqrt{2}$ n'est pas un
+   rationnel. CQFD
+
+   Bravo à vous si vous avez tout compris. Pour les autres,
+   rassurez-vous, c'est normal que ça chauffe dans votre tête. Vous
+   pouvez déjà revoir cette démonstration en vidéo ici :
+   [[https://youtu.be/R_L4NEgIxPM]]
+
+   Le raisonnement par l'absurde consiste à partir d'une hypothèse
+   contraire à celle qu'on souhaite montrer et ensuite à enchaîner des
+   déductions logiques parfaitement valides jusqu'à aboutir à une
+   contradiction. La chaîne de déductions peut parfois s'avérer (très)
+   longue et impliquer des résultats intermédiaires nécessitant à leur
+   tour (éventuellement) d'autres types de raisonnement.
+
+   Dans certains ouvrages, certaines personnes préfèrent admettre les
+   résultats intermédiaires. Dans l'absolu il serait impossible de
+   tout démontrer parce qu'on ne pourrait jamais avancer. Néanmoins il
+   est utile de garder à l'esprit qu'en mathématiques le but du jeu
+   est de démontrer les affirmations sans jamais les prendre pour
+   argent comptant.
+
+   Finalement, puisque $\sqrt{2}$ n'est pas un nombre rationnel il
+   doit bien appartenir à un ensemble de nombre et cet ensemble est
+   l'ensemble des nombres réels et on le note $\mathbb{R}$.
+
+   Nous avons ainsi la chaîne d'inclusions ensemblistes :
+
+   \[\mathbb{N}\subset\mathbb{Z}\subset\mathbb{D}\subset\mathbb{Q}\subset\mathbb{R}\]
+
+   Cet ensemble de nombres correspond à l'infinité des points sur une
+   droite et c'est pour cette raison qu'on représentera souvent les
+   nombres réels par une droite graduée qu'on appellera la droite des
+   réels avec 0 au milieu et qui se prolonge vers $+\infty$ à droite
+   et $-\infty$ à gauche.
+
+   
+** Intervalles de $\mathbb{R}$. Notions $+\infty$ et $-\infty$.
+
+   Jusqu'à présent nous avons traité essentiellement des égalités (une
+   équation est une égalité). Mais dans de nombreux cas il est
+   intéressant et utile de traiter des inégalités. Donnons quelques
+   exemples issus du monde réel de la vie de tous les jours :
+   1. Il faut être âgé de plus de 14 ans pour conduire un véhicule de
+     type mobilette ou scooter.
+   2. Il faut être âgé entre 12 et 25 ans pour bénéficier du tarif
+     jeune à la SNCF.
+   3. Les films pornographiques sont interdits aux mineurs donc aux
+     gens qui ont un âge inférieur à 18 ans.
+   4. En boxe anglaise la catégorie de poids pailles concerne les gens
+      dont le poids est inférieur à 47,128 kg (soit 105 livres, source :
+      [[https://fr.wikipedia.org/wiki/Boxe_anglaise]] )
+   5. En France, seuls les gens qui ont moins de 10 777€ par an sont
+      exonérés d'impôt (0%), ensuite de 10 778 à 27 478 c'est 11%,
+      puis 30% de 27 479 à 78 570, puis 41% de 78 571 à 168 994 et
+      enfin 45% pour ceux qui ont plus de 168 994 (source :
+      [[https://www.service-public.fr/particuliers/vosdroits/F1419]] )
+   6. La limite autorisée du taux d'alcool dans le sang par la loi en
+     2023 est de 0,5 g/L soit en équivalent 0,25 mg par litre d'air
+     expiré (source :
+     [[https://www.legipermis.com/infractions/alcool-permis-conduire.html]]
+     )
+   7. L'IMC (Indice de Masse Corporelle) permet d'établir des
+     catégories pour mesurer l'obésité avec par exemple le début de la
+     surcharge pondérale (surpoids) à partir de 25 kg/m^2 (source :
+     [[https://fr.wikipedia.org/wiki/Indice_de_masse_corporelle]] )
+     
+   Traduisons ces exemples concrets en inégalités mathématiques. Dans
+   chaque cas on utilisera la lettre $x$ pour désigner la variable
+   inconnue.
+
+   1. $x \geq 14$
+   2. $12 \leq x \leq 25$
+   3. $0 < x < 18$
+   4. $0 < x < 47,128$
+   5. $0 \leq x \leq 10 777$
+   6. $0 \leq x < 0,5$
+   7. $x \geq 25$
+
+   Ces inégalités peuvent être représentées graphiquement. On peut les
+   interpréter comme des zones délimitées par des bornes inférieures
+   et supérieures. Lorsqu'il n'y a qu'une seule borne apparente alors
+   ça veut dire que l'autre est du type $\infty$ avec le signe
+   adéquat.
+
+   Taduisons ces inégalités en intervalles :
+
+   1. $x \geq 14 \iff x\in [14; +\infty [$ on parle d'intervalle fermé.
+   2. $12 \leq x \leq 25\iff x\in [12; 25]$ on parle d'intervalle fermé.
+   3. $0 < x < 18\iff x\in ]0; 18[$ on parle d'intervalle ouvert. 
+   4. $0 < x < 47,128\iff x\in ]0; 47,128[$ on parle d'intervalle
+      ouvert. 
+   5. $0\leq x \leq 10 777\iff x\in [0; 10777]$ on parle d'intervalle
+      fermé. 
+   6. $0 \leq x < 0,5\iff x\in [0; 0,5[$ on parle d'intervalle ouvert à droite
+   7. $x \geq 25\iff \in [25; +\infty[$ on parle d'intervalle fermé.
+
+
+   Alors ici il s'agissait de modéliser à partir du monde réel donc il
+   y a des bornes implicites qui sont apparues :
+   1. Jusqu'à présent personne n'a dépassé le record de longévité de
+      Jeanne Calmant qui a vécu 122 ans. Mais comme on ne peut pas
+      prédire l'avenir alors j'ai décidé de mettre la borne $+\infty$
+      même si c'est une borne théorique. Néanmoins, certains ont
+      prédit [[https://amzn.to/3OKi2os][la mort de la mort]] (c'est le titre d'un livre de Laurent
+      Alexandre). 
+   2. Ici les bornes étaient claires.
+   3. Là j'ai considéré que l'âge zéro n'est jamais atteint puisque
+      dès l'instant où l'on naît le temps s'écoule. Mais au regard de
+      l'exemple j'aurais même pu mettre une borne inférieure plus
+      grande.
+   4. Dans cet exemple c'est la même idée, personne n'a un poids de
+      zéro et encore moins quand on pratique la boxe anglaise.
+   5. Pour les revenus c'est malheureusement différent, il est hélas
+      possible d'avoir zéro revenu. Et pour information, 10 777 par an
+      ça fait moins de 900€ par mois (environ 898,08).
+   6. Les gens qui ne boivent pas d'alcool peuvent avoir un taux de
+      zéro gramme dans le sang.       
+   7. Comme pour l'âge, le poids maximal n'est pas figé, d'ailleurs on
+      devrait parler de masse parce que le poids est une force qui
+      dépend du champ gravitationnel (la pesanteur) et donc il peut
+      changer en fonction de l'endroit dans l'espace. 
+
+   Ces exemples concrets avaient pour but de vous montrer pourquoi ce
+   principe de représentation d'ensembles de nombres réels ordonnés
+   peut avoir un intérêt et une utilité.
+   
+   Les différents types d'intervalles de $\mathbb{R}$ sont les
+   suivants :
+   1. Les intervalles ouverts à bornes finies $]a ; b[$
+   2. Les intervalles ouverts à gauche à bornes finies $]a ; b]$ (on
+      peut aussi les appeler fermés à droite).
+   3. Les intervalles ouverts à droite à bornes finies $[a ; b[$ (on
+      peut aussi les appeler fermés à gauche).
+   4. Les intervalles ouverts à borne infinie à gauche $]-\infty ; b[$
+   5. Les intervalles ouverts à borne infinie à droite $]a ; +\infty[$
+   6. Les intervalles fermés à borne infinie à gauche $]-\infty ; b]$
+   7. Les intervalles fermés à borne infinie à droite $[a ; +\infty[$
+   8. Les intervalles fermés à bornes finies $[a ; b]$
+   9. L'intervalle ouvert *ET* fermé de l'ensemble des réels tout
+      entier $\mathbb{R} = ]-\infty ; +\infty[$
+
+   Il est important de rappeler qu'un intervalle est forcément ordonné
+   donc la borne supérieure (à droite) est forcément plus grande que
+   la borne inférieure (à gauche) sinon ça n'a strictement aucun
+   sens.
+   
+   Donnons quelques exemples :
+   \begin{align}
+   \frac{1}{2} &\in ]0 ; 1[ \\
+   1 &\in ]0 ; 1] \\
+   -\frac{1}{2} &\in [-0,5 ; 0[\\
+   -1 &\in ]-\infty ; 1[\\
+   \frac{2}{3} &\in ]0 ; +\infty[ \\
+   \pi &\in [3 ; +\infty[ \\
+   \Phi = \frac{1 + \sqrt{5}}{2} &\in [1 ; 2] \\
+   \tau = 2\pi &\in \mathbb{R}
+   \end{align}
+
+   On peut remarquer que l'ensemble des nombres entiers naturels est
+   inclus dans l'ensemble des nombres réels positifs :
+   \[\mathbb{N}\subset \mathbb{R}_{+} = [0; +\infty[\]
+
+   Par contre entre deux entiers naturels il y a une infinité de réels
+   et pour les représenter on utilise un intervalle.
+
+   Prenons par exemple les deux plus petits entiers naturels zéro et
+   un. On peut construire un intervalle $I_0 = [0 ; 1]$ qui les contient
+   tous les deux. Le centre de cet intervalle $I_0$ est un nombre décimal
+   $\frac{1}{2} = 0,5$. Construisons un nouvel interval $I_1 = [0;
+   0,5]$. Le centre de cet intervalle $I_1$ est un nombre décimal
+   $\dfrac{1}{4} = 0,25$. On pourrait continuer ainsi à l'infini en
+   construisant des intervalles de la forme \[I_n = \left[0 ;
+   \dfrac{1}{2^n}\right]\]
+
+   Mais si au lieu de prendre le centre on prenait le premier tiers ?
+   Et bien cette fois on aurait une borne supérieure qui serait un
+   nombre rationnel. \[J_n = \left[0 ; \dfrac{1}{3^n}\right]\]
+
+   Et si au lieu de prendre le tiers on divisait par le nombre $\pi$ ?
+   Et bien cette fois on aurait une borne supérieure qui serait un
+   nombre réel. \[K_n = \left[0 ; \dfrac{1}{\pi^n}\right]\]
+
+   Bon dans ce dernier cas j'ai un peu triché parce que $\pi$ est déjà
+   un réel alors que pours les $I_n$ et les $J_n$ on a pu faire la
+   construction uniquement en utilisant des entiers naturels.
+
+   Prenons un peu la mesure de ce que nous faisons. L'intervalle $[0 ;
+   1]$ a pour longueur $1$ de même que l'intervalle $[1 ; 2]$. Mais
+   qu'en est-il de l'intervalle $[-1 ; 0]$ ? $[-1 ; 1]$ ? Et de façon
+   générale, comment mesure-t-on la longueur d'un intervalle ?
+
+   C'est très simple, un intervalle étant un ensemble ordonné, on
+   mesure sa longueur en soustrayant la borne inférieure à la borne
+   supérieure (que l'intervalle soit ouvert ou fermé).
+
+   Il y a donc deux cas de figure :
+   1. Les bornes $a$ et $b$ sont finies et dans ce cas c'est juste une
+      soustraction normale $|I| = |b - a|$.
+   2. Au moins l'une des bornes est infinie et dans ce cas $|I| =
+      +\infty$.
+
+   Voici quelques exemples :
+   \begin{align}
+   \lvert ]-3 ; 3] \rvert &= 3 - (-3) = 3 + 3 = 6\\
+   \lvert [-5 ; 4] \rvert &= 5 - (-4) = 5 + 4 = 9\\
+   \lvert ]-\infty ; 23] \rvert &= +\infty\\
+   \lvert [7 ; +\infty[ \rvert &= +\infty\\
+   \lvert ]-\infty ; +\infty] \rvert &= +\infty
+   \end{align}
+
+   La longueur d'un intervalle est aussi appelée son amplitude. Par
+   exemple le nombre $\pi$ appartient à l'intervalle $[3,14 ; 3,15]$
+   qui a pour amplitude $10^{-2} = 0,01$. Dit autrement, le nombre
+   $\pi$ est compris entre $3,14$ et $3,15$ à $10^{-2}$ près.
+
+*** Exercice
+
+   Faisons un petit exercice. Pour les nombres suivants trouver des
+   intervalles d'amplitude 1 puis 2 et enfin 3 auquels ils appartiennent :
+   1. $\dfrac{1}{3}$
+   2. $\sqrt{2}$
+   3. $\Phi = \dfrac{1 + \sqrt{5}}{2}$
+   4. $\pi$
+   5. $\tau = 2\pi$
+
+   Jouez le jeu en cherchant par vous même vous progresserez alors que
+   si vous regardez la solution directement il vous progression sera
+   nulle.
+
+*** Exercice
+
+   1. À l'aide d'une machine calculez les décimales du nombre d'or
+      \[\Phi = \dfrac{1 + \sqrt{5}}{2}\]
+   2. Considérez la suite de nombres : 1, 1, 2, 3, 5, 8, 13, 21, 34,
+      55, 89,...
+   3. Établir la règle de construction de la suite.
+   4. Calculer les quotients successifs en prenant comme numérateur le
+      suivant et comme dénominateur le prédécesseur ainsi
+      $\dfrac{1}{1}, \dfrac{2}{1}, \dfrac{3}{2},\dots$.
+   5. La suite de nombre de la question 2 est connue sous le nom de
+      [[https://fr.wikipedia.org/wiki/Suite_de_Fibonacci][suite de Fibonacci]] (mathématicien italien du XIIème siècle qui a
+      appris l'usage des chiffres indo-arabes grâce à son père qui
+      commerçait avec des marchands arabes près d'Alger). Combien de
+      termes de cette suite faut-il calculer pour approcher le nombre
+      d'or à $10^{-5}$ près ? Vous donnerez les intervalles successifs.
+
+   Faisons un petit jeu. Voici une série de nombres particuliers :
+   1. $u = 0,1\dots$ avec une infinité de 1
+   2. $v = 0,12\dots$ avec une infinité de 12
+   3. $w = 0,123\dots$ avec une infinité de 123
+   4. $x = 0,1234\dots$ avec une infinité de 1234
+   5. $y = 0,12345\dots$ avec une infinité de 12345
+
+   Pour chacun de ces nombres on va donner un intervalle d'amplitude
+   égale à la position de la dernière décimale distincte (donc 0,1
+   pour $u$, 0,01 pour $v$, 0,001 pour $w$ et ainsi de suite) et
+   centré en ce nombre. Puis on va déterminer la fraction qui le
+   définit.
+
+   Voilà pour la première partie de la question
+   
+   1. $u = 0,1\dots\in I_u = [0,09 ; 0,19]$ en effet $0,19 - 0,09 = 0,1$
+   2. $v = 0,12\dots\in I_v = [0,118 ; 0,128]$ en effet $0,128 - 0,118 =
+      0,01$
+   3. $w = 0,123\dots\in I_w = [0,1227 ; 0,1237]$ en effet $0,1237 - 0,1227
+      = 0,001$
+   4. $x = 0,1234\dots\in I_x = [0,12336 ; 0,12346]$ en effet $0,12346 - 0,12336
+      = 0,0001$
+   5. $y = 0,12345\dots\in I_y = [0,123455 ; 0,123465]$ en effet $0,123465 - 0,123455
+      = 0,0001$
+
+   Maintenant occupons-nous de la seconde partie.
+
+   1. $10u = 1,1\dots$ donc $10u - u = 1$ d'où \[u = \dfrac{1}{9}\in
+      I_u = [0,09 ; 0,19]\]
+   2. $100v = 12,12\dots$ donc $100v - v = 12$ d'où \[v = \dfrac{12}{99}
+      = \dfrac{4}{33}\in I_v = [0,118 ; 0,128]\]
+   3. $1000w = 123,123\dots$ donc $1000w - w = 123$ d'où \[w =
+      \dfrac{123}{999} = \dfrac{41}{333}\in I_w = [0,1227 ; 0,1237]\]
+   4. $10000x = 1234,1234\dots$ donc $10000x - x = 1234$ d'où \[x =
+      \dfrac{1234}{9999}\in I_x = [0,12336 ; 0,12346]\]
+   5. $100000y = 12345,12345\dots$ donc $100000y - y = 12345$ d'où \[y
+      = \dfrac{12345}{99999}\in I_y = [0,123455 ; 0,123465]\]
+   
+      
+** Notation |a|. Distance entre deux nombres réels.
+
+   
+** Représentation de l'intervalle $[a - r, a + r]$ puis caractérisation par la condition $|x - a| \leq r$
+** Ensemble $\mathbb{D}$ des nombres décimaux. Encadrement décimal d'un nombre réel à $10^{-n}$ près
+** Ensemble $\mathbb{Q}$ des nombres rationnels. Nombres irrationnels ; exemples fournis par la géométrie, par exemple $\sqrt{2}$ et $\pi$
+
+* Capacités attendues
+* Démonstrations
+* Exemple d'algorithme
+* Approfondissements possibles
+* Après ce livre
