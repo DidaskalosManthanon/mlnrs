@@ -1,0 +1,5563 @@
+#+TITLE: Manipuler les nombres réels
+#+AUTHOR: Laurent Garnier
+#+LANGUAGE: FR
+#+DESCRIPTION: Ce livre propose des exercices et explications pour manipuler les nombres réels
+#+EXPORT_FILE_NAME: mlnrs-last-one
+#+LATEX_CLASS: book
+#+LATEX_CLASS_OPTIONS: [a4paper,11pt]
+#+LATEX_COMPILER: xelatex
+#+BIND: org-export-allow-bind-keywords t
+#+KEYWORDS: mathématiques, exercices, calcul, géométrie, éducation, lycée
+#+COPYRIGHT: © 2025 Laurent Garnier. Tous droits réservés.
+
+# --- MISE EN PAGE ---
+#+LATEX_HEADER: \usepackage[paperwidth=6in,paperheight=9in,margin=1in]{geometry}
+#+LATEX_HEADER: \setlength{\headheight}{25pt} % Pour éviter l'avertissement fancyhdr
+
+# --- POLICES (XeLaTeX) ---
+#+LATEX_HEADER: \usepackage{fontspec}
+#+LATEX_HEADER: \setmainfont{Palatino}
+#+LATEX_HEADER: \setsansfont{Palatino}
+
+# --- LANGUE (recommandé pour XeLaTeX) ---
+#+LATEX_HEADER: \usepackage{polyglossia}
+#+LATEX_HEADER: \setmainlanguage{french}
+#+LATEX_HEADER: \setotherlanguage{english}
+
+# --- GUILLEMETS FRANÇAIS ---
+#+LATEX_HEADER: \usepackage{csquotes}
+#+LATEX_HEADER: \MakeAutoQuote*{«}{»} % Guillemets français automatiques
+
+# --- EN-TÊTES ET PIEDS DE PAGE ---
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \pagestyle{fancy}
+#+LATEX_HEADER: \fancyhf{}
+#+LATEX_HEADER: \fancyhead[LE,RO]{\thepage} % Numéro de page
+#+LATEX_HEADER: \fancyhead[RE]{\nouppercase{\leftmark}}  % Chapitre à droite (paires)
+#+LATEX_HEADER: \fancyhead[LO]{\nouppercase{\rightmark}} % Section à gauche (impaires)
+#+LATEX_HEADER: \renewcommand{\headrule}{\hbox to\headwidth{\hss\color{blue!75!black}\leaders\hrule height 0.8pt\hfill\hss}}
+
+
+# --- MATHS ET COULEURS ---
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \definecolor{mathblue}{rgb}{0,0.4,0.6}
+#+LATEX_HEADER: \everymath{\color{mathblue}}
+#+LATEX_HEADER: \everydisplay{\color{mathblue}}
+
+# --- TABLE DES MATIÈRES ---
+#+LATEX_HEADER: \usepackage{tocloft}
+#+LATEX_HEADER: \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+#+LATEX_HEADER: \renewcommand{\cftsecfont}{\color{orange}\bfseries}
+
+# --- CITATIONS AVEC TCOLORBOX ---
+#+LATEX_HEADER: \usepackage[most]{tcolorbox}
+#+LATEX_HEADER: \newtcolorbox{myquote}[1]{%
+#+LATEX_HEADER:     colback=blue!3!white,%
+#+LATEX_HEADER:     colframe=blue!75!black,%
+#+LATEX_HEADER:     fonttitle=\bfseries\itshape\Large\sffamily,%
+#+LATEX_HEADER:     fontupper=\itshape\large\rmfamily,%
+#+LATEX_HEADER:     sharp corners,%
+#+LATEX_HEADER:     boxrule=1pt,%
+#+LATEX_HEADER:     left=6mm, right=6mm, top=6mm, bottom=6mm,%
+#+LATEX_HEADER:     title=#1%
+#+LATEX_HEADER: }
+
+# --- HYPERREF (DOIT ÊTRE PRESQUE À LA FIN) ---
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{
+#+LATEX_HEADER:     colorlinks=true,
+#+LATEX_HEADER:     linkcolor=orange,
+#+LATEX_HEADER:     urlcolor=cyan,
+#+LATEX_HEADER:     filecolor=black,
+#+LATEX_HEADER:     citecolor=purple,
+#+LATEX_HEADER:     pdftitle={Manipuler les nombres réels},
+#+LATEX_HEADER:     pdfauthor={Laurent Garnier},
+#+LATEX_HEADER:     pdfsubject={Exercices et explications sur les nombres réels},
+#+LATEX_HEADER:     pdfkeywords={mathématiques, exercices, réels, lycée, Python},
+#+LATEX_HEADER:     pdflang={fr-FR},
+#+LATEX_HEADER:     bookmarksnumbered=true,
+#+LATEX_HEADER:     pdfpagelayout=OneColumn,
+#+LATEX_HEADER:     pdfstartview=FitH
+#+LATEX_HEADER: }
+
+# --- INDEX ---
+#+LATEX_HEADER: \usepackage{imakeidx}
+#+LATEX_HEADER: \makeindex[options=-s org-index-style]
+
+
+# --- GLOSSAIRE ---
+#+LATEX_HEADER: \usepackage[acronym, automake, nonumberlist, toc, xindy]{glossaries-extra}
+#+LATEX_HEADER: \setglossarystyle{long} % ou list, altlist, super, etc.
+#+LATEX_HEADER: \setglossarysection[\chapter*]{Glossaire} % Si vous voulez un chapitre non numéroté pour le glossaire
+#+LATEX_HEADER: \setacronymstyle{long-short} % Pour les acronymes
+#+INCLUDE: "glossaire.org" :only-contents t % Utilisez :only-contents t pour ne pas inclure les en-têtes/pieds de glossaire.org
+
+
+#+LATEX_HEADER: \makeglossaries
+
+
+
+# --- OPTIONS D'EXPORT ---
+#+OPTIONS: num:t toc:t H:3 ^:{} 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="styles.css"/>
+
+# --- MACROS ---
+#+MACRO: voirpage Voir page~{{{pageref(${1})}}}
+#+MACRO: pageref @@latex:\pageref{page:${1}}@@
+
+* À qui s'adresse ce livre
+<<sec1:intro>>
+#+LATEX: \label{page:sec1intro}
+
+#+LATEX: \clearpage
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Josiah Willard Gibbs}
+\enquote{Mathematics is a language.}\footnote{Voir la page Wikipédia sur Gibbs : \url{https://en.wikipedia.org/wiki/Josiah_Willard_Gibbs  }}
+\end{myquote}
+#+END_EXPORT
+\index{Gibbs, Josiah Willard}
+#+LATEX: \clearpage
+
+Ce livre s'adresse initialement aux élèves de seconde du système
+scolaire français. Mais il sera probablement très utile à un élève
+de fin de collège qui voudrait assurer son entrée au lycée. Il sera
+également très utile à un élève de première qui voudrait s'assurer
+qu'il maîtrise bien les notions de la classe de seconde. Enfin un
+quatrième public qui pourrait directement être visé est celui des
+enseignants, profs particuliers ou encore tuteurs (professionnels ou
+amateurs) qui souhaiteraient consulter des ressources utiles et
+utilisables pour aider les lycéens.
+
+De façon plus générale, même si je reprends exactement la structure
+du [[https://eduscol.education.fr/document/24553/download][programme officiel]] que vous pouvez consulter ici :
+https://eduscol.education.fr/document/24553/download, il me semble
+que ce livre pourrait être utile à quiconque souhaite approcher les
+mathématiques de façon honnête, rigoureuse et avec un soucis de
+compréhension. Tout en respectant le niveau du programme, j'essaierai
+dès que possible de prolonger la perspective.
+
+Vous pouvez d'ores et déjà mettre en pratique de façon interactive
+toutes les notions abordées grâce aux codes Python accessibles sur
+Google Colab à l'adresse communiquée dans la section concernée
+lorsque vous aurez rempli ce petit formulaire :
+https://forms.gle/qY8ym3ZxSo9NVH3S7 (vous trouverez également les
+corrections de tous les exercices du livre).
+
+Si vous constatez une erreur que ça soit une erreur de calcul, une
+faute de frappe ou quoique ce soit merci de me contacter à l'adresse
+indiquée dans le formulaire afin de me la signaler et que je puisse
+la corriger. Idem si vous avez des suggestions d'amélioration.
+
+Bonne lecture.
+#+LATEX: \clearpage
+
+* Contenus
+<<sec2:contents>>
+#+LATEX: \label{page:sec2contents}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Marc du Sautoy}
+\enquote{Mathematics has beauty and romance. It’s not a boring place to be,
+the mathematical world. It’s an extraordinary place; it’s worth
+spending time there.}\footnote{Voir la page Wikipédia sur Marcus du Sautoy : \url{https://en.wikipedia.org/wiki/Marcus_du_Sautoy}}
+\end{myquote}
+#+END_EXPORT
+\index{du Sautoy, Marc}
+#+LATEX: \clearpage
+
+<<content-menu>>
+#+LATEX: \label{page:content-menu}
++ [[sec2.1:content1][Contenu 1 : Nombres réels, droite numérique]]
+  #+LATEX: page~\pageref{page:sec2.1content1}
++ [[sec2.2:content2][Contenu 2 : Intervalles de nombres réels]]
+  #+LATEX: page~\pageref{page:sec2.2content2}
++ [[sec2.3:content3][Contenu 3 : Distances]]
+  #+LATEX: page~\pageref{page:sec2.3content3}
++ [[sec2.4:content4][Contenu 4 : Disques sur la droite réelle]]
+  #+LATEX: page~\pageref{page:sec2.4content4}
++ [[sec2.5:content5][Contenu 5 : Nombres décimaux]]
+  #+LATEX: page~\pageref{page:sec2.5content5}
++ [[sec2.6:content6][Contenu 6 : Nombres rationnels]]
+  #+LATEX: page~\pageref{page:sec2.6content6}
++ [[sec3:capacities][Capacités attendues]]
+  #+LATEX: page~\pageref{page:sec3capacities}
+   
+#+LATEX: \clearpage
+
+** Contenu 1 : Nombres réels, droite numérique
+<<sec2.1:content1>>
+#+LATEX: \label{page:sec2.1content1}
+#+BEGIN_EXPORT latex
+\begin{myquote}{Pythagore}
+\enquote{Tout l'univers repose sur l'ensemble des entiers naturels.}\footnote{Voir la page Wikipédia sur Pythagore : \url{https://fr.wikipedia.org/wiki/Pythagore}}
+\end{myquote}
+#+END_EXPORT
+\index{Pythagore}
+
+#+LATEX: \clearpage
+
+
+Cette partie développe la rubrique intitulée :
+
+<< Ensemble \(\mathbb{R}\) des nombres réels, droite numérique >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:progofficiel].
+[fn:progofficiel] Voir le site officiel du programme de mathématiques
+en classe de seconde dans le système scolaire français :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+#+LATEX: \clearpage
+
+<<content1-menu>>
+#+LATEX: \label{page:content1-menu}
++ [[sec2.1.1:digits][Savez-vous compter sur vos doigts ?]]
+  #+LATEX: page~\pageref{page:sec2.1.1digits}
++ [[sec2.1.2:int][Tout est relatif]]
+  #+LATEX: page~\pageref{page:sec2.1.2int}
++ [[sec2.1.3:cpu][Les ordinateurs s'en contentent]]
+  #+LATEX: page~\pageref{page:sec2.1.3cpu}
++ [[sec2.1.4:rational][Êtes-vous rationnels ?]]
+  #+LATEX: page~\pageref{page:sec2.1.4rational}
++ [[sec2.1.5:real][Au-delà du réel]]
+  #+LATEX: page~\pageref{page:sec2.1.5real}
++ [[sec2.1.6:cp][Raisonnement par contraposition]]
+  #+LATEX: page~\pageref{page:sec2.1.6cp}
++ [[sec2.1.7:exo1][Exercice 1]]
+  #+LATEX: page~\pageref{page:sec2.1.7exo1}
++ [[sec2.1.8:exo2][Exercice 2 : Python]]
+  #+LATEX: page~\pageref{page:sec2.1.8exo2}
++ [[content-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:content-menu}
++ [[sec2.2:content2][Contenu suivant]]
+  #+LATEX: page~\pageref{page:sec2.2content2}
+
+#+LATEX: \clearpage
+
+*** Savez-vous compter sur vos doigts ?
+<<sec2.1.1:digits>>
+#+LATEX: \label{page:sec2.1.1digits}
+Savez-vous résoudre l'équation \(x - 1 = 0\) ? Je vous laisse
+réfléchir et je vous donnerai la solution plus tard.
+
+Imaginez que vous êtes en train de jouer à votre jeu vidéo
+préféré. Il vous reste 3 points de vie, combien pouvez-vous en
+perdre avant de mourir (dans le jeu) ? Idem, je vous laisse
+réfléchir.
+
+En général, lorsque vous entrez en seconde vous êtes âgé de 15 ans,
+du coup combien d'années vous séparent de votre majorité ?
+
+Ces trois questions traitent du même genre de problèmes, la
+résolution des équations algébriques du premier degré impliquant
+les nombres les plus simples que vous connaissez à savoir les
+\gls{nb-nat}\index{nombres!entiers naturels}. Pour la
+faire simple il s'agit des nombres utiles pour compter le nombre de
+doigts que vous possédez, le nombre d'enfants dans une famille et
+toutes les choses qu'on peut dénombrer de zéro à l'infini\index{infini}.
+
+On note :
+\[\mathbb{N} = \{0, 1, 2, 3,\dots\}\]
+l'ensemble des entiers naturels\index{ensemble!des entiers naturels}.
+
++ Équation 1 : \(x - 1 = 0\Rightarrow x = 1\in\mathbb{N}\)
++ Équation 2 : \(3 - x = 0\Rightarrow x = 3\in\mathbb{N}\)
++ Équation 3 : \(15 + x = 18\Rightarrow x = 3\in\mathbb{N}\)
+
+
++ [[content1-menu][Voir menu précédent]] 
+  #+LATEX: page~\pageref{page:content1-menu}
+
+#+LATEX: \clearpage
+
+*** Tout est relatif
+<<sec2.1.2:int>>
+#+LATEX: \label{page:sec2.1.2int}
+
+Mais ces nombres sont insuffisants pour exprimer des températures
+par exemple dans une ville d'Europe du Nord comme Saint Pétersbourg
+en Russie ou Oslo en Norvège. En fait, même en France
+métropolitaine si vous allez en Savoie vous observerez des
+températures négatives en hiver et positives en été. Le signe de ces
+températures est /relatif/ à la position du zéro.
+
+Les \gls{nb-rel}\index{nombres!entiers relatifs} sont
+constitués des nombres entiers naturels\index{entiers naturels} (les
+nombres positifs qu'on a vu [[sec2.1.1:digits][précédemment]][fn:naturels]) auxquels on
+ajoute leurs symétriques par rapport à zéro.
+
+[fn:naturels]  Voir page \pageref{page:sec2.1.1digits}
+
+
+On les note :
+\[\mathbb{Z} = \{\dots, -2, -1, 0, 1, 2, \dots\}\]
+
+Le symbole \(\mathbb{Z}\) pour les entiers relatifs vient du mot
+allemand << /Zahlen/ >>, qui veut dire << nombres >>.
+
+Dans la pratique on dira simplement << les entiers >> pour désignaient
+les entiers relatifs.
+
+Ce sont également ces nombres qu'on utilise dans un ascenseur pour
+indiquer si on va au sous-sol (nombre négatif) ou aux étages
+supérieurs (nombres positifs).
+
+Dans le langage de programmation Python les nombres entiers
+relatifs sont représentés par le type ~int~ pour
+/integer/ (qui veut dire entier relatif en anglais). Donc en Python le
+\gls{int}\index{int} correspond à un nombre fini d'entiers
+relatifs. 
+
++ [[sec2.1.1:digits][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.1digits}
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
+
+#+LATEX: \clearpage
+
+*** Les ordinateurs s'en contentent
+<<sec2.1.3:cpu>>
+#+LATEX: \label{page:sec2.1.3cpu}
+
+Mais ces nombres sont encore en nombre insuffisants pour exprimer,
+par exemple, les unités monétaires. Quand vous achetez une baguette,
+du carburant, des fournitures scolaires ou quoique ce soit ; la
+plupart du temps vous utilisez des nombres à virgules qu'on appelle
+les \gls{nb-dec}\index{décimaux}.
+
+Contrairement aux deux ensembles précédents, l'ensemble des nombres
+décimaux ne peut pas être représenté de façon explicite avec des
+points de suspension, il doit être définit en /compréhension/. Définir
+un ensemble en compréhension signifie que vous devez expliquer la
+règle de construction.
+
+On note :
+\[\mathbb{D} = \left\{ \dfrac{a}{10^n}\,|\,(a, n)\in\mathbb{Z}^2\right\}\]
+l'ensemble des nombres décimaux avec :
++ le symbole <<  \(|\)  >> qui se lit <<  /tel(s) que/  >>
++ et le symbole <<  \(\in\)  >> qui se lit << /appartient à/ >>
+
+Commençons par la fin <<  \((a, n)\in\mathbb{Z}^2\)  >> signifie que \(a\) et
+\(n\) sont tous les deux des entiers relatifs\index{entiers relatifs}. Ainsi, les décimaux\index{décimaux} sont les nombres
+fractionnaires dont le numérateur est un entier relatif et le
+dénominateur une puissance de 10.
+
+Donnons quelques exemples :
++ Exemple 1 : \[(a, n) = (1, 2)\Rightarrow d_1 = \dfrac{1}{10^2} = 0,01\]
++ Exemple 2 : \[(a, n) = (3, 4)\Rightarrow d_2 = \dfrac{3}{10^4} = 0,0003\]
++ Exemple 3 : \[(a, n) = (2, -1)\Rightarrow d_3 = \dfrac{2}{10^{-1}} = 20\]
++ Exemple 4 : \[(a, n) = (3, 0)\Rightarrow d_4 = \dfrac{3}{10^0} = 3\]
++ Exemple 5 : \[(a, n) = (-1, 2)\Rightarrow d_5 = \dfrac{-1}{10^2} = -0,01\]
+
+Dans la programmation Python on parle du type ~float~, pour
+/floating point number/ ou nombre à virgule flottante en bon
+français (puisque les anglo-saxons utilisent un point comme
+séparateur décimal\index{décimal}). Concrètement le 
+\gls{float}\index{float} correspond à un nombre fini de décimaux.
+
+
+En prenant \(n = 0\) on obtient tous les entiers
+relatifs\index{entiers relatifs}. Mais ce n'est pas suffisant pour
+décrire le réel (en théorie, parce qu'en pratique les ordinateurs s'en
+contentent).
+
+
+
++ [[content1-menu][Voir menu précédent]] page \pageref{page:content1-menu}
++ [[sec2.1.2:int][Voir section précédente]] page \pageref{page:sec2.1.2int}
+
+#+LATEX: \clearpage
+
+*** Êtes-vous rationnels ?
+<<sec2.1.4:rational>>
+#+LATEX: \label{page:sec2.1.4rational}
+
+Imaginez que vous avez un budget pour une semaine et que vous
+souhaitiez allouer une part équitable pour chaque jour. Et bien
+sachez que le nombre \(\dfrac{1}{7}\) n'est pas un
+décimal\index{décimal}, pas plus que le nombre \(\dfrac{1}{6}\). En
+effet si vous posez la division ou que vous utilisez une machine
+(calculatrice, ordinateur, tablette ou téléphone peu importe) vous
+verrez que \(\dfrac{1}{7} \simeq 0,142857\dots\) et que cette séquence
+\(142857\dots\) se répètent à l'infini. De même, de façon plus simple,
+si vous prenez \(\dfrac{1}{6} \simeq 0,16\dots\) les 6 se répètent à
+l'infini.
+
+
+
+Posons \(x = 0,16\dots 6\dots\) où les 6 se répètent à
+l'infini.
+
+Multiplions \(x\) par 100 ainsi on obtient \(100x = 16,6\dots
+6\dots\).
+
+Multiplions \(x\) par 10 ainsi on obtient \(10x = 1,6\dots 6\dots\).
+
+Faisons maintenant la soustraction qui va faire disparaître les
+décimales\index{décimales} infinies  \[100x - 10x = 90x = 15\]
+
+d'où \[x = \dfrac{15}{90} = \dfrac{3\times 5}{2\times 3\times 3\times 5} =
+\dfrac{1}{6}\]
+
+1. Nombre initial :
+  \[x = 0,166666\dots\]             
+2. Multiplication par 100 :
+  \[100x = 16,6666\dots\]             
+3. Multiplication par \(-10\) :
+  \[-10x = -1,6666\dots\]            
+4. Différence :
+  \[90x = 15\]                        
+5. Quotient :
+  \[x = \dfrac{15}{90} = \dfrac{1}{6}\]
+
+
+
+Le nombre \(\dfrac{1}{6}\) est bien un nombre qui sort de la
+définition des décimaux\index{décimaux} et justifie une nouvelle
+classe de nombres, les \gls{nb-ratio}\index{nombres!rationnels}
+(/ratio/ en latin veut dire /quotient/).
+
+
+Les nombres rationnels\index{rationnels} sont notés : 
+\[\mathbb{Q} = \left\{\dfrac{a}{b}\,|\,(a,
+b)\in\mathbb{Z}\times\mathbb{N}^*\right\}\]
+
+Ici le numérateur \(a\) est un entier relatif\index{entier relatif} et
+le dénominateur \(b\) est un \index{entier naturel} strictement
+positif parce qu'on ne peut pas diviser par zéro.
+
+Prouvons ce dernier résultat, à savoir : la division par zéro est
+impossible. 
+
+Imaginez que l'on puisse trouver un nombre entier \(a\) qui soit
+divisible par zéro.
+Alors il existerait un entier \(q\) tel que \(a = 0\times q\).
+
+Le problème c'est que zéro est un \gls{absorbant}\index{absorbant},
+tel le trou noir de la multiplication, tout nombre multiplié par zéro
+donne zéro.
+
+
+La division par zéro n'a donc pas de sens.
+
+*CQFD*
+
+Donnons quelques exemples de nombres rationnels :
+
+
++ Exemple 1 : \[(a, b) = (1, 2)\Rightarrow q_1 = \dfrac{1}{2} =
+  0,5\in\mathbb{D}\subset\mathbb{Q}\] le symbole <<  \(\subset\)  >> se
+  lit <<  /est inclus dans/  >> et signifie donc ici que l'ensemble des
+  décimaux\index{décimaux} \(\mathbb{D}\) est inclus\index{inclus} dans
+  l'ensemble des rationnels \(\mathbb{Q}\). On dit que \(\mathbb{D}\)
+  est un sous-ensemble de \(\mathbb{Q}\). On peut aussi dire que
+  \(\mathbb{D}\) est compris dans \(\mathbb{Q}\). On parle d'une
+  \gls{inclus}\index{inclusion ensembliste}.
++ Exemple 2 : \[(a, b) = (8, 9)\Rightarrow q_2 = \dfrac{8}{9} = 0,8\dots 8\dots\in\mathbb{Q}\]
++ Exemple 3 : \[(a, b) = (3, 4)\Rightarrow q_3 = \dfrac{3}{4} = 0,75\in\mathbb{D}\subset\mathbb{Q}\]
++ Exemple 4 : \[(a, b) = (19, 11)\Rightarrow q_4 = \dfrac{19}{11} = 1,72\dots \in\mathbb{Q}\]
++ Exemple 5 : \[(a, b) = (2, 7)\Rightarrow q_5 = \dfrac{2}{7} = 0,285714\dots \in\mathbb{Q}\]
+
+
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
++ [[sec2.1.3:cpu][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.3cpu}
+
+#+LATEX: \clearpage
+
+*** Au-delà du réel
+<<sec2.1.5:real>>
+#+LATEX: \label{page:sec2.1.5real}
+
+Les nombres rationnels\index{nombres!rationnels} sont très
+intéressants mais ils restent insuffisants pour capturer le
+réel. Imaginez que l'écran de votre ordinateur portable soit un
+rectangle de longueur 16 cm pour une largeur de 9 cm (c'est le fameux
+format 16/9).
+
+Alors pour calculer la diagonale nous allons utiliser le théorème de
+Pythagore :
+
+
++ P1) \[d^2 = 16^2 + 9^2\]
++ P2) \[d^2 = 256 + 81\]
++ P3) \[d^2 = 337\]
++ P4) \[d = \sqrt{337} \simeq 18,36\]
+
+Tout d'abord le nombre 337 est un \gls{nb-prem}\index{nombre!premier}
+(prouvez-le, c'est un bon exercice). Et ensuite la racine carrée d'un
+nombre premier ne peut pas s'écrire sous la forme d'un nombre
+rationnel\index{nombre!rationnel}.
+
+Pour des raisons de concordance avec le programme de seconde je
+vous propose de [[sqrt2proofs][démontrer]][fn:demo]\index{démontrer} que \(\sqrt{2}\)
+n'est pas un nombre rationnel et pour le résultat (plus général)
+énoncé précédemment, je vous renvoie à la [[sec2.6.6:gen][généralisation]][fn:gen] (mais
+vous pouvez déjà commencer à chercher).
+[fn:demo] Voir page \pageref{page:sqrt2proofs} pour d'autres preuves
+de l'irrationalité de \(\sqrt{2}\).
+[fn:gen] Voir page \pageref{page:sec2.6.6gen} pour la généralisation à
+\(\sqrt{p}\) avec \(p\) premier.
+
+
+
+
+
+Pour démontrer que \(\sqrt{2}\) n'est pas un
+nombre rationnel\index{nombre!rationnel}
+on va utiliser plusieurs types de raisonnement\index{raisonnement!types}.
+
+Tout d'abord nous allons utiliser le
+\gls{rab}\index{raisonnement!absurde}.
+
+
+Le raisonnement par l'absurde repose sur un principe de la logique
+classique qu'on appelle le /principe du tiers exclu/[fn:tiers-exclu].
+Le \gls{tiers-exclu}\index{tiers exclu} qu'une affirmation
+est soit vraie soit fausse (pas de troisième alternative).
+
+
+[fn:tiers-exclu] Le principe du tiers exclu est un principe
+fondamental de la logique classique, qui stipule que pour toute
+proposition P, soit P est vraie, soit sa négation ¬P est vraie. Il n'y
+a pas de troisième possibilité. Il apparaît pour la première fois dans
+la /Métaphysique/ d'Aristote. Certaines logiques non classiques comme
+la logique /intuitioniste/ ou la logique /floue/ le rejette.
+
+
+
+
+En logique mathématique classique on ne s'occupe que de ce genre
+d'affirmation donc nous sommes dans un système *beaucoup* plus simple
+que la réalité. Du coup, si le contraire de ce que je veux montrer est
+faux alors ce que je veux montrer est vrai. Prenons un exemple concret
+un peu simpliste, si ce n'est pas le matin alors c'est
+l'après-midi. Si vous n'êtes pas majeur alors vous êtes mineur. Ce
+genre de logique fonctionne bien avec les systèmes binaires.
+
+
+
+Revenons à nos moutons, on veut montrer que \(\sqrt{2}\) n'est pas
+rationnel donc on va supposons le contraire et montrer que ce
+contraire est faux donc que notre affirmation sera vraie.
+
+
+Supposons donc par l'absurde que \(\sqrt{2}\) soit
+rationnel\index{nombre!rationnel} donc d'après la définition de
+\(\mathbb{Q}\) il devrait exister un entier
+relatif\index{entier relatif} \(a\) et un entier
+naturel\index{entier naturel} strictement positif \(b\) tels que
+
+\[\sqrt{2} = \dfrac{a}{b}\]
+
+Comme toute fraction peut se ramener (après simplification) à une
+fraction irréductible\index{fraction!irréductible} on peut donc
+considérer que \(a\) et \(b\) n'ont pas de diviseurs communs et que la
+fraction est irréductible. Dire que \(a\) et \(b\) n'ont pas de
+diviseurs communs revient à dire que leur pgcd\index{pgcd} vaut un
+c'est-à-dire \(pgcd(a, b) = 1\).
+
+
+Le PGCD est le Plus Grand Commun Diviseur.
+
+Bon, on devrait l'appeler le PGDC parce qu'en français on dit diviseur
+commun car l'adjectif vient après le nom mais en anglais ils disent
+/greatest common divisor/ et bien souvent les gens importent les
+concepts anglophones en oubliant les règles du français c'est pour
+ça que sur certaines calculatrices et logiciels vous pouvez voir
+GCD ou gcd.
+
+
+
+Faisons un bref récapitulatif :
+
+
++ Objectif : Montrer que \(\sqrt{2}\) n'est pas
+  rationnel\index{rationnel}
++ Méthode : Raisonnement par l'absurde\index{raisonnement!absurde}, on
+  pose
+
+  \[\sqrt{2} = \dfrac{a}{b}\] avec \(pgcd(a, b) = 1\)\index{pgcd}
+
+
+
+Partant de la fraction irréductible, on va élever au carré ce qui nous
+donne :
+
+\[2 = \dfrac{a^2}{b^2}\]
+
+Et qu'on peut mettre sous la forme :
+
+\[a^2 = 2b^2\]
+
+
+
+On peut classer les nombres entiers en deux catégories :
+
+1. Les nombres pairs de la forme \[p = 2n\] où \(n\) est un entier
+   (par exemple \(6 = 2\times 3\) donc dans ce cas \(n = 3\)).
+
+   On pourrait noter
+   \[\mathbb{P} = \{ p = 2n | n\in\mathbb{Z}\}\]
+   
+   l'ensemble des nombres (entiers)
+   pairs\index{ensemble!des nombres pairs} et ainsi \[6\in\mathbb{P}\]
+   c'est-à-dire en langage naturel
+   << /le nombre six appartient à l'ensemble des nombres (entiers) pairs/ >>
+2. Les nombres impairs de la forme \[i = 2n + 1\] où \(n\) est un
+   entier (par exemple \(9 = 2\times 4 + 1\) donc dans ce cas \(n = 4\)).
+   On pourrait noter
+   \[\mathbb{I} = \{ i = 2n + 1| n\in\mathbb{Z}\}\]
+   
+   l'ensemble des nombres (entiers)
+   impairs\index{ensemble!des nombres impairs} et ainsi \(9\in\mathbb{I}\)
+   c'est-à-dire en langage naturel
+   << /le nombre neuf appartient à l'ensemble des nombres (entiers) impairs/ >>
+
+On en déduit que le nombre \(a^2 = 2b^2\) appartient à la première
+catégorie avec \(n = b^2\) c'est-à-dire \[a^2\in\mathbb{P}\]
+
+Désormais on va avoir besoin d'un résultat intermédiaire qui va
+faire intervenir un autre type de raisonnement (pour voir les
+différents types de raisonnement consulter la playlist éponyme en
+cliquant [[https://youtu.be/R_L4NEgIxPM?si=5kVsC2Tq9BKLcsv-][ici]][fn:reason-playlist]).
+
+
+[fn:reason-playlist] Consultez la playlist sur les types de
+raisonnements accessible à cette adresse :
+[[https://www.youtube.com/watch?v=R_L4NEgIxPM]]
+
+
+
+
+
+Voici le résultat intermédiaire qu'on veut montrer :
+
+<< /si le carré d'un nombre est pair alors le nombre initial l'est aussi/ >>.
+
+On va formaliser cette affirmation :
+
+1. A = << le carré d'un nombre est pair >>
+2. B = << le nombre initial est pair >>
+3. \(P = (A \Rightarrow B)\)
+
+Le nouveau type de raisonnement qu'on va utiliser s'appelle le
+\gls{rac}\index{raisonnement!contraposition}.
+
+Prenons un exemple concret fictif (et simpliste). Imaginez que
+chaque fois qu'il pleut je prenne mon parapluie (sans *aucune*
+exception). Si vous me croisez *sans* parapluie alors vous en
+déduirez qu'il ne pleut pas. C'est une proposition logiquement
+équivalente à la première formulation.
+
+1. A = << Il pleut >>
+2. B = << Je prend mon parapluie >>
+3. \(P = (A\Rightarrow B)\)
+4. non B = << Je n'ai pas de parapluie >>
+5. non A = << Il ne pleut pas >>
+6. \(CP(P) = \left(non(B)\Rightarrow non(A)\right)\)
+
+
+Revenons à nos nombres entiers\index{nombres!entiers}.
+
+La contraposée\index{raisonnement!contraposée} de la proposition :
+
+\(\mathcal{P}\) = << /Si le carré d'un nombre est pair alors le nombre
+initial l'est aussi./ >>
+
+
+est la proposition :
+
+\(\mathcal{Q} = CP(\mathcal{P})\) = << /Si le nombre initial est
+impair alors son carré aussi./ >>
+
+
+
+Décomposons :
+
+1. A = << le carré d'un nombre est pair >>
+2. B = << le nombre initial est pair >>
+3. \(P = (A \Rightarrow B)\)
+4. non(B) = << le nombre initial est impair >>
+5. non(A) = << le carré est impair >>
+6. \(CP(P) = \left(non(B)\Rightarrow non(A)\right)\)
+
+
+Ce raisonnement nous permet de ramener la proposition à montrer à
+une proposition plus simple et qu'on peut montrer directement.
+
+Si le nombre initial est impair alors il est de la forme :
+
+\[i = 2n + 1\]
+
+Il vient que son carré satisfait :
+
++ R1) \[i^2 = (2n + 1)^2\]
++ R2) \[i^2 = (2n)^2 + 2\times 2n\times 1 + 1^2\]
++ R3) \[i^2 = 2(2n^2 + 2n) + 1\]
+
+
+On a bien obtenu un nombre impair. Par équivalence logique la
+proposition initiale est vraie.
+
+Faisons un bilan d'étape.
+
+1. Objectif final : Montrer que \(\sqrt{2}\) n'est pas
+   rationnel\index{rationnel}
+2. Méthode : Raisonnement par l'absurde\index{raisonnement!absurde},
+   on pose :
+   \[\sqrt{2} = \dfrac{a}{b}\]
+   et avec \(pgcd(a, b) = 1\)\index{pgcd}
+3. Objectif intermédiaire :
+   \[a^2 = 2b^2\]
+   \(a^2\) est pair donc \(a\) est pair.
+4. Méthode pour l'objectif intermédiaire : raisonnement par
+   contraposée, si \(a\) est impair alors \(a^2\) aussi
+
+   
+À ce stade nous avons bien montré que :
+\[a^2 = 2b^2\]
+entraîne que :
+\[a = 2n\]
+De cette nouvelle écriture on tire :
+\[a^2 = 4n^2\]
+et on peut établir une nouvelle égalité :
+\[2b^2 = 4n^2\]
+qui donne :
+\[b^2 = 2n^2\]
+Par conséquent, en utilisant notre résultat intermédiaire, on constate
+que \(b\) est aussi pair.
+
+Mais si \(a\) et \(b\) sont pairs alors ils sont divisibles par \(2\)
+ce qui contredit \(pgcd(a, b) = 1\)\index{pgcd}.
+Ce résultat est absurde\index{raisonnement!absurde} donc l'hypothèse
+initiale aussi et finalement \(\sqrt{2}\) n'est pas un
+rationnel\index{rationnel}.
+
+
+*CQFD*
+
+#+LATEX: \clearpage
+
+Bravo à vous si vous avez tout compris. Pour les autres,
+rassurez-vous, c'est normal que ça chauffe dans votre tête. Vous
+pouvez déjà revoir cette démonstration en vidéo ici :
+[[https://youtu.be/R_L4NEgIxPM]]
+
+Le raisonnement par l'absurde\index{raisonnement!absurde} consiste à partir
+d'une hypothèse contraire à celle qu'on souhaite montrer et ensuite à
+enchaîner des déductions logiques parfaitement valides jusqu'à aboutir
+à une contradiction (quelque chose une conclusion absurde). La
+chaîne de déductions peut parfois s'avérer (très) longue et impliquer
+des résultats intermédiaires nécessitant à leur tour (éventuellement)
+d'autres types de raisonnement\index{raisonnement!types}.
+
+
+Dans certains ouvrages, certaines personnes préfèrent admettre les
+résultats intermédiaires. Dans l'absolu il serait impossible de
+tout démontrer\index{démontrer} parce qu'on ne pourrait jamais
+avancer. Néanmoins il est utile de garder à l'esprit qu'en
+mathématiques le but du jeu est de démontrer les affirmations sans
+jamais les prendre pour argent comptant.
+
+
+Finalement, puisque \(\sqrt{2}\) n'est pas un nombre
+rationnel\index{nombre!rationnel} il doit bien appartenir à un
+ensemble de nombres\index{ensemble de nombres} et cet ensemble est
+l'ensemble des \gls{nb-reels}\index{ensemble!des nombres réels} et on
+le note \(\mathbb{R}\).
+
+
+
+Nous avons ainsi la chaîne d'inclusions ensemblistes :
+
+\[\mathbb{N}\subset\mathbb{Z}\subset\mathbb{D}\subset\mathbb{Q}\subset\mathbb{R}\]
+
+Une inclusion ensembliste\index{inclusion ensembliste} signifie qu'un
+ensemble est un sous-ensemble d'un autre.
+
+Par exemple :
++ l'ensemble des entiers naturels\index{entiers naturels} est inclus
+  dans l'ensemble des entiers relatifs\index{entiers relatifs} qu'on note :
+  \[\mathbb{N}\subset\mathbb{Z}\]
++ l'ensemble des entiers relatifs est inclus dans l'ensemble des
+  décimaux\index{décimaux} qu'on note : \[\mathbb{Z}\subset\mathbb{D}\]
++ l'ensemble des décimaux est inclus dans l'ensemble des
+  rationnels\index{rationnels} qu'on note : \[\mathbb{D}\subset\mathbb{Q}\]
++ l'ensemble des rationnels est inclus dans l'ensemble des
+  réels\index{nombre!réels} qu'on note : \[\mathbb{Q}\subset\mathbb{R}\]
+
+Comme des poupées russes tous les ensembles de nombres nommés
+ci-dessus sont inclus dans l'ensemble des réels :
+
+\[\mathbb{N}\subset\mathbb{Z}\subset\mathbb{D}\subset\mathbb{Q}\subset\mathbb{R}\]
+
+Cet ensemble de nombres\index{ensemble de nombres} correspond à
+l'infinité des points sur une droite et c'est pour cette raison qu'on
+représentera souvent les nombres réels\index{nombres!réels} par une
+droite graduée\index{droite!graduée} qu'on appellera la
+droite[fn:real-line] des réels\index{droite!réels} avec 0 au milieu et
+qui se prolonge vers \(+\infty\) à droite et \(-\infty\) à gauche.
+
+
+[fn:real-line] Voir la figure page \pageref{page:real-line}.
+
+
+#+CAPTION: Droite réelle
+#+ATTR_HTML: :width 600px :height 400px
+[[./manip_real/img/real-line.png]]
+#+LATEX: \label{page:real-line}
+
+
+
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
++ [[sec2.1.4:rational][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.4rational}
+
+
+#+LATEX: \clearpage
+
+*** Raisonnement par contraposition
+<<sec2.1.6:cp>>
+#+LATEX: \label{page:sec2.1.6cp}
+
+Revenons un petit instant sur la mécanique du raisonnement par
+contraposée\index{raisonnement!contraposée}.
+
+Pour cela on va décortiquer l'implication logique.
+
+Considérons l'exemple suivant : 
+
++ R1) : \[A = (x > 2)\]
++ R2) : \[B = (2x > 4)\]
++ R3) : \[P = (A\Rightarrow B)\]
++ R4) : \[\neg B = (2x \leq 4)\]
++ R5) : \[\neg A = (x \leq 2)\]
++ R6) : \[CP(P) = (\neg B\Rightarrow \neg A)\]
+
+
+Le symbole << \(\neg\) >> est la négation logique.
+
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
++ [[sec2.1.5:real][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.5real}
+
+#+LATEX: \clearpage
+
+*** Exercice 1
+<<sec2.1.7:exo1>>
+#+LATEX: \label{page:sec2.1.7exo1}
+
+Reprennez la même mécanique présentée ci-dessus[fn:contrapose] avec
+cette fois
+
+\[A = (x < -1)\]
+
+et
+
+\[B = (-3x > 3)\]
+
+
+[fn:contrapose] Voir page \pageref{page:sec2.1.6cp} pour le
+déroulement complet de la mécanique logique. 
+
+
++ [[sec8.1.1:sol1][Voir solution de l'exercice 1]]
+  #+LATEX: page~\pageref{page:sec8.1.1sol1}
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
++ [[sec2.1.6:cp][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.6cp}
+
+#+LATEX: \clearpage
+
+*** Exercice 2 : Python
+<<sec2.1.8:exo2>>
+#+LATEX: \label{page:sec2.1.8exo2}
+
+1. Écrire une fonction Python\index{fonction Python} ~imply~ qui prend
+   deux arguments en entrée et renvoie la phrase logique << A implique
+   B >> avec A et B remplacés par leurs valeurs.
+   Par exemple : ~imply("x > 1", "x**2 > 1")~ renverra ~"(x > 1)
+   implique (x**2 > 1)"~
+   
+2. Écrire une autre fonction Python ~contrapose~ qui prend deux
+   arguments A et B et qui renvoie la contraposée de << A implique
+   B >>. Donc la fonction devra renvoyer << non B implique non A >>. Votre
+   programme écrira littéralement << non >> suivie de la valeur de la
+   proposition A (ou B) parce que vous ne pouvez pas (en tout cas je
+   ne sais pas) modifier logiquement le contenu d'une chaîne de
+   caractères avec Python.
+
+
++ [[sec8.1.2:sol2][Voir solution de l'exercice 2]]
+  #+LATEX: page~\pageref{page:sec8.1.2sol2}
++ [[content1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content1-menu}
++ [[sec2.1.7:exo1][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.7exo1}
+
+#+LATEX: \clearpage
+
+** Contenu 2 : Intervalles de nombre réels
+<<sec2.2:content2>>
+#+LATEX: \label{page:sec2.2content2}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Leon Henkin}
+\enquote{One of the big misapprehensions about mathematics that we
+perpetrate in our classrooms is that the teacher always seems to
+know the answer to any problem that is discussed.}\footnote{Voir la page Wikipédia sur Henkin : \url{https://en.wikipedia.org/wiki/Leon_Henkin}}
+\end{myquote}
+#+END_EXPORT
+\index{Henkin, Leon}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Intervalles de \(\mathbb{R}\). Notations \(+\infty\) et \(-\infty\) >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:po] (page 6).
+
+[fn:po] Consultez le programme de mathématiques de seconde du système
+scolaire français : [[https://eduscol.education.fr/document/24553/download]]
+
+
+
+#+LATEX: \clearpage
+
+<<content2-menu>>
+#+LATEX: \label{page:content2-menu}
++ [[sec2.2.1:intro-intervalle][Introduction de la notion d'intervalle]]
+  #+LATEX: page~\pageref{page:sec2.2.1intro-intervalle}
++ [[sec2.2.2:exo3][Exercice 3]]
+  #+LATEX: page~\pageref{page:sec2.2.2exo3}
++ [[sec2.2.3:exo4][Exercice 4]]
+  #+LATEX: page~\pageref{page:sec2.2.3exo4}
++ [[sec2.2.4:small-game][Petit jeu]]
+  #+LATEX: page~\pageref{page:sec2.2.4small-game}
++ [[content-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:content-menu}
++ [[sec2.1.8:exo2][Section précédente]]
+  #+LATEX: page~\pageref{page:sec2.1.8exo2}
++ [[sec2.1:content1][Contenu précédent]]
+  #+LATEX: page~\pageref{page:sec2.1content1}
++ [[sec2.3:content3][Contenu suivant]]
+  #+LATEX: page~\pageref{page:sec2.3content3}
+
+
+
+
+#+LATEX: \clearpage
+
+*** Introduction de la notion d'intervalle
+<<sec2.2.1:intro-intervalle>>
+#+LATEX: \label{page:sec2.2.1intro-intervalle}
+
+
+
+Jusqu'à présent nous avons traité essentiellement des égalités (une
+équation est une égalité).
+
+Mais dans de nombreux cas il est intéressant et utile de traiter des
+inégalités.
+
+
+Donnons quelques exemples issus du monde réel de la vie de tous les
+jours :
+
+
++ Exemple 1 : Il faut être âgé de plus de 14 ans pour conduire un
+  véhicule de type mobilette ou scooter.
++ Exemple 2 : Il faut être âgé entre 12 et 25 ans pour bénéficier du
+  tarif jeune à la SNCF.
++ Exemple 3 : Les films pornographiques sont interdits aux mineurs
+  donc aux gens qui ont un âge inférieur à 18 ans.
++ Exemple 4 : En boxe anglaise la catégorie de poids pailles concerne
+  les gens dont le poids est inférieur à 47,128 kg (soit 105 livres,
+  source : [[https://fr.wikipedia.org/wiki/Boxe_anglaise]]
++ Exemple 5 : En France, seuls les gens qui ont moins de 10 777€ par
+  an sont exonérés d'impôt (0%), ensuite de 10 778 à 27 478 c'est 11%,
+  puis 30% de 27 479 à 78 570, puis 41% de 78 571 à 168 994 et enfin
+  45% pour ceux qui ont plus de 168 994 (source :
+  [[https://www.service-public.fr/particuliers/vosdroits/F1419]])
++ Exemple 6 : La limite autorisée du taux d'alcool dans le sang par la
+  loi en 2023 est de 0,5 g/L soit en équivalent 0,25 mg par litre
+  d'air expiré (source :
+  [[https://www.legipermis.com/infractions/alcool-permis-conduire.html]])
++ Exemple 7 : L'IMC (Indice de Masse Corporelle) permet d'établir des
+  catégories pour mesurer l'obésité avec par exemple le début de la
+  surcharge pondérale (surpoids) à partir de 25 kg/m^{2} (source :
+  [[https://fr.wikipedia.org/wiki/Indice_de_masse_corporelle]])
+  
+   
+
+Traduisons ces exemples concrets en inégalités mathématiques.
+
+Dans chaque cas on utilisera la lettre \(x\) pour désigner la variable
+inconnue.
+
++ Inégalité 1 : \[x \geq 14\]
++ Inégalité 2 : \[12 \leq x \leq 25\]
++ Inégalité 3 : \[0 < x < 18\]
++ Inégalité 4 : \[0 < x < 47,128\]
++ Inégalité 5 : \[0 \leq x \leq 10 777\]
++ Inégalité 6 : \[0 \leq x < 0,5\]
++ Inégalité 7 : \[x \geq 25\]
+
+
+Ces inégalités peuvent être représentées graphiquement. On peut les
+interpréter comme des zones délimitées par des bornes\index{bornes}
+\glspl{inf} et \glspl{sup}. Lorsqu'il n'y a qu'une seule
+borne\index{borne} apparente alors ça veut dire que l'autre est du
+type \(\infty\) avec le signe adéquat.
+
+
+Ces représentations graphiques peuvent être << /résumées/ >> de façon
+abstraite grâce au concept d'intervalle. Ainsi un \gls{intervalle} est
+juste une façon abstraite de représenter un segment (ou demi-droite ou
+droite selon sa nature) sans avoir à le dessiner.
+
+Traduisons ces inégalités en intervalles\index{intervalles} :
+
+
++ Intervalle 1 : \[x \geq 14 \iff x\in [14 ; +\infty[\] on parle
+  d'intervalle fermé\index{intervalle!fermé}.
++ Intervalle 2 : \[12 \leq x \leq 25\iff x\in [12 ; 25]\] on parle
+  d'intervalle fermé.
++ Intervalle 3 : \[0 < x < 18\iff x\in ]0 ; 18[\] on parle
+  d'intervalle ouvert\index{intervalle!ouvert}.
++ Intervalle 4 : \[0 < x < 47,128\iff x\in ]0 ; 47,128[\] on parle
+  d'intervalle ouvert.
++ Intervalle 5 : \[0\leq x \leq 10 777\iff x\in [0 ; 10777]\] on parle
+  d'intervalle fermé.
++ Intervalle 6 : \[0 \leq x < 0,5\iff x\in [0 ; 0,5[\] on parle
+  d'intervalle ouvert à droite.
++ Intervalle 7 : \[x \geq 25\iff \in [25 ; +\infty[\] on parle
+  d'intervalle fermé.
+
+
+
+Alors ici il s'agissait de modéliser à partir du monde réel donc il
+y a des bornes\index{bornes} implicites qui sont apparues :
+
+1. Jusqu'à présent personne n'a dépassé le record de longévité de
+   Jeanne Calmant qui a vécu 122 ans. Mais comme on ne peut pas
+   prédire l'avenir alors j'ai décidé de mettre la borne\index{borne}
+   \(+\infty\) même si c'est une borne théorique. Néanmoins, certains
+   ont prédit [[https://amzn.to/3OKi2os][la mort de la mort]][fn:death2death] (c'est le titre d'un
+   livre de Laurent Alexandre).
+2. Ici les bornes étaient claires.
+3. Là j'ai considéré que l'âge zéro n'est jamais atteint puisque dès
+   l'instant où l'on naît le temps s'écoule. Mais au regard de
+   l'exemple j'aurais même pu mettre une borne
+   inférieure\index{borne!inférieure} plus grande.
+4. Dans cet exemple c'est la même idée, personne n'a un poids de zéro
+   et encore moins quand on pratique la boxe anglaise.
+5. Pour les revenus c'est malheureusement différent, il est hélas
+   possible d'avoir zéro revenu. Et pour information, 10 777 par an ça
+   fait moins de 900€ par mois (environ 898,08).
+6. Les gens qui ne boivent pas d'alcool peuvent avoir un taux de zéro
+   gramme dans le sang.
+7. Comme pour l'âge, le poids maximal n'est pas figé, d'ailleurs on
+   devrait parler de masse parce que le poids est une force qui dépend
+   du champ gravitationnel (la pesanteur) et donc il peut changer en
+   fonction de l'endroit dans l'espace.
+
+
+[fn:death2death] Lire un extrait gratuit sur Amazon :
+https://amzn.to/40EjDD4
+
+
+Traduisons ces intervalles\index{intervalles} en représentations
+graphiques (des << /morceaux/ >> de la droite[fn:real-line2] des
+réels\index{droite!réels}) :
+
+
+[fn:real-line2] Voir la figure page \pageref{page:real-line} pour voir
+la droite des réels.
+
+
+
+1. \[x \geq 14 \iff x\in [ 14 ; +\infty [ \] on parle
+   d'intervalle fermé non borné\index{intervalle!fermé non borné}. 14
+   est compris dans l'intervalle\index{intervalle}.
+   #+CAPTION: Intervalle fermé non borné à droite \([14 ; +\infty [\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int14inf.png]]
+
+2. \[12 \leq x \leq 25\iff x\in [12; 25]\] on parle
+   d'intervalle fermé borné\index{intervalle!fermé borné}. 12 et 25
+   sont inclus dans l'intervalle.
+   #+CAPTION: Intervalle fermé borné \([12 ; 25]\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int1225.png]]
+   
+3. \[0 < x < 18\iff x\in ]0; 18[\] on parle
+   d'intervalle ouvert borné\index{intervalle!ouvert borné}. 0 et 18
+   sont exclus de l'intervalle.
+   #+CAPTION: Intervalle ouvert borné \(]0 ; 18[\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int018ouvert.png]]
+   
+4. \[0 < x < 47,128\iff x\in ]0; 47,128[\] on parle
+   d'intervalle ouvert borné\index{intervalle!ouvert borné}. \(0\) et
+   \(47,128\) sont exclus de l'intervalle.
+   #+CAPTION: Intervalle ouvert borné \(]0 ; 47,128[\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int047128ouvert.png]]
+   
+5. \[0\leq x \leq 10 777\iff x\in [0; 10777]\] on parle
+   d'intervalle fermé borné\index{intervalle!fermé borné}. 0 et 10777
+   sont inclus dans l'intervalle.
+   #+CAPTION: Intervalle fermé borné \([0 ; 1077]\)
+   #+ATTR_LATEX: :width 0.35\textwidth :center t
+   [[./manip_real/img/int01077.png]]
+   
+6. \[0 \leq x < 0,5\iff x\in [0; 0,5[\] on parle d'intervalle ouvert à
+   droite. \(0\) est inclu mais \(0,5\) est exclu de l'intervalle.
+   #+CAPTION: Intervalle borné et ouvert à droite \([0 ; 0,5[\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int005ouv.png]]
+   
+7. \[x \geq 25\iff \in [25; +\infty[\] on parle d'intervalle fermé non
+   borné à droite. 25 est inclu dans l'intervalle.
+   #+CAPTION: Intervalle fermé non borné à droite \([25 ; +\infty [\)
+   #+ATTR_HTML: :width 450px :height 300px
+   [[./manip_real/img/int25inf.png]]
+
+
+Ces exemples concrets avaient pour but de vous montrer pourquoi ce
+principe de représentation d'ensembles de nombres
+réels\index{nombres!réels} ordonnés peut avoir un intérêt et une
+utilité.
+
+Les différents types d'intervalles\index{intervalles} de
+\(\mathbb{R}\) sont les suivants :
+
+1. Les intervalles ouverts\index{intervalles!ouverts} à
+   bornes\index{bornes} finies \(]a ; b[\).
+2. Les intervalles ouverts à gauche à bornes finies
+   \[]a ; b]\]
+   (on peut aussi les appeler fermés à droite).
+3. Les intervalles ouverts à droite à bornes finies
+   \[[a ; b[\]
+   (on peut aussi les appeler fermés à gauche).
+4. Les intervalles ouverts à borne infinie à gauche
+   \[]-\infty ; b[\]
+5. Les intervalles ouverts à borne infinie à droite
+   \[]a ; +\infty[\]
+6. Les intervalles fermés\index{intervalles!fermés} à borne infinie à
+   gauche
+   \[]-\infty ; b]\]
+7. Les intervalles fermés à borne infinie à droite
+   \[[a ; +\infty[\]
+8. Les intervalles fermés à bornes finies
+   \[[a ; b]\]
+9. L'intervalle ouvert *ET* fermé de l'ensemble des
+   réels\index{ensemble!des nombres réels} tout entier
+   \[\mathbb{R}\,=\,]-\infty ; +\infty[\] qui est associé à la
+   droite[fn:real-line3] des réels\index{droite!des réels}.
+
+
+[fn:real-line3] Voir la figure page \pageref{page:real-line} pour voir
+la droite des réels.
+   
+
+   
+Il est important de rappeler qu'un intervalle\index{intervalle} est
+forcément ordonné donc la borne supérieure\index{borne!supérieure} (à
+droite) est forcément plus grande que la borne
+inférieure\index{borne!inférieure} (à gauche) sinon ça n'a strictement
+aucun sens.
+
+Donnons quelques exemples :
++ Exemple 1) \[\dfrac{1}{2} \in ]0 ; 1[\]
++ Exemple 2) \[1 \in ]0 ; 1]\]
++ Exemple 3) \[-\dfrac{1}{2} \in [-0,5 ; 0[\]
++ Exemple 4) \[-1 \in ]-\infty ; 1[\]
++ Exemple 5) \[\dfrac{2}{3} \in ]0 ; +\infty[\]
++ Exemple 6) \[\pi \in [3 ; +\infty[\]
++ Exemple 7) \[\Phi = \dfrac{1 + \sqrt{5}}{2} \in [1 ; 2]\]
++ Exemple 8) \[\tau = 2\pi \in \mathbb{R}\]
+
+On peut remarquer que l'ensemble des nombres entiers
+naturels\index{ensemble!des nombres entiers naturels} est inclus dans l'ensemble
+des nombres réels positifs\index{nombres!réels positifs} :
+
+\[\mathbb{N}\subset \mathbb{R}_{+} = [0; +\infty[\]
+
+Par contre entre deux entiers naturels il y a une infinité de réels et
+pour les représenter on utilise un intervalle.
+
+Prenons par exemple les deux plus petits entiers naturels zéro et
+un. On peut construire un intervalle
+\[I_0 = [0 ; 1]\]
+qui les contient tous les deux.
+Le centre de cet intervalle \(I_0\) est un nombre
+décimal\index{nombre!décimal}
+
+\[\dfrac{1}{2} = 0,5\]
+Construisons un nouvel intervalle
+\[I_1 = [0; 0,5]\]
+Le centre de cet intervalle \(I_1\) est un nombre décimal
+\[\dfrac{1}{4} = 0,25\]
+On pourrait continuer ainsi à l'infini en construisant des intervalles
+de la forme :
+
+\[I_n = \left[0 ; \dfrac{1}{2^n}\right]\]
+
+Mais si au lieu de prendre le centre on prenait le premier tiers ?
+Et bien cette fois on aurait une borne
+supérieure\index{borne!supérieure} qui serait un nombre
+rationnel\index{nombre!rationnel}.
+
+\[J_n = \left[0 ; \dfrac{1}{3^n}\right]\]
+
+
+Et si au lieu de prendre le tiers on divisait par le nombre \(\pi\) ?
+Et bien cette fois on aurait une borne\index{borne} supérieure qui
+serait un nombre réel.
+
+\[K_n = \left[0 ; \dfrac{1}{\pi^n}\right]\]
+
+Bon dans ce dernier cas j'ai un peu triché parce que \(\pi\) est déjà
+un réel alors que pours les \(I_n\) et les \(J_n\) on a pu faire la
+construction uniquement en utilisant des entiers naturels.
+
+Prenons un peu la mesure de ce que nous faisons.
+
+L'intervalle
+
+\[[0 ; 1]\]
+
+a pour longueur \(1\) de même que l'intervalle\index{intervalle}
+
+\[[1 ; 2]\]
+
+Mais qu'en est-il de l'intervalle \([-1 ; 0]\) ? \([-1 ; 1]\) ?
+Et de façon générale, comment mesure-t-on la longueur d'un intervalle
+?
+
+
+
+C'est très simple, un intervalle\index{intervalle} étant un
+ensemble ordonné\index{ensemble!ordonné}, on mesure sa longueur en
+soustrayant la inf\index{borne!inférieure} à la
+sup\index{borne!supérieure} (que l'intervalle soit ouvert
+ou fermé).
+
+
+
+Il y a donc deux cas de figure :
+
+1. Les \index{bornes} \(a\) et \(b\) sont finies et dans ce cas c'est juste
+   une soustraction normale \(|I| = |b - a|\).
+2. Au moins l'une des bornes est infinie et dans ce cas \(|I| = +\infty\).
+
+
+Voici quelques exemples :
+
++ Exemple 1) \[\lvert ]-3 ; 3] \rvert = 3 - (-3) = 3 + 3 = 6\]
++ Exemple 2) \[\lvert [-5 ; 4] \rvert = 4 - (-5) = 4 + 5 = 9\]
++ Exemple 3) \[\lvert ]-\infty ; 23] \rvert = 23 - (-\infty) = 23 +\infty = +\infty\]
++ Exemple 4) \[\lvert [7 ; +\infty[ \rvert = +\infty - 7 = +\infty\]
++ Exemple 5) \[\lvert ]-\infty ; +\infty] \rvert = +\infty - (-\infty) =
+  +\infty + \infty = +\infty\]
+
+  
+  
+La longueur d'un intervalle\index{intervalle} est aussi appelée son
+\gls{amplitude}\index{amplitude}. Par exemple le nombre \(\pi\) appartient à
+l'intervalle \([3,14 ; 3,15]\) qui a pour amplitude \(10^{-2} =
+0,01\). Dit autrement, le nombre \(\pi\) est compris entre \(3,14\) et
+\(3,15\) à \(10^{-2}\) près.
+
+
++ [[content2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content2-menu}
+
+#+LATEX: \clearpage  
+  
+*** Exercice 3
+<<sec2.2.2:exo3>>
+#+LATEX: \label{page:sec2.2.2exo3}
+
+Faisons un petit exercice. Pour les nombres suivants trouver des
+intervalles d'amplitude \(10^{-1}\) puis \(10^{-2}\) et enfin \(10^{-3}\)
+auquels ils appartiennent :
+
+1. \[n_1 = \dfrac{1}{3}\]
+2. \[n_2 = \sqrt{2}\]
+3. \[n_3 = \Phi = \dfrac{1 + \sqrt{5}}{2}\]
+4. \[n_4 = \pi\]
+5. \[n_5 = \tau = 2\pi\]
+
+
+Jouez le jeu en cherchant par vous même et vous progresserez. Alors que
+si vous regardez la solution directement votre progression sera nulle.
+
+
++ [[sec8.2.1:sol3][Voir solution de l'exercice 3]]
+  #+LATEX: page~\pageref{page:sec8.2.1sol3}
++ [[content2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content2-menu}
++ [[sec2.2.1:intro-intervalle][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.2.1intro-intervalle}
+
+#+LATEX: \clearpage  
+  
+*** Exercice 4
+<<sec2.2.3:exo4>>
+#+LATEX: \label{page:sec2.2.3exo4}
+
+
+1. À l'aide d'une machine calculez les 5 premières décimales\index{décimales}
+   du nombre d'or :
+   \[\Phi = \dfrac{1 + \sqrt{5}}{2}\]
+2. Considérez la suite de nombres :
+   + \[F_1 = 1,\quad F_2 = 1,\quad  F_3 = 2,\quad  F_4 = 3\]
+   + \[F_5 = 5,\quad F_6 = 8,\quad F_7 = 13,\quad F_8 = 21\]
+   + \[F_9 = 34,\quad F_{10} = 55,\quad F_{11} = 89\dots\]
+   Calculez les 5 termes suivants.
+3. Établir la règle de construction de la suite.
+4. Calculer les quotients successifs en prenant comme numérateur le
+   suivant et comme dénominateur le prédécesseur ainsi \(\dfrac{1}{1},
+   \dfrac{2}{1}, \dfrac{3}{2},\dots\).
+5. La suite de nombre de la question 2 est connue sous le nom de
+   [[https://fr.wikipedia.org/wiki/Suite_de_Fibonacci][suite de Fibonacci]][fn:fibo] (mathématicien italien du XII^{ème}
+   siècle qui a appris l'usage des chiffres indo-arabes grâce à son
+   père qui commerçait avec des marchands arabes près
+   d'Alger). Combien de termes de cette suite faut-il calculer pour
+   approcher le nombre d'or à \(10^{-5}\) près ? Vous donnerez les
+   intervalles successifs.
+
+
+[fn:fibo] Voir la page Wikipédia sur Leonardo Di Pisano alias
+Fibonacci : [[https://fr.wikipedia.org/wiki/Leonardo_Fibonacci]] 
+
+
++ [[sec8.2.2:sol4][Voir solution de l'exercice 4]]
+  #+LATEX: page~\pageref{page:sec8.2.2sol4}
++ [[content2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content2-menu}
++ [[sec2.2.2:exo3][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.2.2exo3}
+
+#+LATEX: \clearpage  
+  
+*** Petit jeu
+<<sec2.2.4:small-game>>
+#+LATEX: \label{page:sec2.2.4small-game}
+
+Faisons un petit jeu.
+
+Voici une série de nombres particuliers :
+
+1. \[u = 0,1\dots\] avec une infinité de 1
+2. \[v = 0,12\dots\] avec une infinité de 12
+3. \[w = 0,123\dots\] avec une infinité de 123
+4. \[x = 0,1234\dots\] avec une infinité de 1234
+5. \[y = 0,12345\dots\] avec une infinité de 12345
+
+
+Pour chacun de ces nombres on va donner un intervalle d'amplitude
+égale à la position de la dernière décimale\index{décimale} distincte (donc
+d'amplitude\index{amplitude} 0,1 pour \(u\), ensuite 0,01 pour \(v\),
+ensuite 0,001 pour \(w\) et ainsi de suite) et centré en ce
+nombre. Puis on va déterminer la fraction qui le définit.
+
+
++ [[sec8.2.3:sol-game][Voir solution du petit jeu]]
+  #+LATEX: page~\pageref{page:sec8.2.3sol-game}
++ [[content2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content2-menu}
++ [[sec2.2.3:exo4][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.2.3exo4}
+
+#+LATEX: \clearpage  
+
+** Contenu 3 : Distances
+<<sec2.3:content3>>
+#+LATEX: \label{page:sec2.3content3}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Jean-Marie Souriau}
+\enquote{Les maths, ça prend le relais dans les situations où l’intelligence
+habituelle est en panne. Les chaussures sont un instrument pour
+marcher, les maths sont un instrument pour penser. On peut
+marcher sans chaussures, mais on va moins loin.}\footnote{Voir la page Wikipédia dédiée à Souriau : \url{https://fr.wikipedia.org/wiki/Jean-Marie_Souriau}}
+\end{myquote}
+#+END_EXPORT
+\index{Souriau, Jean-Marie}
+
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Notation \(\lvert a \rvert\). Distance entre deux nombres réels. >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:progo].
+
+[fn:progo] Voir le site officiel du programme de mathématiques
+en classe de seconde dans le système scolaire français :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+#+LATEX: \clearpage
+
+
+<<content3-menu>>
+#+LATEX: \label{page:content3-menu}
++ [[sec2.3.1:intro-distance][Introduction de la notion de distance]]
+  #+LATEX: page~\pageref{page:sec2.3.1intro-distance}
++ [[sec2.3.2:exo5][Exercice 5]]
+  #+LATEX: page~\pageref{page:sec2.3.2exo5}
++ [[sec2.3.3:exo6][Exercice 6]]
+  #+LATEX: page~\pageref{page:sec2.3.3exo6}
++ [[content-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:content-menu}
++ [[sec2.2.4:small-game][Section précédente]]
+  #+LATEX: page~\pageref{page:sec2.2.4small-game}
++ [[sec2.2:content2][Contenu précédent]]
+  #+LATEX: page~\pageref{page:sec2.2content2}
++ [[sec2.4:content4][Contenu suivant]]
+  #+LATEX: page~\pageref{page:sec2.4content4}
+
+#+LATEX: \clearpage
+
+*** Introduction de la notion de distance
+<<sec2.3.1:intro-distance>>
+#+LATEX: \label{page:sec2.3.1intro-distance}
+
+
+
+Quelle est la \gls{distance}\index{distance} entre \(0\) et \(1\) ?
+Facile, c'est \(1\) !
+Quelle est la distance entre \(\dfrac{1}{2}\) et \(\dfrac{1}{3}\) ?
+Là déjà c'est plus tout à fait la même histoire. Il va falloir
+réfléchir un peu à la façon de procéder.
+
+Prenons d'abord encore quelques exemples plus simples.
+Quelle est la distance entre \(-1\) et \(0\) ?
+Facile, c'est \(1\) !
+Quelle est la distance entre \(-1\) et \(1\) ?
+Vous avez trouvé ?
+Oui c'est 2.
+Quelle la distance entre \(\dfrac{1}{2}\) et \(1\) ?
+Oui c'est \(0,5\).
+
+Bon, avant de donner la règle générale, ramenons les choses à un
+problème plus simple.
+Quelle est la distance d'un nombre par rapport à zéro ?
+Prenons le nombre \(5\) par exemple, sa distance à zéro est tout
+simplement \(5\).
+Est-ce le seul nombre à cette distance de zéro ?
+Ben non puisque le nombre \(-5\) est aussi à une distance \(5\) par
+rapport à zéro.
+En fait, chaque nombre positif est exactement à une distance à zéro
+égale à lui-même et son opposé est aussi à la même distance mais de
+l'autre côté.
+
+Faisons un schéma :
+
+#+ATTR_HTML: :width 600px :height 400px
+[[./manip_real/img/m5p5.png]]
+
+
+
+On notera \(|a|\) la distance\index{distance} du nombre \(a\) par
+rapport à zéro.
+
+On l'appelle aussi la valeur-absolue\index{valeur absolue} de \(a\). 
+
+Donnons quelques exemples :
+
++ Exemple 1) \[\lvert -1 \rvert = 1 = \lvert 1 \rvert\]
++ Exemple 2) \[\lvert -2 \rvert = 2 = \lvert 2 \rvert\]
++ Exemple 3) \[\lvert -3 \rvert = 3 = \lvert 3 \rvert\]
++ Exemple 4) \[\lvert -\sqrt{2} \rvert = \sqrt{2} = \lvert \sqrt{2} \rvert\]
++ Exemple 5) \[\lvert -\pi \rvert = \pi = \lvert \pi \rvert\]
+
+
+Une façon simple de décrire la chose est de dire que la valeur
+absolue d'un nombre c'est le nombre sans le signe.
+
+On peut désormais définir proprement la valeur absolue d'un nombre
+réel \(a\) : \[\lvert a \rvert = s(a)a\] avec \(s(a) = 1\) si \(a\in ]0 ;
+   +\infty[\), \(s(a) = -1\) si \(a\in ]-\infty ; 0[\) et \(s(0) =
+0\).
+
+Autrement dit la fonction \(s\) attribue le signe d'un nombre. Si
+un nombre est positif il est égal à sa valeur absolue sinon il est
+égal à son opposé.
+
+#+LATEX: \[
+#+LATEX: s : \mathbb{R} \to \mathbb{R}_{+},\quad x \mapsto
+#+LATEX: \begin{cases}
+#+LATEX:   s(x) = 1   & \text{si } x > 0, \\
+#+LATEX:   s(x) = 0   & \text{si } x = 0, \\
+#+LATEX:   s(x) = -1  & \text{si } x < 0.
+#+LATEX: \end{cases}
+#+LATEX: \]
+
+Ce qui donne :
+
+#+LATEX: \[
+#+LATEX: \lvert\cdot\rvert : \mathbb{R} \to \mathbb{R}_{+},\quad x \mapsto
+#+LATEX: \begin{cases}
+#+LATEX:   \lvert x \rvert = 1   & \text{si } x > 0, \\
+#+LATEX:   \lvert x \rvert = 0   & \text{si } x = 0, \\
+#+LATEX:   \lvert x \rvert = -1  & \text{si } x < 0.
+#+LATEX: \end{cases}
+#+LATEX: \]
+
+
+Par exemple :
+\[\lvert 9 \rvert = 9\]
+et
+\[\lvert -7\rvert = -(-7) = 7\]
+
+Mais revenons à notre problème initial. Et concrétisons-le un peu
+d'abord.
+
+Si vous parcourez 5 km vers l'Est puis que vous parcourez
+3 km vers l'Ouest alors vous vous retrouverez 2 km à l'Est de votre
+position initiale. Mais vous aurez parcouru 8 km (5 + 3).
+
+Si on considère votre position initiale comme le zéro et le sens de
+l'Ouest vers l'Est comme le sens positif et le sens inverse comme le
+sens négatif alors le calcul de la position finale devient
+\[5 - 3 = 2\]
+
+Pour fixer les idées on va nommer les différents points.
+
+Posons \(O\) l'origine de cet axe horizontal (Ouest-Est).
+Soit \(A\) le point d'abscisse :
+
+\[x_A = 5\]
+
+et \(B\) le point d'abscisse
+\[x_B = -3\]
+
+La distance entre \(A\) et \(B\) s'obtient en faisant le calcul
+
+\[x_A - x_B = 5 - (-3) = 5 + 3 = 8\]
+
+Mais pourquoi devrions-nous commencer par \(A\) ? Une distance n'a pas
+d'orientation. Que vous fassiez 100 km à l'Est ou 100 km à l'Ouest
+dans les deux cas la distance parcourue sera de 100 km. Donc on
+devrait retrouver le même résultat que le considère le point \(A\) ou
+le point \(B\) comme point de départ.
+
+Pourtant
+
+\[x_B - x_A = -3 - 5 = -8\dots\]
+
+aïe ! On dirait que ça coince...
+Ben pas tant que ça si on se souvient que la valeur
+absolue\index{valeur absolue} c'est le nombre sans le signe. OK mais
+pourquoi utiliser la valeur absolue ? Qu'est-ce qui justifie son usage
+ici ? Pour aller du point \(B\) au point \(A\) il y a trois
+possibilités :
+
+
+1. Soit le point \(O\) est avant le point \(B\) qui lui-même est avant
+   le point \(A\) et dans ce cas il faut d'abord parcourir la distance
+   de \(O\) à \(A\) puis retrancher celle de \(B\) à \(O\). Donc si on
+   schématise on obtient un axe horizontal orienté comme ceci
+   \[---O---B-----A---->\]
+   Ici on a : \[AB = OA - OB = |x_A| - |x_B| = x_A - x_B = d_{AB}\]
+2. Soit le point \(B\) est avant \(O\) et dans ce cas vous devez
+   d'abord parcourir la distance de \(B\) à \(O\) puis celle de \(A\)
+   à \(O\). Donc si on schématise on obtient un axe horizontal orienté
+   dans ce sens \[------B---O-----A------->\]
+   Ici on a : \[AB = BO + OA = \lvert x_B \rvert + \lvert x_A \rvert =
+   -x_B + x_A = x_A - x_B = d_{AB}\]
+3. Soit le point \(O\) est après le point \(A\) qui lui-même est après
+   le point \(B\). Donc si on schématise on obtient un axe horizontal
+   orienté de cette façon \[--B----A---O---->\]
+   Ici on a : \[AB = BO - OA = |x_B| - |x_A| = -x_B - (-x_A) = x_A - x_B
+   = d_{AB}\]
+
+
+Dans les 3 cas on aboutit au même calcul final la différence entre
+le grand moins le petit.
+
+À l'issue de cette concrétisation on pourrait se dire que pour
+calculer la distance\index{distance} entre deux nombres réels il
+suffit de calculer la valeur absolue\index{valeur absolue} de leur
+différence. Spoiler alert, c'est exactement ça ! La distance entre les
+nombres réels \(a\) et \(b\) vaut :
+\[d(a; b) = \lvert a - b \rvert = \lvert b - a \rvert = max(a ;
+   b) - min(a ; b)\]
+
+
+Donnons quelques exemples :
+
+
++ Exemple 1) \[(a; b) = (1; 2) \Rightarrow d(1; 2) = \lvert 1 - 2 \rvert =
+  \lvert -1\rvert = 1\]
++ Exemple 2) \[(a; b) = (2; 1) \Rightarrow d(2; 1) = \lvert 2 - 1 \rvert =
+  \lvert 1\rvert = 1\]
++ Exemple 3) \[(a; b) = (1,5; 2,7) \Rightarrow d(1,5; 2,7) = \lvert 1,5 -
+  2,7 \rvert = \lvert -1,2\rvert = 1,2\]
++ Exemple 4) \[(a; b) = \left(\dfrac{1}{2}; \dfrac{1}{3}\right) \Rightarrow
+  d\left(\dfrac{1}{2}; \dfrac{1}{3}\right) = \left\lvert \dfrac{1}{2} -
+  \dfrac{1}{3} \right\rvert = \left\lvert \dfrac{3}{6} - \dfrac{2}{6}\right\rvert =
+  \dfrac{1}{6}\]
++ Exemple 5) \[(a; b) = (\sqrt{2}; \pi) \Rightarrow d(\sqrt{2}; \pi) =
+  \lvert \sqrt{2} - \pi \rvert = \pi - \sqrt{2}\]
+  
+
+Afin de revenir sur ce qu'on a déjà vu on peut aussi voir le
+distance\index{distance} entre deux réels \(a\) et \(b\) comme
+l'amplitude\index{amplitude} de l'intervalle entre le maximum et le
+minimum des deux.
+Ainsi :
+\[d(a ; b) = \left\vert [min(a ; b) ; max(a ; b)]\right\vert = max(a ;
+b) - min(a ; b)\]
+
+
+
++ [[content3-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content3-menu}
+
+#+LATEX: \clearpage
+
+*** Exercice 5
+<<sec2.3.2:exo5>>
+#+LATEX: \label{page:sec2.3.2exo5}
+
+Pour vous entraîner voici un exercice.
+
+1. Calculer la distance\index{distance} entre \(\pi\) et \(\Phi =
+   \dfrac{1 + \sqrt{5}}{2}\). Vous donnerez une approximation à 3
+   chiffres après la virgule.
+2. Calculer la distance \(\dfrac{1}{4}\) et \(\dfrac{1}{3}\). Vous
+   donnerez une approximation à 3 chiffres près.
+3. Calculer la distance \(\dfrac{1}{7}\) et \(\dfrac{1}{8}\). Vous
+   donnerez une approximation à 6 chiffres.
+4. Calculer la distance entre \(\Phi\) et \(\sqrt{2}\). Vous donnerez
+   une approximation à 2 chiffres.
+5. Calculer la distance entre \(\Phi\) et \(\sqrt{3}\). Vous donnerez
+   une approximation à 5 chiffres.
+
+
++ [[sec8.3.1:sol5][Voir solution de l'exercice 5]]
+  #+LATEX: page~\pageref{page:sec8.3.1sol5}
++ [[content3-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content3-menu}
+
+#+LATEX: \clearpage
+
+*** Exercice 6
+<<sec2.3.3:exo6>>
+#+LATEX: \label{page:sec2.3.3exo6}
+
+Faisons un exercice intéressant. Renversons le point de vue. Au
+lieu de calculer la distance\index{distance} entre deux points,
+cherchons les points situés à une distance choisie par rapport à un
+point fixe.
+
+
+1. Calculer les nombres à une distance \(1\) de \(1\).
+2. Calculer les nombres à une distance \(0,5\) de \(-1\).
+3. Calculer les nombres à une distance \(\dfrac{1}{3}\) de \(\dfrac{1}{4}\).
+4. Calculer les nombres à une distance \(\sqrt{2}\) de \(1\).
+5. Calculer les nombres à une distance \(\sqrt{3}\) de \(\sqrt{2}\).
+6. Calculer les nombres à une distance \(\Phi = \dfrac{1 +
+   \sqrt{5}}{2}\) de 1.
+7. Calculer les nombres à une distance \(\tau = 2\pi\) de \(\pi\).
+
+
++ [[sec8.3.2:sol6][Voir solution de l'exercice 6]]
+  #+LATEX: page~\pageref{page:sec8.3.2sol6}
++ [[content3-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content3-menu}
++ [[sec2.3.1:intro-distance][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.3.1intro-distance}
+
+#+LATEX: \clearpage
+
+** Contenu 4 : Disques sur la droite réelle
+<<sec2.4:content4>>
+#+LATEX: \label{page:sec2.4content4}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Neumann János Lajos (connu sous son nom américanisé John Von Neumann)}
+\enquote{Une bonne partie des mathématiques devenues utiles se sont
+développées sans aucun désir d'être utiles, dans une situation où
+personne ne pouvait savoir dans quels domaines elles deviendraient
+utiles. Il n'y avait aucune indication générale qu'elles
+deviendraient utiles. C'est vrai de toute la science.}\footnote{Voir la page Wikipédia consacrée à Von Neumann : \url{https://fr.wikipedia.org/wiki/John_von_Neumann}}
+\end{myquote}
+#+END_EXPORT
+\index{Von Neumann, John}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Représentation de l'intervalle \([a - r ; a + r]\) puis
+caractérisation par la condition \(\vert x - a \vert \leq r\) >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:pof].
+
+[fn:pof] Consultez le programme officiel du système scolaire français
+pour la classe de seconde :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+#+LATEX: \clearpage
+
+<<content4-menu>>
+#+LATEX: \label{page:content4-menu}
++ [[sec2.4.1:intro-disk][Introduction du concept d'intervalle centré]]
+  #+LATEX: page~\pageref{page:sec2.4.1intro-disk}
++ [[sec2.4.2:exo7][Exercice 7]]
+  #+LATEX: page~\pageref{page:sec2.4.2exo7}
++ [[sec2.4.3:persp][Une autre perspective]]
+  #+LATEX: page~\pageref{page:sec2.4.3persp}
++ [[sec2.4.4:python][Faisons un peu de programmation Python]]
+  #+LATEX: page~\pageref{page:sec2.4.4python}
++ [[sec2.4.5:exo8][Exercice 8]]
+  #+LATEX: page~\pageref{page:sec2.4.5exo8}
++ [[content-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:content-menu}
++ [[sec2.3.3:exo6][Section précédente]]
+  #+LATEX: page~\pageref{page:sec2.3.3exo6}
++ [[content3-menu][Contenu précédent]]
+  #+LATEX: page~\pageref{page:content3-menu}
++ [[sec2.5:content5][Contenu suivant]]
+  #+LATEX: page~\pageref{page:sec2.5content5}
+
+
+#+LATEX: \clearpage
+
+
+*** Introduction du concept d'intervalle centré
+<<sec2.4.1:intro-disk>>
+#+LATEX: \label{page:sec2.4.1intro-disk}
+
+Si vous avez essayé de comprendre ce qui s'est passé dans le
+dernier exercice de la partie précédente alors vous vous êtes
+probablement aperçu d'une chose, sur un axe horizontal gradué
+déterminer les nombres à une distance\index{distance} fixe d'un nombre
+donné revient à construire les bornes\index{bornes} d'un intervalle du
+type 
+
+\[[a - r ; a + r]\]
+
+avec \(a\) le nombre donné et \(r\) la distance fixe.
+
+Donnons quelques exemples pour bien comprendre :
+
+
+1. Prenons :
+   \[(a, r) = (1,1)\]
+   alors on obtient l'intervalle :
+   \[I_1 = [0 ; 2]\]
+   en effet :
+   \[1 - 1 = 0\]
+   et \[1 + 1 = 2\]
+   d'où :
+   \[--[0--1--2]-->\]
+   Par conséquent, tous les nombres qui sont dans cet intervalle à une
+   distance inférieure ou égale à 1 de 1.
+
+   En effet, si
+   
+   \[x\in I_1 = [0 ; 2]\]
+
+   alors
+
+   \[0\leq x\leq 2\]
+
+   donc si on retranche 1 à chaque membre on obtient
+
+   \[-1\leq x - 1\leq 1\]
+
+   On en déduit que soit
+
+   \[x - 1 \geq 0\]
+
+   et dans ce que
+
+   \[\lvert x - 1\rvert = x - 1\leq 1\]
+
+   soit
+
+   \[x - 1 \leq 0\]
+
+   et dans ce cas
+
+   \[\lvert x - 1\rvert = 1 - x\]
+
+   et comme
+
+   \[-1\leq x - 1\]
+
+   alors
+
+   \[1 - x\leq 1\]
+
+   donc on a bien
+   
+   \[\vert x - 1\vert \leq 1\]
+   
+2. Prenons :
+   
+   \[(a, r) = \left(-1,\dfrac{1}{2}\right)\]
+   
+   alors on obtient l'intervalle :
+   
+   \[I_2 = [-1 - 0,5 ; -1 + 0,5] = [-1,5 ; -0,5]\]
+
+   D'où la représentation graphique :
+   
+   \[---[(-1,5)---(-1)--(-0,5)]--->\]
+   
+   Pour tout nombre \(x\in I_2\) on a alors :
+   
+   \[-1 - 0,5 \leq x \leq -1 + 0,5\]
+   
+   donc :
+   
+   \[-0,5\leq x - (-1)\leq 0,5\]
+   
+   et finalement
+   
+   \[\vert x - (-1)\vert\leq 0,5\]
+   
+3. Prenons :
+   
+   \[(a, r) = \left(\dfrac{1}{4},\dfrac{1}{3}\right)\]
+   
+   alors on obtient l'intervalle :
+   
+   \[I_3 = \left[\dfrac{1}{4} - \dfrac{1}{3} ; \dfrac{1}{4} + \dfrac{1}{3}\right] = \left[-\dfrac{1}{12} ;
+   \dfrac{7}{12}\right]\]
+
+   D'où la représentation graphique :
+   
+   \[--\left[\left(-\dfrac{1}{12}\right)--\dfrac{1}{4}--\dfrac{7}{12}\right]-->\]
+   
+   Pour tout nombre \(x\in I_3\) on a alors :
+   
+   \[\dfrac{1}{4} - \dfrac{1}{3} \leq x \leq \dfrac{1}{4} +
+   \dfrac{1}{3}\]
+   
+   donc :
+   
+   \[\dfrac{1}{3}\leq x - \dfrac{1}{4}\leq \dfrac{1}{3}\]
+   
+   et finalement
+   
+   \[\left\vert x - \dfrac{1}{4}\right\vert \leq \dfrac{1}{3}\]
+
+
+
+Une autre manière de voir les choses consiste à considérer que si
+
+\[D_a = [a - r ; a + r]\]
+
+alors
+
+\[|D_a| = a + r - (a - r) = a + r - a + r = 2r\]
+
+par conséquent tout nombre de l'intervalle est nécessairement dans
+l'une des deux moitiés d'où la majoration par \(r\).
+
+
+Pour que ça rentre je vous propose un petit exercice.
+
++ [[content4-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content4-menu}
+
+#+LATEX: \clearpage
+
+*** Exercice 7
+<<sec2.4.2:exo7>>
+#+LATEX: \label{page:sec2.4.2exo7}
+
+Poursuivre ce que j'ai commencé.
+
+À savoir, pour chaque couple
+
+\[(a, r)\]
+
+calculer l'intervalle
+
+\[D_a = [a - r ; a + r]\]
+
+faites sa représentation graphique et démontrez que
+
+\[x\in D_a \iff \lvert x - a \rvert \leq r\]
+
+
+1. \[(a, r) = (1, \sqrt{2})\]
+2. \[(a, r) = (\sqrt{2}, \sqrt{3})\]
+3. \[(a, r) = (1, \Phi)\] pour rappel \[\Phi = \dfrac{1 + \sqrt{5}}{2}\]
+4. \[(a, r) = (\pi, \tau)\] pour rappel \[\tau = 2\pi\]
+
+
++ [[sec8.4.1:sol7][Voir solution de l'exercice 7]]
+  #+LATEX: page~\pageref{page:sec8.4.1sol7}
++ [[content4-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content4-menu}
++ [[sec2.4.1:intro-disk][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.4.1intro-disk}
+
+  
+#+LATEX: \clearpage
+
+*** Une autre perspective
+<<sec2.4.3:persp>>
+#+LATEX: \label{page:sec2.4.3persp}
+
+Une autre façon de voir les choses c'est de considérer que les
+intervalles du type
+\[D_a = [a - r ; a + r]\]
+sont des encadrements de \(a\) à \(r\) près.
+
+Par exemple si vous construisez un intervalle centré en \(a =
+\sqrt{2}\) avec \(r = 0,1\) vous obtenez un encadrement à plus ou
+moins \(0,1\) près.
+
+Bon, pour être rigoureux ça va être difficile de centrer un intervalle
+sur un nombre dont on ne connaît pas la valeur exacte. Vous savez que
+
+\[1,4 \leq \sqrt{2} \leq 1,5\]
+
+néanmoins
+
+\[\sqrt{2} \neq 1,45\]
+
+mais vous sentez bien venir que plus \(r\) sera petit plus cela
+réduira l'erreur d'approximation.
+
+Sinon pour revenir avec rigueur sur l'intervalle exact
+
+\[D_a = [a - r ; a + r]\]
+
+vous pouvez visualisez ça comme un /voisinage/ du nombre \(a\).
+
+
++ [[content4-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content4-menu}
+
+#+LATEX: \clearpage  
+  
+*** Faisons un peu de programmation Python
+<<sec2.4.4:python>>
+#+LATEX: \label{page:sec2.4.4python}
+
+Écrivons une fonction Python qui prend trois paramètres :
+
+1. \(a\) le centre de l'intervalle
+2. \(r\) le rayon de l'intervalle (ou la demi-amplitude\index{amplitude})
+3. \(h\) le pas de la subdivision
+
+
+Cette fonction renverra une liste de réels (bon numériquement ça
+sera des /float/ donc des décimaux\index{décimaux}) contenu dans
+l'intervalle espacés régulièrement par pas de \(h\).
+
+Par exemple si on fournit les arguments :
+
+1. \(a = 3\)
+2. \(r = 2\)
+3. \(h = 0.4\)
+
+La sortie sera \([1, 1.4, 1.8, 2.2, 2.6, 3, 3.4, 3.8, 4.2, 4.6,
+5.0]\).
+
+Puisque le centre est \(a = 3\) alors la borne
+inférieure\index{borne!inférieure} de l'intervalle vaut
+
+\[a - r = 3 - 2 = 1\]
+
+et la borne supérieure\index{borne!supérieure} vaut
+
+\[a + r = 3 + 2 = 5\]
+
+Ensuite, le pas \(h = 0,4\) permet de construire une subdivision de
+l'intervalle de façon régulière
+
+\[a - r + h = 1,4\]
+
+puis
+
+\[a - r + 2h = 1,8\]
+
+et ainsi de suite jusqu'à
+
+\[a - r + 10h = 5\]
+    
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+      def disque(a, r, h):
+	"""
+	+ a: le centre de l'intervalle
+	+ r: le rayon de l'intervalle (ou la demi-amplitude)
+	+ h: le pas de la subdivision
+	Cette fonction renverra une liste de réels
+	(bon numériquement ça sera des float donc des décimaux)
+	contenu dans l'intervalle espacés régulièrement par pas de h.
+	"""
+	borne_inf, borne_sup = a - r, a + r
+	x = borne_inf
+	disk = [x]
+	nb_digits = round(1/h)
+	while x <= borne_sup - h:
+	  x += h
+	  disk.append(round(x, nb_digits))
+	return disk
+
+      # Tests
+      a, r, h = 3, 2, 0.4
+      print(disque(a, r, h))
+      # Sortie
+      # [1, 1.4, 1.8, 2.2, 2.6, 3.0, 3.4, 3.8, 4.2, 4.6, 5.0]
+      a, r, h = 3, 2, 0.5
+      print(disque(a, r, h))
+      # Sortie
+      # [1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
+      a, r, h = 0, 1, 0.25
+      print(disque(a, r, h))
+      # Sortie 
+      # [-1, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0]
+#+END_SRC
+
+#+LATEX: \clearpage
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du livre).
+
+
+
++ [[content4-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content4-menu}
++ [[sec2.4.2:exo7][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.4.3persp}
+
+#+LATEX: \clearpage  
+  
+*** Exercice 8
+<<sec2.4.5:exo8>>
+#+LATEX: \label{page:sec2.4.5exo8}
+
+
+1. Écrire une fonction Python\index{fonction Python} qui prend en
+   entrée un nombre réel \(a\) (donc un /float/) et un nombre positif
+   \(r\). La fonction devra renvoyer un message d'erreur si on lui
+   donne \(r\) négatif. Le but de cette fonction est de renvoyer les
+   bornes\index{bornes} supérieures et inférieures de l'intervalle
+   centré en \(a\).
+   
+   Vous testerez votre fonction avec
+
+   \[(a, r) = (2, \sqrt{2})\]
+
+   pour faire la racine carrée il est plus pratique d'utiliser la
+   puissance \(0.5\).
+2. Proposer une amélioration pour contrôler le
+   nombre de décimales\index{nombre!décimales} à l'affichage. Votre
+   nouvelle fonction doit permettre d'afficher 1, 2, 3 ou autant de
+   décimales qu'on veut mais exactement le nombre souhaité à chaque fois.
+3. Écrire une fonction distance qui prend deux nombres réels en entrée
+   et renvoie la distance entre les deux.
+
+
++ [[sec8.4.2:sol8][Voir solution de l'exercice 8]]
+  #+LATEX: page~\pageref{page:sec8.4.2sol8}
++ [[content4-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content4-menu}
++ [[sec2.4.4:python][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.4.4python}
+  
+
+#+LATEX: \clearpage  
+  
+** Contenu 5 : Nombres décimaux
+<<sec2.5:content5>>
+#+LATEX: \label{page:sec2.5content5}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Carl Friedrich Gauss}
+\enquote{Les charmes enchanteurs de cette sublime science ne se décèlent
+dans toute leur beauté qu'à ceux qui ont le courage de
+l'approfondir.}\footnote{Voir la page Wikipédia sur le << prince >> des
+mathématiques : \url{https://fr.wikipedia.org/wiki/Carl_Friedrich_Gauss}}
+\end{myquote}
+#+END_EXPORT
+\index{Gauss, Carl}
+
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Ensemble \(\mathbb{D}\) des nombres décimaux\index{nombres!décimaux}.
+Encadrement décimal\index{décimal} d'un nombre réel à \(10^{-n}\) près >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:prooff].
+[fn:prooff] Voir les détails dans le programme officiel
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+#+LATEX: \clearpage
+
+
+<<content5-menu>>
+#+LATEX: \label{page:content5-menu}
++ [[sec2.5.1:intro-dec][Introduction sur les nombres décimaux]] page \pageref{page:sec2.5.1intro-dec}
++ [[sec2.5.2:exo9][Exercice 9]] page \pageref{page:sec2.5.2exo9}
++ [[sec2.5.3:souv][Souvenirs souvenirs]] page \pageref{page:sec2.5.3souv}
++ [[content-menu][Menu précédent]] page \pageref{page:content-menu}
++ [[sec2.4.5:exo8][Section précédente]] page \pageref{page:sec2.4.5exo8}
++ [[sec2.4:content4][Contenu précédent]] page \pageref{page:sec2.4content4}
++ [[sec2.6:content6][Contenu suivant]] page \pageref{page:sec2.6content6}   
+
+
+
+
+#+LATEX: \clearpage
+
+*** Introduction sur les nombres décimaux
+<<sec2.5.1:intro-dec>>
+#+LATEX: \label{page:sec2.5.1intro-dec}
+
+Pour rappel on a déjà vu dans la section [[sec2.1.3:cpu][Les ordinateurs s'en
+contentent]][fn:cpulike] qu'on note :
+[fn:cpulike] Voir page \pageref{page:sec2.1.3cpu}
+
+
+
+\[\mathbb{D} = \left\{ \dfrac{a}{10^n}\,|\,(a,
+n)\in\mathbb{Z}^2\right\}\]
+
+l'ensemble des nombres décimaux\index{ensemble!des nombres décimaux} avec le
+symbole << \(|\) >> qui se lit << /tel(s) que/ >> et le symbole <<
+\(\in\) >> qui se lit << /appartient à/ >>.
+
+Et que << \((a, n)\in\mathbb{Z}^2\) >> signifie que \(a\) et \(n\) sont tous
+les deux des entiers relatifs\index{entiers relatifs}.
+
+
+Ainsi, les décimaux sont les nombres fractionnaires dont le numérateur
+est un entier relatif et le dénominateur une puissance de 10.
+
+
+On a déjà vu également que Python (et tous les langages de
+programmation) utilisent abondamment les nombres décimaux avec le
+type /float/.
+
+
+Précisément parce que les décimaux ont la particularité d'avoir un
+nombre fini de chiffres après la virgule.
+
+
+Et les ordinateurs, aussi puissants qu'ils soient, sont tous soumis
+aux contraintes physiques de leur capacité de stockage qui est
+nécessairement finie.
+
+
+
+De toute façon, nous vivons dans un monde physique limité donc nous
+sommes bien obligés de manipuler des nombres finis de
+décimales\index{décimales}.
+
+
+
+Même si en théorie on peut traiter des nombres réels à chaque fois
+qu'on les utilise concrètement on manipule en fait des
+décimaux\index{nombres!décimaux} bien finis.
+
+
+On fait des approximations à \(10^{-n}\) près.
+
+
+Encadrer un nombre réel \(a\) à \(10^{-n}\) près revient à construire
+un intervalle d'amplitude\index{amplitude} \(10^{-n}\) contenant \(a\).
+
+#+LATEX: \clearpage
+
+Donnons quelques exemples :
+
+
++ Exemple 1) : \[(a, n) = (\sqrt{2}, 1)\Rightarrow [1,4 ; 1,5]\]
++ Exemple 2) : \[(a, n) = (\sqrt{2}, 2)\Rightarrow [1,41 ; 1,42]\]
++ Exemple 3) : \[(a, n) = (\sqrt{2}, 3)\Rightarrow [1,414 ; 1,415]\]
++ Exemple 4) : \[(a, n) = (\sqrt{2}, 4)\Rightarrow [1,4142 ; 1,4143]\]
++ Exemple 5) : \[(a, n) = (\sqrt{2}, 5)\Rightarrow [1,41421 ; 1,41422]\]
+
+
++ [[content5-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content5-menu}
+  
+
+#+LATEX: \clearpage
+  
+*** Exercice 9
+<<sec2.5.2:exo9>>
+#+LATEX: \label{page:sec2.5.2exo9}
+
+Pour les nombres suivants construire 5 encadrements
+décimaux\index{nombres!décimaux} à \(10^{-n}\) pour \(n\) variant de 1
+à 5 (comme montré ci-dessus avec \(\sqrt{2}\)) :
+
+1. \[\tau = 2\pi\]
+2. \[\Phi = \dfrac{1 + \sqrt{5}}{2}\]
+3. \[\sqrt{3}\]
+4. \[\sqrt{5}\]
+5. \[\sqrt{7}\]
+
+
+Vous pouvez le faire sur papier ou en programmant avec Python.
+
++ [[sec8.5.1:sol9][Voir la solution de l'exercice 9]]
+  #+LATEX: page~\pageref{page:sec8.5.1sol9}
++ [[content5-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content5-menu}
++ [[sec2.5.1:intro-dec][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.5.1intro-dec}
+  
+
+#+LATEX: \clearpage
+
+*** Souvenirs souvenirs
+<<sec2.5.3:souv>>
+#+LATEX: \label{page:sec2.5.3souv}
+
+Souvenez-vous lorsque vous avez appris comment se structure le
+système positionnel décimal\index{décimal}. Prenons des nombres
+d'années particuliers : 1212, 1515, 1999, 2002, 2020, 2022.
+
+
+1. Dans le nombre 1212 il y a deux fois le chiffre 1 et deux fois le
+   chiffre 2. Mais ils n'ont pas la même /valeur/ à chaque fois. La
+   /magie/ du système positionnel décimal c'est que la /position/ d'un
+   chiffre dans un nombre indique sa /puissance/ ou plutôt la
+   puissance de 10 par laquelle on va le multiplier.
+   Concrètement :
+   \[1212 = 1\times 10^3 + 2\times 10^2 + 1\times 10^1 + 2\times
+   10^0\]
+   Si on change l'ordre des chiffres on change complètement de nombre.
+2. Pour 1515 c'est le même constat.
+   \[1515 = 1\times 10^3 + 5\times 10^2 + 1\times 10^1 + 5\times 10^0\]
+3. Avec 1999 il y a carrément trois fois le même chiffre !
+   \[1999 = 1\times 10^3 + 9\times 10^2 + 9\times 10^1 + 9\times
+   10^0\]
+   Et si vous ajoutez 1 vous aurez un effet domino qui conduira
+   à 2000.
+4. Le nombre 2002 fait partie de la catégorie des palindromes
+   c'est-à-dire les nombres qui peuvent être lus de gauche à droite ou
+   inversement sans changer leur valeur. D'ailleurs profitons-en pour
+   rappeler que lorsqu'on écrit la décomposition en puissances de 10
+   on peut le faire dans l'ordre des puissances croissantes si on en a
+   envie.
+   \[2002 = 2\times 10^0 + 0\times 10^1 + 0\times 10^2 + 2\times 10^3\]
+5. Pour 2020 c'est comme pour 1515 ou 1212.
+   \[2020 = 2\times 10^3 + 0\times 10^2 + 2\times 10^1 + 0\times 10^0\]
+6. Enfin pour 2022 on retrouve un triplet mais espacé par un zéro qui
+   permet justement de le différencier de 222 qui est de l'ordre de 10
+   fois moins.
+   \[2022 = 2\times 10^3 + 0\times 10^2 + 2\times 10^1 + 2\times 10^0\]
+
+
+Mais qu'en est-il des nombres à virgules ? Et bien c'est la même
+chose mais avec des puissances d'exposants négatifs. Reprenons les
+nombres précédents et divisons les par 100 de sorte à obtenir une
+virgule au milieu.
+
+
++ \[12,12 = 1\times 10^1 + 2\times 10^0 + 1\times 10^{-1} + 2\times 10^{-2}\]
++ \[15,15 = 1\times 10^1 + 5\times 10^0 + 1\times 10^{-1} + 5\times 10^{-2}\]
++ \[19,99 = 1\times 10^1 + 9\times 10^0 + 1\times 10^{-1} + 9\times 10^{-2}\]
++ \[20,02 = 2\times 10^1 + 0\times 10^0 + 0\times 10^{-1} + 2\times 10^{-2}\]
++ \[20,20 = 2\times 10^1 + 0\times 10^0 + 2\times 10^{-1} + 0\times 10^{-2}\]
++ \[20,22 = 2\times 10^1 + 0\times 10^0 + 2\times 10^{-1} + 2\times 10^{-2}\]
+
+
+D'une certaine manière on pourrait interpréter les nombres comme
+des suites de chiffres (donc les nombres de 0 à 9 inclus). Pour la
+partie entière il s'agit de sommer le produit de chaque chiffre
+avec sa puissance de 10 positive associée. Et pour la partie
+décimale\index{décimale} il s'agit de sommer le produit de chaque
+chiffre avec sa puissance de 10 négative associée.
+
+Prenons par exemple le nombre \[x = 12345,6789\] on pourrait le
+réécrire :
+
+\[x = \sum_{k = 0}^4e_k\times 10^k + \sum_{k = 1}^4d_k\times 10^{-k}\]
+
+Où les \(e_k\) désignent les chiffres qui composent la partie
+entière donc \(e_0 = 5\), \(e_1 = 4\), \(e_2 = 3\), \(e_3 = 2\), \(e_4 =
+    1\). Et les \(d_k\) désignent les chiffres composant la partie
+décimale (on dit aussi fractionnaire) donc \(d_1 = 6\), \(d_2 = 7\),
+\(d_3 = 8\), \(d_4 = 9\).
+
+
++ \[e_0 = 5\quad e_1 = 4\quad e_2 = 3\quad e_3 = 2\quad e_4 = 1\]
++ \[\qquad \qquad d_1 = 6\quad  d_2 = 7\quad  d_3 = 8\quad  d_4 = 9\]
+
+
+On sépare d'une part la \gls{part-ent}\index{partie!entière} de \(x\) :
+
++ \[\lfloor x \rfloor = \sum_{k = 0}^4e_k\times 10^k\]
++ \[\lfloor x \rfloor = e_0\times 10^0 + e_1\times 10^1 + e_2\times 10^2 + e_3\times 10^3 +
+    e_4\times 10^4\]
++ \[\lfloor x \rfloor = 5\times 10^0 + 4\times 10^1 + 3\times 10^2 + 2\times 10^3 +
+    1\times 10^4\]
++ \[\lfloor x \rfloor = 5 + 40 + 300 + 2000 + 10000\]
++ \[\lfloor x \rfloor = 12345\]
+  
+et d'autre part la \gls{part-dec}\index{partie!décimale} (ou
+partie fractionnaire\index{partie!fractionnaire}, les deux se disent) :
+
++ \[\{ x \} = \sum_{k = 1}^4d_k\times 10^{-k}\]
++ \[\{ x \} = d_1\times 10^{-1} + d_2\times 10^{-2} + d_3\times 10^{-3} +
+    d_4\times 10^{-4}\]  
++ \[\{ x \} = 6\times 10^{-1} + 7\times 10^{-2} + 8\times 10^{-3} +
+    9\times 10^{-4}\]
++ \[\{ x \} = 0,6 + 0,07 + 0,008 + 0,0009\]
++ \[\{ x \} = 0,6789\]
+
+Avec naturellement :
+\[x = \lfloor x \rfloor + \{ x \} = 12345 + 0,6789 = 12345,6789\]
+
+Vous remarquerez la symétrie, pour la partie entière on lit de
+droite à gauche dans l'ordre croissant des puissances alors que pour
+la partie fractionnaire on lit bien de gauche à droite dans
+l'ordre décroissant des puissances.
+
+
+Notez qu'on pourrait unifier tout ça en lisant tout de gauche à
+droite selon les puissances décroissantes.
+
+\[x = \sum_{k = 4}^{k = -4}c_k\times 10^k\]
+
+Cette fois-ci \(c_k\) désigne le chiffre associé à \(10^k\) peu importe
+que \(k\) soit positif ou négatif.
+
+
++ \[c_4 = 1\quad c_3 = 2\quad c_2 = 3\quad c_1 = 4\quad c_0 = 5\]
++ \[c_{-1} = 6\quad c_{-2} = 7\quad c_{-3} = 8\quad c_{-4} = 9\]
+
+
+Ici on peut écrire \(x\) en un seul développement
+décimal\index{développement décimal} selon les puissances
+décroissantes de 10:
+
+
++ \[x = \sum_{k = 4}^{k = -4}c_k\times 10^k\]
++ \[x = c_4\times 10^4 + c_3\times 10^3 + c_2\times 10^2 + c_1\times 10^1 +
+  c_0\times 10^0 + c_{-1}\times 10^{-1} + c_{-2}\times 10^{-2} + c_{-3}\times 10^{-3} + c_{-4}\times 10^{-4}\]
++ \[x = 1\times 10^4 + 2\times 10^3 + 3\times 10^2 + 4\times 10^1 +
+  5\times 10^0 + 6\times 10^{-1} + 7\times 10^{-2} + 8\times 10^{-3} + 9\times 10^{-4}\]
++ \[x = 10 000 + 2 000 + 300 + 40 + 5 + 0,6 + 0,07 + 0,008 + 0,0009\]
++ \[x = 12345,6789\]
+
+Cette façon de faire est peu habituelle voire inexistante au
+lycée. C'est à vous de voir si ça vous aide ou pas. D'un côté ça
+unifie les notations mais d'un autre ça demande un effort
+d'abstraction supplémentaire.
+
+Dans tous les cas, comme toujours en mathématiques, ce qui compte
+c'est qu'il faut toujours chercher à comprendre les différents
+angles de vue possibles et leurs liaisons.
+
+Ici, dans la rubrique sur l'encadrement à \(10^{-n}\) près, ce qui
+nous intéresse c'est la partie décimale. Plus précisément, le fait
+que les nombres réels peuvent s'interpréter comme les nombres dont
+la partie décimale est infinie. Dans \(\pi\) se cache l'infini tout
+comme dans \(\Phi\), \(\sqrt{2}\) et une infinité de nombres...
+
+Mais souvenez-vous, dès la première section nous avions remarqué
+que \(\dfrac{1}{3}\) renfermait déjà sa part d'infini. Alors quelle
+est la différence entre d'un côté \(\dfrac{1}{3}, \dfrac{1}{6},
+    \dfrac{1}{7}\dots\) et de l'autre \(\sqrt{2}, \sqrt{3}, \pi\dots\)
+
+Les premiers sont rationnels\index{nombres!rationnels} alors que les
+seconds sont \gls{nb-irr}\index{nombres!irrationnels}.
+
+
++ [[content5-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content5-menu}
++ [[sec2.5.2:exo9][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.5.2exo9}
+
+
+#+LATEX: \clearpage
+
+
+** Contenu 6 : Nombres rationnels
+<<sec2.6:content6>>
+#+LATEX: \label{page:sec2.6content6}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Henri Poincaré}
+\enquote{La mathématique est l'art de donner le même nom à des choses
+différentes.}
+\footnote{Lire la page Wikipédia sur Poincaré : \url{https://fr.wikipedia.org/wiki/Henri_Poincar\%C3\%A9}}
+\end{myquote}
+#+END_EXPORT
+\index{Poincaré, Henri}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Ensemble \(\mathbb{Q}\) des nombres
+rationnels\index{nombres!rationnels}. Nombres
+irrationnels\index{nombres!irrationnels} ; exemples fournis par la
+géométrie, par exemple \(\sqrt{2}\) et \(\pi\) >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:prgo].
+
+[fn:prgo] Lire le programme officiel pour plus de détails :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
+#+LATEX: \clearpage
+
+<<content6-menu>>
+#+LATEX: \label{page:content6-menu}
++ [[sec2.6.1:intro-ratio][Introduction aux nombres rationnels]] page \pageref{page:sec2.6.1intro-ratio}
++ [[sec2.6.2:exo10][Exercice 10]] page \pageref{page:sec2.6.2exo10}
++ [[sec2.6.3:tip][Petite astuce]] page \pageref{page:sec2.6.3tip}
++ [[sec2.6.4:irr][Les nombres irrationnels]] page \pageref{page:sec2.6.4irr}
++ [[sec2.6.5:exo11][Exercice 11]] page \pageref{page:sec2.6.5exo11}
++ [[sec2.6.6:gen][Généralisation]] page \pageref{page:sec2.6.6gen}
++ [[sec2.6.7:exo12][Exercice 12]] page \pageref{page:sec2.6.7exo12}
++ [[sec2.6.8:prob][Probablement irrationnel]] page \pageref{page:sec2.6.8prob}
++ [[content-menu][Menu précédent]] page \pageref{page:content-menu}
++ [[sec2.5.3:souv][Section précédente]] page \pageref{page:sec2.5.3souv}
++ [[sec2.5:content5][Contenu précédent]] page \pageref{page:sec2.5content5}
++ [[sec3:capacities][Capacités attendues]] page \pageref{page:sec3capacities}
+
+
+#+LATEX: \clearpage
+
+*** Introduction aux nombres rationnels
+<<sec2.6.1:intro-ratio>>
+#+LATEX: \label{page:sec2.6.1intro-ratio}
+
+Dans la partie [[sec2.1.4:rational][Êtes-vous rationnels ?]][fn:rurational]  on a déjà vue
+que l'ensemble des nombres rationnels\index{ensemble!des nombres rationnels} est noté :
+
+\[\mathbb{Q} = \left\{\dfrac{a}{b}\,|\,(a,
+b)\in\mathbb{Z}\times\mathbb{N}^*\right\}\]
+
+
+[fn:rurational] Voir page \pageref{page:sec2.1.4rational}
+
+
+
+Ici le numérateur \(a\) est un entier relatif\index{entier relatif} et le
+dénominateur \(b\) est un entier naturel\index{entier naturel}
+strictement positif parce qu'on ne peut pas diviser par zéro.
+
+Nous avions également remarqué que les nombres dont les
+décimales\index{décimales} infinies suivaient une structure répétitive
+(on parle de période) pouvaient être /capturés/ sous la forme d'une
+fraction.
+
+
+Rien que pour le plaisir du jeu, en voici quelques autres en
+exercice.
+
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}  
+
+
+#+LATEX: \clearpage
+
+*** Exercice 10
+<<sec2.6.2:exo10>>
+#+LATEX: \label{page:sec2.6.2exo10}
+
+Trouver l'écriture fractionnaire des nombres suivants :
+
+1. \[x = 0,07\dots7\dots\] avec des \(7\) à l'infini.
+2. \[y = 0,076923\dots\] avec la période 076923 qui se répète à
+   l'infini.
+3. \[z = 0,0588235294117647\] avec la période 0588235294117647 qui se
+   répète à l'infini.
+
+   
++ [[sec8.6.1:sol10][Voir solution de l'exercice 10]]
+  #+LATEX: page~\pageref{page:sec8.6.1sol10}
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sec2.6.1:intro-ratio][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.1intro-ratio}
+
+
+#+LATEX: \clearpage
+
+*** Petite astuce
+<<sec2.6.3:tip>>
+#+LATEX: \label{page:sec2.6.3tip}
+
+
+Si vous voulez augmenter votre maîtrise des nombres rationnels
+alors amusez-vous avec eux. Prenez la suite de chiffres qui vous
+plaît, que ça soit votre date de naissance ou l'année de la
+première victoire en coupe du monde ou ce que vous voulez et
+cherchez la fraction associée.
+
+Par exemple, prenons la première de victoire la France en coupe du
+monde.
+
+Posons \[x = 0,1998\dots\] où l'on considère que 1998 correspond à la
+période qui va se répéter à l'infini.
+
+Alors il ne reste plus qu'à décaler de 4 crans ce qui veut dire
+multiplier par \(10^4\).
+
+Ainsi \[x\times 10^4 = 1998,1998\dots\]
+
+Maintenant pour se débarasser de la période il suffit de soustraire
+\(x\). Ainsi puisque :
+\[10^4 - 1 = 9999\]
+on obtient :
+\[9999x = 1998\]
+et maintenant on a plus qu'à poser la fraction :
+\[x = \dfrac{1998}{9999}\]
+
+Enfin on regarde si on peut simplifier. Déjà on peut simplifier par 9
+parce que la somme des chiffres est un multiple de 9.
+
+Il vient :
+\[x = \dfrac{9\times 222}{9\times 1111}\]
+
+Maintenant 222 et 1111 ont l'air de bien s'entendre mais il faut se
+méfier des apparences.
+
+En effet, \[222 = 2\times 3\times 37\] et \[1111 = 11\times 101\] sont
+premiers entre eux ça veut dire qu'ils n'ont pas de diviseurs communs
+(ou encore \(pgcd(222, 1111) = 1\))\index{pgcd}.
+
+
+Par conséquent on ne peut pas faire mieux que :
+\[x = \dfrac{222}{1111} = 0,1998\dots\]
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du livre).
+
+Sur Google Colab vous trouverez une fonction Python ~get_fraction~
+qui prend en entrée la troncature du nombre avant la période et la
+période et qui renvoie en sortie le numérateur et le dénominateur
+de la fraction irréductible associée. Par exemple si vous appelez
+la fonction avec les arguments ~before_period = 0.123~ et ~period =
+4~ vous obtiendrez ~num = 1111~ et ~denom = 9000~.
+Vous pouvez vérifier que :
+\[\dfrac{1111}{9000} \simeq 0,1234\dots4\]
+
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}  
++ [[sec2.6.2:exo10][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.2exo10}  
+
+
+#+LATEX: \clearpage
+
+*** Les nombres irrationnels
+<<sec2.6.4:irr>>
+#+LATEX: \label{page:sec2.6.4irr}
+
+Prenez un carré ABCD de côté 1. Alors le triangle ABC est
+isorectangle en B (isocèle ET rectangle).
+
+Par Pythagore :
+
+
++ P1) \[CA^2 = AB^2 + BC^2\]
++ P2) \[CA^2 = 1^2 + 1^2\]
++ P3) \[CA^2 = 2\]
++ P4) \[CA = \sqrt{2}\]
+
+
+Donc vous voyez bien que le nombre \(\sqrt{2}\) est bien réel
+puisqu'il apparaît naturellement dès lors qu'on trace une figure
+géométrique ultra basique.
+
+Qui dit géométrie, dit physique.
+
+Toute construction physique s'appuie nécessairement sur la géométrie.
+
+Donc le nombre \(\sqrt{2}\) a bien une existence physique.
+
+Et pourtant, nous avions vu dans la section [[sec2.1.5:real][Au-delà du
+réel]][fn:xfiles] qu'il n'est pas rationnel.
+
+[fn:xfiles] Voir page \pageref{page:sec2.1.5real}
+
+
+
+Voyons ensemble deux nouvelles preuves de ce résultat (vues sur
+[[https://fr.wikipedia.org/wiki/Racine_carr%C3%A9e_de_deux#Preuves_d'irrationalit%C3%A9][Wikipédia]][fn:wikiproof]).
+
+[fn:wikiproof] Consulter la page Wikipédia :
+https://fr.wikipedia.org/wiki/Racine_carr%C3%A9e_de_deux#Preuves_d'irrationalit%C3%A9
+pour voir (presque) toutes les preuves recensées.
+
+
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}  
++ [[sec2.6.3:tip][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.3tip}
+  
+
+#+LATEX: \clearpage
+
+*** Quelques preuves de l'irrationalité de \(\sqrt{2}\)
+<<sqrt2proofs>>
+#+LATEX: \label{page:sqrt2proofs}
+
+#+LATEX: \clearpage
+
+**** Preuve de l'irrationalité de \(\sqrt{2}\) par parité
+<<sqrt2proof1parity-proof>>
+#+LATEX: \label{page:sqrt2proof1parity-proof}
+
+
+Nous allons procéder avec un raisonnement par l'absurde.
+
+Considérons \(a\) le plus petit entier strictement positif tel que
+\(a^2\) soit le double d'un carré, et soit \(b\) l'entier positif tel
+que :
+
+\[a^2 = 2b^2\]
+
+Tout d'abord on en déduit que \[a > b\] car \[a^2 > b^2\] entraîne
+\[a^2 - b^2 > 0\] qui entraîne \[(a - b)(a + b) > 0\] or \(a\)
+et \(b\) sont strictement positif donc nécessairement \[a - b > 0\]
+c'est-à-dire \[a > b\]
+
+D'après le lemme que nous avions utilisé et démontré dans la section
+[[sec2.1.5:real][Au-delà du réel]][fn:xfiles2], si \[a^2 = 2b^2\] alors \(a\) est pair
+(nous allons redémontrer ce résultat dans la section [[sec4:proofs][démonstration]][fn:demos]).
+
+
+[fn:xfiles2] Voir page \pageref{page:sec2.1.5real}
+[fn:demos] Voir page \pageref{page:sec4proofs}
+
+
+
+
+Ainsi
+
+\[a = 2n\]
+
+ce qui entraîne
+
+\[a^2 = 2b^2\]
+
+équivaut à
+
+\[4n^2 = 2b^2\]
+
+par conséquent
+
+\[b^2 = 2n^2\]
+
+
+Problème, cela signifie que \(b\) est un entier dont le carré soit le
+double d'un carré ce qui contredit la minimalité de \(a\).
+
+*CQFD*
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sec2.6.4:irr][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.4irr}
+
+  
+#+LATEX: \clearpage
+
+**** Preuve géométrique de l'irrationalité de \(\sqrt{2}\)
+<<sqrt2proof2geometric-proof>>
+#+LATEX: \label{page:sqrt2proof2geometric-proof}
+
+Démontrer l'irrationalité\index{ensemble!des nombres irrationnels} de
+\(\sqrt{2}\) revient à démontrer\index{démontrer} que, pour une unité
+donnée, il n'existe pas de triangle isocèle rectangle dont les côtés
+sont chacun de longueur un nombre
+entier\index{ensemble!des nombres entiers} d'unité.
+
+
+Si un tel triangle existe, alors il en existe nécessairement un
+plus petit dont les côtés sont aussi de longueur entière (sa
+construction est donnée sur le dessin et détaillée
+ci-dessous).
+
+Or si un tel triangle existe, il en existe nécessairement un minimal
+ayant cette propriété (celui dont le côté de l'angle droit, par
+exemple, est minimal) d'où une
+contradiction\index{raisonnement!par l'absurde}.
+
+
+Soit ABC un triangle isorectangle en B et de côtés
+entiers. Alors, le cercle de centre A et de rayon AB coupe
+l'hypoténuse [AC] en B' tel que B'C soit encore de longueur
+entière, puisque AC et AB' le sont. La perpendiculaire à
+l'hypoténuse [AC] passant par B' coupe [BC] en A'. Le triangle
+A'B'C est isocèle rectangle en B', puisque l'angle en B' est droit
+et l'angle en C est celui du triangle d'origine. Les droites
+(A'B) et (A'B') sont les tangentes issues de A' au cercle de
+centre A et de rayon AB = AB', et donc A'B = A'B', donc A'B =
+A'B' = B'C, et A'C est de longueur entière. On peut aussi
+interpréter la construction comme le pliage du triangle ABC selon
+la bissectrice de l'angle A.
+
+
+
+#+CAPTION: Preuve géométrique de l'irrationalité de \(\sqrt{2}\)
+#+ATTR_HTML: :width 600px :height 400px
+[[./manip_real/img/isorectangle-sqrt2-png.png]]
+
+#+LATEX: \clearpage
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}  
++ [[sec2.6.4:irr][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.4irr}
+
+  
+#+LATEX: \clearpage
+
+*** Exercice 11
+<<sec2.6.5:exo11>>
+#+LATEX: \label{page:sec2.6.5exo11}
+
+Considérons un cube d'arête 1.
+
+1. Montrer que la diagonale principale (reliant deux sommets opposés
+   en traversant le cube) vaut exactement \(\sqrt{3}\).
+2. Montrer que \(\sqrt{3}\) est irrationnel.
+
+
+
++ [[sec8.6.2:sol11][Voir solution de l'exercice 11]]
+  #+LATEX: page~\pageref{page:sec8.6.2sol11}
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sqrt2proofs][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sqrt2proofs}
+
+
+#+LATEX: \clearpage
+
+*** Généralisation
+<<sec2.6.6:gen>>
+#+LATEX: \label{page:sec2.6.6gen}
+
+Montrons par l'absurde\index{raisonnement!par l'absurde} que si \(p\)
+est un nombre premier alors \(\sqrt{p}\) est
+irrationnel.\index{ensemble!des nombres irrationnels}
+
+Supposons par l'absurde que :
+
+\[\sqrt{p} = \dfrac{a}{b}\]
+
+avec
+
+\[pgcd(a, b) = 1\]\index{pgcd}
+
+Il vient :
+
+\[a^2 = pb^2\]
+
+or \(a^2\) et \(b^2\) n'ont pas de diviseur commun donc \(p\) divise
+\(a^2\) et donc \(a\).
+
+Ainsi \(a = pk\) avec \(k\in\mathbb{Z}\).
+
+Par conséquent
+
+\[a^2 = p^2k^2\]
+
+et d'autre part
+
+\[a^2 = pb^2\]
+
+d'où
+
+\[b^2 = pk^2\]
+
+Puisque \(a^2\) et \(b^2\) n'ont pas de diviseur commun \(k^2\) ne
+divise pas \(b^2\). Donc c'est forcément \(p\) d'où la contradiction.
+
+En fait, que l'on choisisse \(k^2\) ou \(p\) comme diviseur de \(b^2\)
+dans les deux cas on aboutit à une contradiction.
+
+De plus, il y a un passage subtil ici, c'est parce que \(p\) est
+premier\index{ensembles!des nombres premiers} (comme 2 et 3) que \(p\)
+divise \(a^2\) entraîne \(p\) divise \(a\).
+
+
+Prenez le nombre 4, il divise \(2^2\) mais ne divise pas \(2\). Ou
+encore 9 divise \(6^2\) mais ne divise pas 6. Donc la primalité de
+\(p\) est importante sinon la démonstration\index{démonstration} est
+invalide.
+
+
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sec2.6.5:exo11][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.5exo11}
+
+
+#+LATEX: \clearpage
+
+*** Exercice 12
+<<sec2.6.7:exo12>>
+#+LATEX: \label{page:sec2.6.7exo12}
+
+
+1. Trouver 5 contre-exemples de \(k\) divise \(a^2\) mais \(k\) ne
+   divise pas \(a\).
+2. Montrer que \[\Phi = \dfrac{1 + \sqrt{5}}{2}\] est
+   irrationnel.\index{nombre!irrationnel}
+   
+
+
++ [[sec8.6.3:sol12][Voir la solution de l'exercice 12]]
+  #+LATEX: page~\pageref{page:sec8.6.2sol11}
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sec2.6.6:gen][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.6gen}
+
+
+#+LATEX: \clearpage
+
+*** Probablement irrationnel
+<<sec2.6.8:prob>>
+#+LATEX: \label{page:sec2.6.8prob}
+
+
+Aussi surprenant que cela puisse paraître il y a infiniment plus
+de nombres irrationnels\index{ensemble!des nombres irrationnels} que
+de rationnels.\index{ensemble!des nombres rationnels}
+
+Si vous lanciez un couteau au hasard sur une planche en bois
+graduée[fn:real-line4]...
+
+[fn:real-line4] Voir la figure page \pageref{page:real-line} pour voir
+la droite des réels dont la planche en bois serait une illustration
+concrète.
+
+
+... vous tomberiez probablement sur un nombre irrationnel.
+
+Malheureusement les mathématiques nécessaires pour
+montrer\index{montrer} ce résultat dépasse largement le cadre de cet
+ouvrage et du lycée en général. Il faudrait invoquer des arguments
+d'analyse topologique à propos de la notion de densité.
+
+Tout ça pour vous dire que l'aventure avec les nombres
+réels\index{nombres!réels} (et les nombres en général) continue bien
+au-delà des limites de ce livres.
+
+Et c'est avec regret que je suis contraint de vous laissez sans preuve
+pour l'irrationalité\index{ensemble!des nombres irrationnels} de
+\(\pi\).
+
+Voyez-vous, les arguments requis font appels aux concepts
+de dérivée (que vous verrez en première), d'intégrale (que vous
+verrez en terminale) et d'autres plus sophistiqués qui
+interviendront dans les mathématiques du supérieur.
+
+Espérons tout de même que la lecture de ce livre vous aura fait
+découvrir la richesse des nombres réels. Si vous avez la moindre
+suggestion d'amélioration merci de m'écrire à l'adresse
+indiquée dans le formulaire avec pour objet : *Livre Manipuler les
+réels*.
+
++ [[content6-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:content6-menu}
++ [[sec2.6.7:exo12][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec2.6.7exo12}
+
+  
+#+LATEX: \clearpage
+
+* Capacités attendues
+<<sec3:capacities>>
+#+LATEX: \label{page:sec3capacities}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Sebastian Thrun}
+\enquote{To me, mathematics, computer science, and the arts are insanely
+related. They’re all creative expressions.}
+\footnote{Consultez la page Wikipédia sur Thrun : \url{https://en.wikipedia.org/wiki/Sebastian_Thrun}}
+\end{myquote}
+#+END_EXPORT
+\index{Thrun, Sebastian}
+
+
+#+LATEX: \clearpage
+
+<<capacities-menu>>
+#+LATEX: \label{page:capacities-menu}
++ [[sec3.1:review][Rappels concernant les capacités attendues]] page \pageref{page:sec3review}
++ [[sec3.2:capacity1][Capacité \(C_1\)]] page \pageref{page:sec3.2capacity1}
++ [[sec3.3:capacity2][Capacité \(C_2\)]] page \pageref{page:sec3.3capacity2}
++ [[sec3.4:capacity3][Capacité \(C_3\)]] page \pageref{page:sec3.4capacity3}
++ [[sec3.5:capacity4][Capacité \(C_4\)]] page \pageref{page:sec3.5capacity4}
++ [[sec2:contents][Contenus]] page \pageref{page:sec2contents}
++ [[sec4:proofs][Démonstrations]] page \pageref{page:sec4proofs}
+
+#+LATEX: \clearpage
+
+** Rappels concernant les capacités attendues
+<<sec3.1:review>>
+#+LATEX: \label{page:sec3review}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Michel Demazure}
+\enquote{Il n’y a guère de discipline plus mal connue et plus mal décrite
+que la mathématique. Combien pourraient répondre à la question :
+les mathématiques ça parle de quoi ? ça porte sur quoi ? ça propose
+quel but ?}\footnote{Voir la page Wikipédia dédiée à Demazure : \url{https://fr.wikipedia.org/wiki/Michel_Demazure}}
+\end{myquote}
+#+END_EXPORT
+\index{Demazure, Michel}
+
+
+#+LATEX: \clearpage
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
++ \(C_1\) : Associer à chaque point de la droite graduée un unique nombre
+  réel et réciproquement.
++ \(C_2\) : Représenter un intervalle de la droite numérique. Déterminer
+  si un nombre réel appartient à un intervalle donné.
++ \(C_3\) : Donner un encadrement, d'amplitude\index{amplitude} donnée,
+  d'un nombre réel par des décimaux\index{nombres!décimaux}.
++ \(C_4\) : Dans le cadre de la résolution de problèmes, arrondir en
+  donnant le nombre de chiffres significatifs adapté à la situation
+  étudiée.
+
+  
+Tout ça se trouve sur Google Colab de façon interactive.
+
+#+LATEX: \clearpage
+
+** Capacité \(C_1\)
+<<sec3.2:capacity1>>
+#+LATEX: \label{page:sec3.2capacity1}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Stephan Banach}
+\enquote{Un mathématicien est une personne capable de trouver des analogies
+entre les théorèmes ; un meilleur mathématicien peut voir des
+analogies entre les démonstrations. Les très bons mathématiciens
+sont ceux capables de déceler des analogies entre des
+théories. Mais on peut supposer que le mathématicien ultime est
+celui qui peut voir des analogies entres les analogies.}
+\footnote{Consulter la page Wikipédia consacrée à Banach : \url{https://fr.wikipedia.org/wiki/Stefan_Banach}}
+\end{myquote}
+#+END_EXPORT
+\index{Banach, Stephan}
+
+#+LATEX: \clearpage
+
+
+Cette partie développe la rubrique intitulée :
+
+<< \(C_{1}\) : Associer à chaque point de la droite graduée un unique
+nombre réel et réciproquement. >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:poff].
+[fn:poff] Consulter le programme officiel à cette adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+  
+#+LATEX: \clearpage
+
+
+<<capacity1-menu>>
+#+LATEX: \label{page:capacity1-menu}
++ [[sec3.2.1:pts][Code pour construire les points]] page \pageref{page:sec3.2.1pts}
++ [[sec3.2.2:exo13][Exercice 13]] page \pageref{page:sec3.2.2exo13}
++ [[capacities-menu][Menu précédent]] page \pageref{page:capacities-menu}
++ [[sec3.3:capacity2][Capacité suivante]] page \pageref{page:sec3.3capacity2}
+
+  
+
+#+LATEX: \clearpage
+
+*** Code pour construire les points
+<<sec3.2.1:pts>>
+#+LATEX: \label{page:sec3.2.1pts}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+Voici le code pour construire les points :
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+  import matplotlib.pyplot as plt
+  import numpy as np
+
+  c_1 = "Associer à chaque point de la droite graduée "
+  c_1 += "un unique nombre réel et réciproquement."
+  print(c_1)
+  numbers = [-2, -0.5, 0, 1, np.sqrt(2), np.pi]
+  labels = ['P_0', 'P_1', 'P_2', 'P_3', 'P_4', 'P_5']
+
+  plt.figure(figsize=(10, 1))
+
+  # Ploter une ligne horizontale
+  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+
+  # Placer les nombres sur la ligne graduée
+  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+
+  # Ajouter des étiquettes aux nombres
+  for i, label in enumerate(labels):
+      plt.text(numbers[i], 0.02, label, ha='center')
+
+  # Masquer les axes
+  plt.axis('off')
+
+  plt.show()
+#+END_SRC
+
++ [[capacity1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity1-menu}
+
+
+#+LATEX: \clearpage
+
+
+*** Exercice 13
+<<sec3.2.2:exo13>>
+#+LATEX: \label{page:sec3.2.2exo13}
+
+Voici le code pour lancer l'exercice :
+
+#+BEGIN_SRC python
+  from math import pi
+
+  nombres = {2**0.5, -2, -0.5, 1, pi, 0}
+  points = {
+    'P_0': 0, 'P_1': 0, 'P_2': 0,
+    'P_3': 0, 'P_4': 0, 'P_5': 0
+  }
+  msg = "Voici la liste des points dont "
+  msg += "tu vas déterminer les abscisses"
+  print(msg)
+  print(points)
+
+  nb_msg = f"{round(nb, 4)} correspond à "
+  nb_msg += "l'abscisse de quel point ? "
+  for nb in nombres:
+    p = input(nb_msg)
+    points[p] = round(nb, 4)
+#+END_SRC
+
++ [[sec9.1.1:sol13][Voir solution de l'exercice 13]]
+  #+LATEX: page~\pageref{page:sec9.1.1sols13}
++ [[capacity1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity1-menu}
++ [[sec3.2.1:pts][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec3.2.1pts}
+
+
+#+LATEX: \clearpage
+
+** Capacité \(C_2\)
+<<sec3.3:capacity2>>
+#+LATEX: \label{page:sec3.3capacity2}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Jacques Hadamard}
+\enquote{Le but de la rigueur mathématique est de sanctionner et de
+légitimiser les conquêtes de l'intuition, et il n'y a  jamais eu
+d'autre raison de la développer.}
+\footnote{Lire la page Wikipédia sur Hadamard : \url{https://fr.wikipedia.org/wiki/Jacques_Hadamard}}
+\end{myquote}
+#+END_EXPORT
+\index{Hadamard, Jacques}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+\(C_{2}\) : << Représenter un intervalle de la droite numérique.
+Déterminer si un nombre réel appartient à un intervalle donné. >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:poffi].
+
+[fn:poffi] Lisez le programme officiel à l'adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
+
+#+LATEX: \clearpage
+
+<<capacity2-menu>>
+#+LATEX: \label{page:capacity2-menu}
++ [[sec3.3.1:x-axis][Placement des abscisses sur la droite réelle]] page
+  \pageref{page:sec3.3.1x-axis}
++ [[sec3.3.2:exo14][Exercice 14]] page \pageref{page:sec3.3.2exo14}
++ [[capacities-menu][Menu précédent]] page \pageref{page:capacities-menu}
++ [[sec3.2.2:exo13][Section précédente]] page \pageref{page:sec3.2.2exo13}
++ [[sec3.2:capacity1][Capacité précédente]] page \pageref{page:sec3.2capacity1}
++ [[sec3.4:capacity3][Capacité suivante]] page \pageref{page:sec3.4capacity3}
+
+
+#+LATEX: \clearpage
+
+*** Placement des abscisses sur la droite réelle
+<<sec3.3.1:x-axis>>
+#+LATEX: \label{page:sec3.3.1x-axis}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+#+LATEX: \clearpage
+
+Voici le code :
+
+#+BEGIN_SRC python
+  import matplotlib.pyplot as plt
+  import numpy as np
+
+  c_2 = "Représenter un intervalle de la "
+  c_2 += "droite numérique.\nDéterminer si " 
+  c_2 += "un nombre réel appartient à un "
+  c_2 += "intervalle donné."
+  print(c_2)
+  numbers = [1 + i/10 for i in range(11)]
+  labels = [str(num) for num in numbers]
+
+  plt.figure(figsize=(10, 1))
+
+  # Ploter une ligne horizontale
+  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+
+  # Placer les nombres sur la ligne graduée
+  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+
+  # Ajouter des étiquettes aux nombres
+  for i, label in enumerate(labels):
+      plt.text(numbers[i], 0.02, label, ha='center')
+
+  # Masquer les axes
+  plt.axis('off')
+
+  plt.show()
+#+END_SRC
+
++ [[capacity2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity2-menu}
+
+#+LATEX: \clearpage
+
+*** Exercice 14
+<<sec3.3.2:exo14>>
+#+LATEX: \label{page:sec3.3.2exo14}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+#+LATEX: \clearpage
+
+Voici le code pour générer l'exercice :
+
+#+BEGIN_SRC python
+  num_to_square = [1 + i/10 for i in range(5)]
+  list_of_intervals = []
+  for n2s in num_to_square:
+    print(f"Dans quel intervalle appartient {n2s}**2 ?")
+    interval = []
+    for borne in ("inf", "sup"):
+      msg = f"Borne {borne}érieure au dixième = "
+      interval.append(float(input(msg)))
+    list_of_intervals.append(interval)
+
+  print("Voici la liste de tes réponses")
+  print(list_of_intervals)
+  print("Voici tes correspondances")
+  for i in range(len(num_to_square)):
+    n2s, interval = num_to_square[i], list_of_intervals[i]
+    msg = f"{n2s}**2 = {round(n2s**2, 2)} appartient à "
+    msg += f"l'intervalle {interval}"
+    print(msg)
+#+END_SRC
+
+
++ [[sec9.2.1:sol14][Voir solution de l'exercice 14]]
+  #+LATEX: page~\pageref{page:sec9.2.1sol14}
++ [[capacity2-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity2-menu}
++ [[sec3.3.1:x-axis][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec3.3.1x-axis}
+
+
+#+LATEX: \clearpage
+
+** Capacité \(C_3\)
+<<sec3.4:capacity3>>
+#+LATEX: \label{page:sec3.4capacity3}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Galilée}
+\enquote{La physique est écrite dans cet immense livre qui continuellement
+se tient ouvert devant nos yeux (je veux dire l'univers), mais elle
+ne peut se comprendre si on ne s'exerce d'abord à comprendre la
+langue et à connaître les caractères avec lesquels elle est
+écrite. Elle est écrite en langue mathématique, et les caractères
+sont les triangles, les cercles et autres figures géométriques,
+sans lesquelles il est humainement impossible d'en comprendre le
+moindre mot, sans lesquelles on s'égare vainement dans un
+labyrinthe obscur.}\footnote{Voir la page Wikipédia sur Galilée : \url{https://fr.wikipedia.org/wiki/Galil\%C3\%A9e_\%28savant\%29}}
+\end{myquote}
+#+END_EXPORT
+\index{Galilée}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< \(C_{3}\) : Donner un encadrement, d'amplitude\index{amplitude} donnée,
+d'un nombre réel des décimaux\index{nombres!décimaux}. >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:prgoff].
+[fn:prgoff] Pour consulter le programme officiel allez à l'adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
+#+LATEX: \clearpage
+
+<<capacity3-menu>>
+#+LATEX: \label{page:capacity3}
++ [[sec3.4.1:exo15][Exercice 15]] page \pageref{page:sec3.4.1exo15}
++ [[sec3.4.2:exo16][Exercice 16]] page \pageref{page:sec3.4.2exo16}
++ [[capacities-menu][Menu précédent]] page \pageref{page:capacities-menu}
++ [[sec3.3.2:exo14][Section précédente]] page \pageref{page:sec3.3.2exo14}
++ [[sec3.3:capacity2][Capacité précédente]] page \pageref{page:sec3.3capacity2}
++ [[sec3.5:capacity4][Capacité suivante]] page \pageref{page:sec3.5capacity4}
+
+
+
+#+LATEX: \clearpage
+
+*** Exercice 15
+<<sec3.4.1:exo15>>
+#+LATEX: \label{page:sec3.4.1exo15}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
+Voici le code pour générer l'exercice :
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+  import math
+
+
+  some_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 31, 37, 41]
+  prime_roots = [math.sqrt(sp) for sp in some_primes]
+  for i in range(8, len(prime_roots)):
+    inf = default(prime_roots[i], i)
+    sup = excess(prime_roots[i], i)
+    msg = f"Un encadrement de sqrt({some_primes[i]}) ~"
+    print(msg, end=" ")
+    msg = f"{round(prime_roots[i], i)} d'amplitude 10**(-{i})"
+    msg += " est :"
+    print(msg, end=" ")
+    msg = f"{inf} <= sqrt({some_primes[i]}) <= {sup}"
+    print(msg)
+    msg = f"Dit autrement, sqrt({some_primes[i]}) ~"
+    print(msg, end=" ")
+    msg = f"{round(prime_roots[i], i)}"
+    print(msg, end=" ")
+    print(f"appartient à l'intervalle [{inf}; {sup}]")
+
+  
+  def exo_amplitude():
+    score, method, born = 0, [default, excess], ["inf", "sup"]
+    motivation = "À toi de jouer !"
+    print(motivation)
+    instr = "Donne un encadrement à 10**"
+    for i in range(5):
+      msg = f"{instr}(-{some_primes[i]}) près de "
+      msg += f"sqrt({some_primes[i]})"
+      print(msg)
+      for j in range(2):
+	t = method[j](prime_roots[i], some_primes[i])
+	msg = f"Borne {born[j]}érieure à "
+	msg += f"{some_primes[i]} chiffres = "
+	r = float(input(msg))
+	if r == t:
+	  print("Bien joué !")
+	  score += 0.2
+	else:
+	  print(f"La bonne réponse était {t}")
+#+END_SRC
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
++ [[sec9.3.1:sol15][Voir solution de l'exercice 15]]
+  #+LATEX: page~\pageref{page:sec9.3.1-sol15}
++ [[capacity3-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity3}
+
+#+LATEX: \clearpage
+
+*** Exercice 16
+<<sec3.4.2:exo16>>
+#+LATEX: \label{page:sec3.4.2exo16}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
+Voici le code pour générer l'exercice :
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+  def approx_nums(some_numbers, decimals):
+    score, method, born = 0, [default, excess], ["inf", "sup"]
+    motivation = "À toi de jouer !"
+    print(motivation)
+    instr = "Donne un encadrement à 10**"
+  
+    for num in some_numbers:
+      boundaries = [
+	default(num, decimals),
+	excess(num, decimals)
+      ]
+    
+      print(f"{instr}(-{decimals}) près de {num}")
+    
+      for j in range(2):
+	t = boundaries[j]
+	msg = f"Borne {born[j]}érieure à {decimals} "
+	msg += "chiffres = "
+	r = float(input(msg))
+	if r == t:
+	  print("Bien joué !")
+	  score += 1
+	else:
+	  print(f"La bonne réponse était {t}")
+      x_pts, inf, sup = num, boundaries[0], boundaries[1]
+      d = decimals
+      step = 10**(-decimals)
+      zoom(x_pts, inf, sup, step, decimals, size=(9.75, 1.25))
+    print(f"Score final = {score * 10}%")
+
+
+  phi = (1 + 5**0.5) / 2 # nombre d'or
+  msg = "On appelle nombre d'or et on le note "
+  msg += f"\\Phi = (1 + sqrt(5)) / 2 ~ {phi}"
+  print(msg)
+  phi2, tau = phi**2, 2 * math.pi
+  msg = r"Vous pouvez remarquer que \Phi ** 2 = 1 + \Phi "
+  msg += "(vérifiez-le par le calcul !)"
+  print(msg)
+  print(f"On appelle \\tau = 2\\pi ~ {tau}")
+  print(f"On ne présente plus \pi ~ {math.pi}")
+  print(f"On appelle constante d'Euler e ~ {math.e}")
+  some_numbers = [phi, phi2, math.e, math.pi, tau]
+  decimals = random.randint(2, 5)
+  approx_nums(some_numbers, decimals)
+#+END_SRC
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
++ [[sec9.3.2:sol16][Voir solution de l'exercice 16]]
+  #+LATEX: page~\pageref{page:sec9.3.2sol16}
++ [[capacity3-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity3}
++ [[sec3.4.1:exo15][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec3.4.1exo15}
+
+
+#+LATEX: \clearpage
+
+** Capacité \(C_4\)
+<<sec3.5:capacity4>>
+#+LATEX: \label{page:sec3.5capacity4}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{André Weil}
+\enquote{Tout mathématicien digne de ce nom a connu, parfois seulement à de
+rares intervalles, ces états d’exaltation lucide où les pensées
+s’enchaînent comme par miracle, et où l’inconscient (quel que soit
+le sens qu’on attache à ce mot) paraît aussi avoir sa part. [...] A
+la différence du plaisir sexuel, celui-là peut durer plusieurs
+heures, voire plusieurs jours ; qui l’a connu en désire le
+renouvellement mais est impuissant à le provoquer, sinon tout au
+plus par un travail opiniâtre dont il apparaît alors comme la
+récompense ; il est vrai que le plaisir qu’on en ressent est sans
+rapport avec la valeur des découvertes auxquelles il s’associe.}
+\footnote{Consulter la page Wikipédia sur Weil : \url{https://fr.wikipedia.org/wiki/Andr\%C3\%A9_Weil}}
+\end{myquote}
+#+END_EXPORT
+\index{Weil, André}
+
+#+LATEX: \clearpage
+
+
+Cette partie développe la rubrique intitulée :
+
+<< \(C_{4}\) : Dans le cadre de la résolution de problèmes, arrondir en
+donnant le nombre de chiffres significatifs adapté à la situation
+étudiée. >>
+
+dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:progoffi].
+[fn:progoffi] Pour lire le programme officiel allez à l'adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
+#+LATEX: \clearpage
+
+<<capacity5-menu>>
+#+LATEX: \label{page:capacity5-menu}
++ [[sec3.5.1:exo17][Exercice 17]] page \pageref{page:sec3.5.1exo17}
++ [[capacities-menu][Menu précédent]] page \pageref{page:capacities-menu}
++ [[sec3.4.2:exo16][Section précédente]] page \pageref{page:sec3.4.2exo16}
++ [[sec3.4:capacity3][Capacité précédente]] page \pageref{page:sec3.4capacity3}
++ [[sec4:proofs][Démonstrations]] page \pageref{page:sec4proofs}
+  
+
+
+
+
+#+LATEX: \clearpage
+
+*** Exemple
+<<sec3.5.0:exemple>>
+#+LATEX: \label{page:sec3.5.0exemple}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+#+LATEX: \clearpage
+Voici le code pour générer l'exemple :
+
+#+BEGIN_SRC python
+  c = 299_792_458
+  msg = f"La vitesse de la lumière dans le vide est de {c} "
+  msg += "mètres par seconde."
+  print(msg)
+  e_s = "L'écriture scientifique d'un nombre n = a x 10**k"
+  e_s += "\na appartient à l'intervalle [1; 10[ donc a < 10"
+  e_s += "\nk appartient à l'ensemble des entiers relatifs"
+  a, k = 2.99792458, 8
+  print(f"Son écriture scientifique est c = {a} x 10**{k} m/s")
+  msg = "Pour passer des mètres aux kilomètres il faut "
+  msg += "diviser par 1 000"
+  print(msg)
+  print("Cela revient à multiplier par 10**(-3)")
+  print(f"D'où c = {a} x 10**{k-3} km/s")
+  msg = "Dans 1 heure il y 60 minutes et dans 1 minute "
+  msg += "il y a 60 secondes"
+  print(msg)
+  print("Donc dans 1 heure il y 60 x 60 = 3600 secondes")
+  print("Donc il faut multiplier par 3600")
+  msg = "Mais dans ce cas, autant faire d'une pierre, "
+  msg += "deux coups"
+  print(msg)
+  msg = "Multiplier par 3600 et diviser par 1 000 revient "
+  msg += "à multiplier par 3.6"
+  print(msg)
+  a *= 3.6
+  if a > 10:
+    a /= 10
+    k -= 1
+  print(f"D'où c = {a} x 10**{k} km/h")
+#+END_SRC
+
++ [[capacity5-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity5-menu}
+
+
+#+LATEX: \clearpage
+
+*** Exercice 17
+<<sec3.5.1:exo17>>
+#+LATEX: \label{page:sec3.5.1exo17}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+Voici le code pour générer l'exercice :
+
+#+BEGIN_SRC python
+  print("À toi de jouer !")
+  mile = 1609.344
+  msg = f"Sachant que 1 mile = {mile} mètres"
+  print(msg)
+  msg = "Calcule la vitesse de la lumière en miles "
+  msg += "par heure."
+  print(msg)
+  msg = "Prend le temps de poser les calculs sur "
+  msg += "un papier avant de répondre"
+  print(msg.upper())
+  user_rep = float(input("Vitesse en miles par heure = "))
+  print(f"Selon toi c = {user_rep} mph (miles per hour)")
+#+END_SRC
+
+
++ [[sec9.4.1:sol17][Voir solution de l'exercice 17]]
+  #+LATEX: page~\pageref{page:sec9.4.1sol17}
++ [[capacity5-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:capacity5-menu}
+
+
+#+LATEX: \clearpage
+
+
+* Démonstrations
+<<sec4:proofs>>
+#+LATEX: \label{page:sec4proofs}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Bertrand Russell}
+\enquote{Tout mathématicien digne de ce nom a connu, parfois seulement à de
+rares intervalles, ces états d’exaltation lucide où les pensées
+s’enchaînent comme par miracle, et où l’inconscient (quel que soit
+le sens qu’on attache à ce mot) paraît aussi avoir sa part. [...] A
+la différence du plaisir sexuel, celui-là peut durer plusieurs
+heures, voire plusieurs jours ; qui l’a connu en désire le
+renouvellement mais est impuissant à le provoquer, sinon tout au
+plus par un travail opiniâtre dont il apparaît alors comme la
+récompense ; il est vrai que le plaisir qu’on en ressent est sans
+rapport avec la valeur des découvertes auxquelles il s’associe.}
+\footnote{Lire l'excellente BD Logicomix qui retrace l'histoire
+de la logique moderne via le regard de Bertrand Russell, consultez un
+extrait gratuit sur Amazon : \url{https://amzn.to/41azKbz}}
+\end{myquote}
+#+END_EXPORT
+\index{Russell, Bertrand}
+
+
+#+LATEX: \clearpage
+
+<<proofs-menu>>
+#+LATEX: \label{page:proofs-menu}
++ [[sec4.1:review][Rappels des éléments du programme officiel]] page \pageref{page:sec4.1review}
++ [[sec4.2:proof1][Démonstration numéro 1]] page \pageref{page:sec4.2proof1}
++ [[sec3:capacities][Capacités attendues]] page \pageref{page:sec3capacities}
++ [[sec5:algo][Exemple d'algorithme]] page \pageref{page:sec5algo}
+
+#+LATEX: \clearpage
+
+** Rappels des éléments du [[https://eduscol.education.fr/document/24553/download][programme officiel]]
+<<sec4.1:review>>
+#+LATEX: \label{page:sec4.1review}
+
+
+
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{David Hilbert}
+\enquote{Une théorie mathématique ne peut être considérée comme complète
+tant que l'on ne l'a clarifiée au point de pouvoir l'expliquer au
+premier homme que l'on croise dans la rue.}
+\footnote{Lire la page Wikipédia consacrée à Hilbert : \url{https://fr.wikipedia.org/wiki/David_Hilbert}}
+\end{myquote}
+#+END_EXPORT
+\index{Hilbert, David}
+
+
+
+#+LATEX: \clearpage
+
+Les deux démonstrations au [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:podem] concernent :
+
+[fn:podem] Consulter le programme officiel à l'adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
++ Le nombre rationnel \(\dfrac{1}{3}\) n'est pas décimal.
++ Le nombre réel \(\sqrt{2}\) est irrationnel.
+
+Ces deux démonstrations sont traitées sur Google Colab.
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
++ [[proofs-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:proofs-menu}
+
+
+#+LATEX: \clearpage
+
+** Démonstration numéro 1
+<<sec4.2:proof1>>
+#+LATEX: \label{page:sec4.2proof1}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Cédric Villani}
+\enquote{Quel que soit le temps passé à faire des mathématiques, ce n'est
+jamais du temps perdu.}
+\footnote{Lisez la page Wikipédia de Villani : \url{https://fr.wikipedia.org/wiki/C\%C3\%A9dric_Villani}}
+\end{myquote}
+#+END_EXPORT
+\index{Villani, Cédric}
+
+#+LATEX: \clearpage
+
+Cette partie développe la rubrique intitulée :
+
+<< Le nombre rationnel \(\dfrac{1}{3}\) n'est pas décimal. >>
+
+du [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:programoff].
+
+[fn:programoff] Lire le programme officiel à l'adresse :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
+#+LATEX: \clearpage
+
+
+<<proof1-menu>>
+#+LATEX: \label{page:proof1-menu}
++ [[sec4.2.1:hand][À la main]] page \pageref{page:sec4.2.1hand}
++ [[sec4.2.2:python][Avec Python]] page \pageref{page:sec4.2.2python}
++ [[proofs-menu][Menu précédent]] page \pageref{page:proofs-menu}
+
+
+
+#+LATEX: \clearpage
+
+*** À la main
+<<sec4.2.1:hand>>
+#+LATEX: \label{page:sec4.2.1hand}
+
+Proposons une démonstration utilisant l'astuce des nombres à
+décimales périodiques vue dans la section [[sec2.6.3:tip][Petite astuce]][fn:pa].
+
+[fn:pa] Voir page \pageref{page:sec2.6.3tip}
+
+
+
+Posons \[x = 0,3\dots 3\] où 3 se répète à l'infini. Multiplions par
+10 puis retranchons \(x\).
+Ainsi \[9x = 3\] donc \[x = \dfrac{1}{3}\]
+
+*CQFD*
+
+Pour \(\sqrt{2}\) consulter Google Colab ou les démonstrations
+précédentes à la section [[sqrt2proofs][Quelques preuves de l'irrationalité de
+\(\sqrt{2}\)]]. 
+
+En espérant que la lecture de ce livre vous aura satisfait et fait
+découvrir la richesse des nombres réels. Si vous avez la moindre
+suggestion d'amélioration merci de m'écrire à l'adresse
+indiquée dans le formulaire avec pour objet *Livre Manipuler les
+réels*.
+
++ [[proof1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:proof1-menu}
+
+
+#+LATEX: \clearpage
+
+*** Avec Python
+<<sec4.2.2:python>>
+#+LATEX: \label{page:sec4.2.2python}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+#+LATEX: \clearpage
+
+Voici le code pour générer les 3 démonstrations :
+
+#+BEGIN_SRC python
+  def read_text(txt):
+    for t in txt:
+      msg = f"{t}\nAppuyez sur une touche pour "
+      msg += "lire la suite..."
+      input(msg)
+
+
+  intro = [
+      "Le nombre 1/3 est-il décimal ?",
+      "Pour que 1/3 soit décimal",
+      "il faudrait trouver a et n tels que",
+      "1/3 = a/10**n.",
+      "En faisant 1 produit en croix cela revient à",
+      "10**n = 3*a.",
+      "Maintenant le problème devient beaucoup ",
+      "plus simple.",
+      "Il suffit de prouver qu'aucune puissance ",
+      "de 10 n'est multiple de 3."
+      ]
+
+  read_text(txt=intro)
+
+  multiple_of_3 = [3*k for k in range(21)]
+  print("Voici les multiples de 0 à 60")
+  print(multiple_of_3)
+  rem = input("Que remarquez-vous ? ")
+  more = input("Vous en voulez plus ? 0) Non 1) Oui\n")
+
+  if more == "1":
+    for k in range(21, 50):
+      print(3*k, end=", ")
+    print()
+
+  msg = "Quels sont les diviseurs (entiers positifs)"
+  msg += " de 10 ? "  
+  div = input(msg)
+  div = div.split(",")
+  div = [int(d) for d in div]
+  print(f"Selon vous, les diviseurs de 10 sont {div}")
+  prime_proof = [
+      "Les diviseurs de 10 sont 2 et 5",
+      "Donc les diviseurs de n'importe ",
+      "quelle puissance de 10",
+      "sont de la forme 2**p x 5**q",
+      "avec p et q tels que p + q <= n",
+      "Aucune puissance de 2 ne divise 3",
+      "car 2 et 3 sont premiers entre eux ",
+      "(ils n'ont pas de diviseurs communs)",
+      "il en va de même pour 5 et 3",
+      "donc il est impossible d'obtenir 10**n = 3*a",
+      "une autre façon de faire consiste à poser ",
+      "la division de 10 par 3",
+      "vous constaterez qu'il y aura toujours ",
+      "un reste non nul",
+      "et vous pourriez faire de même à l'infini "n
+      "avec toute puissance de 10"
+  ]
+
+  read_text(txt=prime_proof)
+
+  div_proof = [
+    f"10**{n} = 3 x {(10**n)//3} + {(10**n) % 3}"
+    for n in range(10)
+  ]
+  read_text(txt=div_proof)
+
+  decimal_proof = [
+    f"1/3 ~ {round(1/3, i)} à {i} décimale(s)"
+    for i in range(10)
+  ]
+  read_text(txt=decimal_proof)
+
+  magic_proof = [
+      "Supposons qu'il existe un nombre noté x = 0.333333...",
+      "Puisqu'il y a une infinité de 3 après la virgule alors",
+      "10x = 3.333333... ",
+      "avec une infinité de 3 après la virgule",
+      "10x - x = 3 et donc 9x = 3 d'où x = 3/9 = 1/3",
+      "CQFD"
+  ]
+  read_text(txt=magic_proof)
+#+END_SRC
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+
++ [[proof1-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:proof1-menu}
++ [[sec4.2.1:hand][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec4.2.1hand}
+
+
+#+LATEX: \clearpage
+
+* Exemple d'algorithme
+<<sec5:algo>>
+#+LATEX: \label{page:sec5algo}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Andrew Wiles}
+\enquote{Just because we can’t find a solution, it doesn’t mean there isn’t
+one.}
+\footnote{Consultez la page de l'homme qui a démontré le grand théorème de Fermat : \url{https://en.wikipedia.org/wiki/Andrew_Wiles}}
+\end{myquote}
+#+END_EXPORT
+\index{Wiles, Andrew}
+
+#+LATEX: \clearpage
+
+
+<<algos-menu>>
+#+LATEX: \label{page:algos-menu}
++ [[sec5.1:review][Rappel des éléments du programme officiel]] page \pageref{page:sec5.1review}
++ [[sec5.2:explain][Petites explications]] page \pageref{page:sec5.2explain}
++ [[sec5.3:code][Le code]] page \pageref{page:sec5.3code}
++ [[sec4:proofs][Démonstrations]] page \pageref{page:sec4proofs}
+
+
+#+LATEX: \clearpage
+
+** Rappel des éléments du [[https://eduscol.education.fr/document/24553/download][programme officiel]]
+<<sec5.1:review>>
+#+LATEX: \label{page:sec5.1review}
+
+
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Charles Gustave Jacob Jacobi}
+\enquote{Monsieur Fourier avait l'opinion que le but principal des
+mathématiques était l'utilité publique et l'explication des
+phénomènes naturels. Un philosophe tel que lui aurait dû savoir que
+le but unique de la Science, c'est l'honneur de l'esprit humain et
+que, sous ce titre, une question de nombres vaut bien une question
+de système du monde.}
+\footnote{Lire la page Wikipédia dédiée à Jacobi : \url{https://fr.wikipedia.org/wiki/Charles_Gustave_Jacob_Jacobi}}
+\end{myquote}
+#+END_EXPORT
+\index{Jacobi, Charles}
+
+
+#+LATEX: \clearpage
+
+Le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:pofficiel] propose un seul exemple
+d'algorithme :
+
+[fn:pofficiel] Adresse pour consulter le programme officiel :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
+
++ Déterminer par balayage un encadrement de \(\sqrt{2}\)
+  d'amplitude\index{amplitude} inférieure ou égale à \(10^{-n}\).
+
+  
++ [[algos-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:algos-menu}
+
+#+LATEX: \clearpage
+
+** Petites explications
+<<sec5.2:explain>>
+#+LATEX: \label{page:sec5.2explain}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{René Descartes}
+\enquote{Les mathématiques ont des inventions très subtiles et qui peuvent
+beaucoup servir, tant à contenter les curieux qu'à faciliter tous
+les arts et à diminuer le travail des hommes.}
+\footnote{Voir la page Wikipédia sur Descartes : \url{https://fr.wikipedia.org/wiki/Ren\%C3\%A9_Descartes}}
+\end{myquote}
+#+END_EXPORT
+\index{Descartes, René}
+
+
+#+LATEX: \clearpage
+
+On cherche des réels \(a\) et \(b\) tels que :
+\[a < \sqrt{2} < b\]
+avec
+\[\lvert a - b \rvert \leq 10^{-n}\]
+
+Comme
+\[\sqrt{2} \geq 1\]
+alors on va choisir
+\[a \geq 1\]
+
+De sorte que :
+\[a^2 \leq 2 \leq b^2\]
+
++ [[algos-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:algos-menu}
++ [[sec5.1:review][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec5.1review}
+
+#+LATEX: \clearpage
+
+** Le code
+<<sec5.3:code>>
+#+LATEX: \label{page:sec5.3code}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Euclide}
+\enquote{Si vous touchez aux maths, vous ne devez être ni pressés, ni
+cupides, fussiez-vous roi ou reine.}
+\footnote{Le chercheur français Christian Velpry a écrit un livre
+très intéressant sur les origines africaines d'Euclide dont vous
+pouvez lire un extrait gratuit sur Amazon : \url{https://amzn.to/46zlzAB}}
+\end{myquote}
+#+END_EXPORT
+\index{Euclide}
+
+
+#+LATEX: \clearpage
+
+Voici le code que vous pouvez retrouver sur Google Colab :
+
+#+BEGIN_SRC python
+  def balayage(n):
+    """
+    Cette fonction renvoie les bornes d'un encadrement
+    par balayage d'amplitude inférieure ou égale à 10**(-n)
+    """
+    a = 1
+    b = a + 10**(-n)
+    while b**2 < 2:
+      a += 10**(-n)
+      b = a + 10**(-n)
+    return round(a, n), round(b, n)
+
+  # Tests : attention parce qu'au-delà de n = 7
+  # ça devient très long 
+  for n in range(1, 7):
+    infimum, supremum = balayage(n)
+    ampli = 10**(-n)
+    msg = f"{infimum} < sqrt{2} < {supremum} est un "
+    msg += f"encadrement d'amplitude {ampli}"
+    print(msg)
+#+END_SRC
+
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+En espérant que la lecture de ce livre vous aura satisfait et fait
+découvrir la richesse des nombres réels. Si vous avez la moindre
+suggestion d'amélioration merci de m'écrire à l'adresse
+indiquée dans le formulaire avec pour objet *Livre Manipuler les
+réels*.
+
+
++ [[algos-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:algos-menu}
++ [[sec5.2:explain][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec5.2explain}
+
+
+#+LATEX: \clearpage
+
+* Approfondissements possibles
+<<sec6:deep>>
+#+LATEX: \label{page:sec6deep}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Bernard Baruch}
+\enquote{Millions saw the apple fall, but Newton asked why.}
+\footnote{Voir la page Wikipédia sur Baruch : \url{https://en.wikipedia.org/wiki/Bernard_Baruch}}
+\end{myquote}
+#+END_EXPORT
+\index{Baruch, Bernard}
+
+
+
+
+#+LATEX: \clearpage
+
+<<deeps-menu>>
+#+LATEX: \label{page:deeps-menu}
++ [[sec6.1:review][Rappel des éléments du programme officiel]] page \pageref{page:sec6.1review}
++ [[sec6.2:bilan][Petit bilan]] page \pageref{page:sec6.2bilan}
++ [[sec6.3:exs][Et pour quelques exemples de plus]] page \pageref{page:sec6.3exs}
++ [[sec5:algo][Exemple d'algorithme]] page \pageref{page:sec5algo}
++ [[sec7:after][Après ce livre]] page \pageref{page:sec7after}
+
+
+#+LATEX: \clearpage
+
+** Rappel des éléments du [[https://eduscol.education.fr/document/24553/download][programme officiel]]
+<<sec6.1:review>>
+#+LATEX: \label{page:sec6.1review}
+
+
+
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Isocrate}
+\enquote{Les mathématiques sont une gymnastique de l'esprit et une
+préparation à la philosophie.}
+\footnote{Lire la page Wikipédia sur Isocrate : \url{https://fr.wikipedia.org/wiki/Isocrate}}
+\end{myquote}
+#+END_EXPORT
+\index{Isocrate}
+
+#+LATEX: \clearpage
+D'apprès le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:profficiel] les approfondissements
+possibles sont :
+
+[fn:profficiel] Adresse pour consulter le programme officiel :
+[[https://eduscol.education.fr/document/24553/download]]
+
+
+
++ Développement décimal illimité d'un nombre réel.
++ Observation, sur des exemples, de la périodicité du développement
+  décimal de nombres rationnels, du fait qu'un développement décimal
+  périodique correspond à un rationnel.
+
+
++ [[deeps-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:deeps-menu}
+
+
+#+LATEX: \clearpage
+
+** Petit bilan
+<<sec6.2:bilan>>
+#+LATEX: \label{page:sec6.2bilan}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{William P. Thurston}
+\enquote{Il y a une joie réelle à faire des mathématiques, à apprendre de
+nouvelles méthodes de pensée qui expliquent, organisent et
+simplifient. On peut ressentir cette joie en découvrant de
+nouvelles mathématiques, (…) ou en trouvant une nouvelle façon
+d’expliquer (…) une structure mathématique ancienne.}
+\footnote{Consultez la page Wikipédia consacrée à Thurston : \url{https://en.wikipedia.org/wiki/William_Thurston}}
+\end{myquote}
+#+END_EXPORT
+\index{Thurston, William}
+
+
+#+LATEX: \clearpage
+
+*** Développement décimal illimité d'un nombre réel
+
+    Le développement décimal\index{développement décimal} illimité
+    d'un nombre réel est simplement son écriture avec une infinité de
+    chiffres après la virgule sans répétition régulière.
+
+    Par exemples :
+    1. Le nombre \(\pi\) qui intervient pour calculer le périmètre
+       d'un cercle ou son aire : \[\pi \simeq 3,1415926536\dots\] est
+       approché à 10 décimales.
+    2. Le nombre d'or souvent noté \(\pi\) : \[\phi = \dfrac{1 +
+       \sqrt{5}}{2} \simeq 1,6180339887\] est approché à 10 décimales.
+    3. Le nombre \(e\) d'[[https://fr.wikipedia.org/wiki/Leonhard_Euler][Euler]][fn:euler] qui sert de base à
+       l'exponentielle et sera abordé en classe de première
+       \[e \simeq 2,7182818285\dots\]
+       est approché à 10 décimales.
+    4. Le nombre \(\sqrt{2}\) qui représente la diagonale du carré de
+       côté 1 : \[\sqrt{2} \simeq 1,4142135624\dots\]
+       est approché à 10 décimales.
+    5. Le nombre \(\sqrt{3}\) qui représente la grande diagonale du
+       cube d'arête 1 : \[\sqrt{3} \simeq 1,7320508076\dots\]
+       est approché à 10 décimales ([[sec2.6.5:exo11][voir l'exercice au sujet du cube]][fn:cube]).
+
+
+
+[fn:euler] Lisez la page Wikipédia sur Euler à l'adresse :
+[[https://fr.wikipedia.org/wiki/Leonhard_Euler]]
+[fn:cube] Voir page \pageref{page:sec2.6.5exo11}
+
+    
+    Tous les nombres réels qui *NE* sont *PAS* rationnels connaissent
+    un déveleppement décimal illimité. Cela signifie qu'on ne pourra
+    jamais trouver de régularité dans leurs décimales contrairement
+    aux rationnels qui eux ont un développement périodique.
+
+
+    + [[deeps-menu][Voir menu précédent]]
+      #+LATEX: page~\pageref{page:deeps-menu}
+    + [[sec6.1:review][Voir section précédente]]
+      #+LATEX: page~\pageref{page:sec6.1review}
+      
+      
+#+LATEX: \clearpage
+
+*** Périodicité du développement décimal d'un nombre rationnel
+
+    Pour le deuxième point on a déjà vu beaucoup d'exemple (cf la
+    petite astuce vue dans la section [[sec2.6.3:tip][Petite astuce]][fn:pa2]).
+
+
+    
+[fn:pa2] Voir page \pageref{page:sec2.6.3tip}}
+
+
+
+    
+Mais rien que pour le plaisir en voici encore un.
+
+Soit \[x = 0,2023\dots\]
+Ici la période est 2023.
+
+Donc on va multiplier par \(10^4\) puis retrancher \(x\) d'où
+
+\[9999x = 2023\]
+
+qui entraîne
+
+\[x = \dfrac{2023}{9999} \simeq 0,2023\dots 2023\dots\]
+
+
+
++ [[deeps-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:deeps-menu}
++ [[sec6.1:review][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec6.1review}
+  
+
+
+#+LATEX: \clearpage
+
+** Et pour quelques exemples de plus
+<<sec6.3:exs>>
+#+LATEX: \label{page:sec6.3exs}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Albert Einstein}
+\enquote{Pure mathematics is, in its way, the poetry of logical ideas.}
+\footnote{Voir la page Wikipédia dédiée à Einstein : \url{https://en.wikipedia.org/wiki/Albert_Einstein}}
+\end{myquote}
+#+END_EXPORT
+\index{Einstein, Albert}
+
+
+
+#+LATEX: \clearpage
+
+Voici quelques développement décimaux\index{décimaux} illimités de
+nombres réels :
+
+
+
++ D1) : \[\sqrt{2} \simeq 1,414213562373095\dots\]
++ D2) : \[\Phi \simeq 1.618033988749895\dots\]
++ D3) : \[\sqrt{3} \simeq 1.7320508075688772\dots\]
++ D4) : \[\sqrt{5} \simeq 2.23606797749979\dots\]
++ D5) : \[\sqrt{7} \simeq 2.6457513110645907\dots\]
++ D6) : \[e \simeq 2.718281828459045\dots\]
++ D7) : \[\pi \simeq 3.141592653589793\dots\]
++ D8) : \[\sqrt{11} \simeq 3.3166247903554\dots\]
+
+
+En espérant que la lecture de ce livre vous aura satisfait et fait
+découvrir la richesse des nombres réels. Si vous avez la moindre
+suggestion d'amélioration merci de m'écrire à l'adresse
+indiquée dans le formulaire avec pour objet *Livre Manipuler les
+réels*.
+
+
++ [[deeps-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:deeps-menu}
++ [[sec6.2:bilan][Voir section précédente]]
+  #+LATEX: page~\pageref{page:sec6.2bilan}
+
+
+#+LATEX: \clearpage
+
+* Après ce livre
+<<sec7:after>>
+#+LATEX: \label{page:sec7after}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Alvin E. Roth}
+\enquote{I’ve always been interested in using mathematics to make the world
+work better.}
+\footnote{Voir la page Wikipédia dédiée à Roth : \url{https://en.wikipedia.org/wiki/Alvin_E._Roth}}
+\end{myquote}
+#+END_EXPORT
+\index{Roth, Alvin}
+
+
+#+LATEX: \clearpage
+
+<<after-menu>>
+#+LATEX: \label{page:after-menu}
++ [[sec7.1:conclusion][Conclusion]] page \pageref{page:sec7.1conclusion}
++ [[sec6:deep][Approfondissements possibles]] page \pageref{page:sec6deep}
++ [[sec8:sols-contents][Solutions des exercices des contenus]] page \pageref{page:sec8sols-contents}
+
+#+LATEX: \clearpage
+
+** Conclusion
+<<sec7.1:conclusion>>
+#+LATEX: \label{page:sec7.1conclusion}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Shakuntala Devi}
+\enquote{Without mathematics, there’s nothing you can do. Everything around
+you is mathematics. Everything around you is numbers.}
+\footnote{Voir la page Wikipédia sur Devi : \url{https://en.wikipedia.org/wiki/Shakuntala_Devi}}
+\end{myquote}
+#+END_EXPORT
+\index{Devi, Shakuntala}
+
+#+LATEX: \clearpage
+
+Bravo à vous si vous avez lu jusqu'au bout.
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+Sur Google Colab vous pourrez expérimenter avec des exercices
+nouveaux à chaque exécution du code. Cela vous permettra de vous
+entraîner avec des valeurs différentes à chaque fois. C'est beaucoup
+plus interactif que tous les exemples de ce livre.
+
+Le but de ce livre est de vous donner un aperçu du monde merveilleux
+des nombres réels. Mais il y a encore beaucoup de choses à découvrir
+que je n'ai même pas pu mentionner ici.
+
+Je vous invite à mettre le maximum d'étoiles sur Amazon et à laisser
+un commentaire pour aider les gens qui cherchent des ressources utiles.
+
+En espérant que la lecture de ce livre vous aura satisfait et fait
+découvrir la richesse des nombres réels. Si vous avez la moindre
+suggestion d'amélioration merci de m'écrire à l'adresse
+indiquée dans le formulaire avec pour objet *Livre Manipuler les
+réels*.
+
++ [[after-menu][Voir menu précédent]]
+  #+LATEX: page~\pageref{page:after-menu}
+
+#+LATEX: \clearpage
+
+* Solutions des exercices des contenus
+<<sec8:sols-contents>>
+#+LATEX: \label{page:sec8sols-contents}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Paul Richard Halmos}
+\enquote{The only way to learn mathematics is to do mathematics.}
+\footnote{Lire la page Wikipédia sur Halmos : \url{https://en.wikipedia.org/wiki/Paul_Halmos}}
+\end{myquote}
+#+END_EXPORT
+\index{Halmos, Paul}
+
+
+#+LATEX: \clearpage
+
+<<sols-contents-menu>>
+#+LATEX: \label{page:sols-contents-menu}
++ [[sec8.1:sols-cont1][Solutions des exercices du contenu 1]] page \pageref{page:sec8.1sols-cont1}
++ [[sec8.2:sols-cont2][Solutions des exercices du contenu 2]] page \pageref{page:sec8.2sols-cont2}
++ [[sec8.3:sols-cont3][Solutions des exercices du contenu 3]] page \pageref{page:sec8.3sols-cont3}
++ [[sec8.4:sols-cont4][Solutions des exercices du contenu 4]] page \pageref{page:sec8.4sols-cont4}
++ [[sec8.5:sols-cont5][Solutions des exercices du contenu 5]] page \pageref{page:sec8.5sols-cont5}
++ [[sec8.6:sols-cont6][Solutions des exercices du contenu 6]] page \pageref{page:sec8.6sols-cont6}
++ [[sec7:after][Après ce livre]] page \pageref{page:sec7after}
++ [[sec9:sols-capacities][Solutions des exercices des capacités attendues]] page
+  \pageref{page:sec9sols-capacities}
+  
+
+
+
+#+LATEX: \clearpage
+
+** Solutions des exercices du contenu 1
+<<sec8.1:sols-cont1>>
+
+
+#+LATEX: \label{page:sec8.1sols-cont1}
+
+#+BEGIN_EXPORT latex
+\begin{myquote}{Creola Katherine Coleman}
+\enquote{We will always have STEM with us. Some things will drop out of the
+public eye and go away, but there will always be science,
+engineering, and technology. And there will always, always be
+mathematics.}
+\footnote{Lire la page sur Coleman-Johnson qui a inspiré le film
+<< les figures de l'ombre >> : \url{https://en.wikipedia.org/wiki/Katherine_Johnson}}
+\end{myquote}
+#+END_EXPORT
+\index{Coleman, Creola}
+
+
+#+LATEX: \clearpage
+
+<<sols-cont1-menu>>
+#+LATEX: \label{page:sols-cont1-menu}
++ [[sec8.1.1:sol1][Solution de l'exercice 1]] page \pageref{page:sec8.1.1sol1}
++ [[sec8.1.2:sol2][Solution de l'exercice 2 : Python]] page \pageref{page:sec8.1.2sol2}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.2:sols-cont2][Solutions des exercices du contenu 2]] page \pageref{page:sec8.2sols-cont2}
+
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 1
+<<sec8.1.1:sol1>>
+#+LATEX: \label{page:sec8.1.1sol1}
+On reprend le [[sec2.1.6:cp][même schéma]][fn:schema] que dans l'exemple.
+[fn:schema] Voir page \pageref{page:sec2.1.6cp}
+
+
++ \(A = (x < -1)\)
++ \(B = (-3x > 3)\)
++ \(P = (A\Rightarrow B)\)
++ \(\neg B = (-3x \leq 3)\)
++ \(\neg A = (x \geq -1)\)
++ \(CP(P) = (\neg B\Rightarrow \neg A)\)
+
+
++ [[sec2.1.7:exo1][Voir énoncé de l'exercice 1]]
+  #+LATEX: page~\pageref{page:sec2.1.7exo1}
+
+#+LATEX: \clearpage  
+
+*** Solution de l'exercice 2 : Python
+<<sec8.1.2:sol2>>
+#+LATEX: \label{page:sec8.1.2sol2}
+
+1. Pour rappels tous les codes sont accessibles sur Google Colab à
+   l'adresse communiquée dans la section concernée lorsque vous aurez
+   rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+   (vous trouverez également les corrections de tous les exercices du
+   livre).
+   Voici le code de la fonction ~imply~ :
+   #+NAME: imply
+   #+BEGIN_SRC python
+     def imply(A, B):
+	"""
+	Cette fonction prend 2 paramètres A et B en entrée
+	et renvoie la phrase logique A implique B
+	"""
+	return f"({A}) implique ({B})"
+
+     # Tests
+     A = ["x > 2", "x < -1"]
+     B = ["2*x > 4", "-3*x > 3"]
+     for i in range(len(A)):
+	print(imply(A[i], B[i]))
+
+     # Sorties
+     # (x > 2) implique (2*x > 4)
+     # (x < -1) implique (-3*x > 3)
+   #+END_SRC
+2. Pour rappels tous les codes sont accessibles sur Google Colab à
+   l'adresse communiquée dans la section concernée lorsque vous aurez
+   rempli ce petit formulaire :
+   https://forms.gle/qY8ym3ZxSo9NVH3S7 (vous trouverez également les
+   corrections de tous les exercices du livre).
+   Voici le code de la fonction ~contrapose~ : 
+   #+NAME: contrapose
+   #+BEGIN_SRC python
+     def contrapose(A, B):
+       """
+       Cette fonction prend 2 paramètres A et B en entrée 
+       et renvoie la phrase logique non B implique non A
+       """
+       return imply("non " + B, "non " + A)
+
+     # Tests
+     A = ["x > 2", "x < -1"]
+     B = ["2*x > 4", "-3*x > 3"] 
+     for i in range(len(A)):
+       print(contrapose(A[i], B[i]))
+
+     # Sorties
+     #(non 2*x > 4) implique (non x > 2)
+     #(non -3*x > 3) implique (non x < -1)
+   #+END_SRC
+
++ [[sec2.1.8:exo2][Voir énoncé de l'exercice 2]]
+  #+LATEX: page~\pageref{page:sec2.1.8exo2}
+
+#+LATEX: \clearpage  
+
+** Solutions des exercices du contenu 2
+<<sec8.2:sols-cont2>>
+#+LATEX: \label{page:sec8.2sols-cont2}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Richard Courant}
+\enquote{Mathematics as an expression of the human mind reflects the active
+will, the contemplative reason, and the desire for aesthetic
+perfection. Its basic elements are logic and intuition, analysis
+and construction, generality and individuality.}
+\footnote{Voir la page Wikipédia sur Courant : \url{https://en.wikipedia.org/wiki/Richard_Courant}}
+\end{myquote}
+#+END_EXPORT
+\index{Courant, Richard}
+
+#+LATEX: \clearpage
+
+<<sols-cont2-menu>>
+#+LATEX: \label{page:sols-cont2}
++ [[sec8.2.1:sol3][Solution de l'exercice 3]] page \pageref{page:sec8.2.1sol3}
++ [[sec8.2.2:sol4][Solution de l'exercice 4]] page \pageref{page:sec8.2.2sol4}
++ [[sec8.2.3:sol-game][Solution du petit jeu]] page \pageref{page:sec8.2.3sol-game}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.1:sols-cont1][Solutions des exercices du contenu 1]] page \pageref{page:sec8.1sols-cont1}
++ [[sec8.3:sols-cont3][Solutions des exercices du contenu 3]] page \pageref{page:sec8.3sols-cont3}
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 3
+<<sec8.2.1:sol3>>
+#+LATEX: \label{page:sec8.2.1sol3}
+
+1. \[\dfrac{1}{3}\in I_1 = [0,3 ; 0,4]\]
+   qui a pour amplitude\index{amplitude} :
+   \[|I_1| = 0,4 - 0,3 = 0,1 = 10^{-1}\]
+   \[\dfrac{1}{3}\in I_2 = [0,33 ; 0,34]\]
+   qui a pour amplitude :
+   \[|I_2| = 0,34 - 0,33 = 0,01 = 10^{-2}\]
+   \[\dfrac{1}{3}\in I_3 = [0,333 ; 0,334]\]
+   qui a pour amplitude :
+   \[|I_3| = 0,334 - 0,333 = 0,001 = 10^{-3}\]
+   On peut classer ces intervalles :
+   \[\dfrac{1}{3}\in I_3 = [0,333 ; 0,334] \subset I_2 = [0,33 ;
+   0,34] \subset I_1 = [0,3 ; 0,4]\]
+2. \[\sqrt{2}\in R_1 = [1,4 ; 1,5]\]
+   qui a pour amplitude :
+   \[|R_1| = 1,5 - 1,4 = 0,1 = 10^{-1}\]
+   \[\sqrt{2}\in R_2 = [1,41 ; 1,42]\]
+   qui a pour amplitude :
+   \[|R_2| = 1,42 - 1,41 = 0,01 = 10^{-2}\]
+   \[\sqrt{2}\in R_3 = [1,414 ; 1,415]\]
+   qui a pour amplitude :
+   \[|R_3| = 1,415 - 1,414 = 0,001 = 10^{-3}\]
+   On peut classer ces intervalles :
+   \[\sqrt{2}\in R_3 = [1,414 ; 1,415] \subset R_2 = [1,41 ;
+   1,42]\subset R_1 = [1,4 ; 1,5]\]
+3. \[\Phi = \dfrac{1 + \sqrt{5}}{2}\in F_1 = [1,6 ; 1,7]\]
+   qui pour amplitude :
+   \[|F_1| = 1,7 - 1,6 = 0,1 = 10^{-1}\]
+   \[\Phi = \dfrac{1 + \sqrt{5}}{2}\in F_2 = [1,61 ; 1,62]\]
+   qui pour amplitude :
+   \[|F_2| = 1,62 - 1,61 = 0,01 = 10^{-2}\]
+   \[\Phi = \dfrac{1 + \sqrt{5}}{2}\in F_3 = [1,618 ; 1,619]\]
+   qui pour amplitude :
+   \[|F_3| = 1,619 - 1,618 = 0,001 = 10^{-3}\]
+   On peut classer ces intervalles :
+   \[\Phi\in F_3 = [1,618 ; 1,619] \subset F_2 = [1,61 ; 1,62]\subset
+   F_1 = [1,6 ; 1,7]\]
+4. \[\pi\in P_1 = [3,1 ; 3,2]\]
+   qui a pour amplitude :
+   \[|P_1| = 3,2 - 3,1 = 0,1 = 10^{-1}\]
+   \[\pi\in P_2 = [3,14 ; 3,15]\]
+   qui a pour amplitude :
+   \[|P_2| = 3,15 - 3,14 = 0,01 = 10^{-2}\]
+   \[\pi\in P_3 = [3,141 ; 3,142]\]
+   qui a pour amplitude :
+   \[|P_3| = 3,142 - 3,141 = 0,001 = 10^{-3}\]
+   On peut classer ces intervalles :
+   \[\pi\in P_3 = [3,141 ; 3,142]\subset P_2 = [3,14 ; 3,15]\subset P_1 = [3,1 ;
+   3,2]\]
+5. \[\tau = 2\pi\in T_1 = [6,2 ; 6,3]\]
+   qui a pour amplitude :
+   \[|T_1| = 6,3 - 6,2 = 0,1 = 10^{-1}\]
+   \[\tau = 2\pi\in T_2 = [6,28 ; 6,29]\]
+   qui a pour amplitude :
+   \[|T_2| = 6,29 - 6,28 = 0,01 = 10^{-2}\]
+   \[\tau = 2\pi\in T_3 = [6,283 ; 6,284]\]
+   qui a pour amplitude :
+   \[|T_3| = 6,284 - 6,283 = 0,001 = 10^{-3}\]
+   On peut classer ces intervalles :
+   \[\tau = 2\pi\in T_3 = [6,283 ; 6,284]\subset T_2 = [6,28 ;
+   6,29]\subset T_1 = [6,2 ; 6,3]\]
+   
++ [[sec2.2.2:exo3][Voir l'énoncé de l'exercice 3]]
+  #+LATEX: page~\pageref{page:sec2.2.2exo3}
+
+#+LATEX: \clearpage  
+
+*** Solution de l'exercice 4
+<<sec8.2.2:sol4>>
+#+LATEX: \label{page:sec8.2.2sol4}
+
+
+1. \[\Phi = \dfrac{1 + \sqrt{5}}{2} \simeq 1,61803\]
+2. Voici les 16 premiers termes de cette suite de nombres :
+   + \[F_1 = 1,\quad F_2 = 1,\quad F_3 = 2,\quad F_4 = 3\]
+   + \[F_5 = 5,\quad F_6 = 8,\quad F_7 = 13,\quad F_8 = 21\]
+   + \[F_9 = 34,\quad F_{10} = 55,\quad F_{11} = 89,\quad F_{12} = 144\]
+   + \[F_{13} = 233,\quad F_{14} = 377,\quad F_{15} = 610,\quad F_{16} = 987\]
+3. Pour calculer un nouveau terme on ajoute les deux termes précédents
+   \[F_n = F_{n - 1} + F_{n-2}\]
+   Par exemple :
+   \[F_3 = F_2 + F_1 = 1 + 1 = 2\]
+   ou encore :
+   \[F_7 = F_6 + F_5 = 8 + 5 = 13\]
+   + \[\dfrac{F_2}{F_1} = 1,\quad \dfrac{F_3}{F_2} = 2\]
+   + \[\dfrac{F_4}{F_3} = \dfrac{3}{2},\quad \dfrac{F_5}{F_4} = \dfrac{5}{3}\simeq 1,67\]
+   + \[\dfrac{F_6}{F_5} = \dfrac{6}{5} = 1,2,\quad\dfrac{F_7}{F_6} = \dfrac{13}{8} = 1,625\]
+   + \[\dfrac{F_8}{F_7} = \dfrac{21}{13}\simeq 1,615,\quad\dfrac{F_9}{F_8}\simeq 1,619\]
+   + \[\dfrac{F_{10}}{F_9} = \dfrac{55}{34}\simeq 1,6176,\quad\dfrac{F_{11}}{F_{10}} = \dfrac{89}{55} = 1,6182\]
+4. Les 11 premiers termes de la suites de Fibonacci ont permis
+   d'approcher le nombre d'or à 3 chiffres après la
+   virugle. Poursuivons avec ce que nous avons déjà calculer à la question 2.
+   + \[\dfrac{F_{12}}{F_{11}} = \dfrac{144}{89}\simeq 1,6180,\quad\dfrac{F_{13}}{F_{12}} = \dfrac{233}{144}\simeq 1,61801\]
+   + \[\dfrac{F_{14}}{F_{13}} = \dfrac{377}{233}\simeq 1,61803,\quad\dfrac{F_{15}}{F_{14}} = \dfrac{610}{377}\simeq 1,61804\]
+   \[\Phi = \dfrac{1 + \sqrt{5}}{2} \simeq 1,61803\in
+   \left[\dfrac{F_{14}}{F_{13}} ; \dfrac{F_{15}}{F_{14}}\right]\]
+
+
++ [[sec2.2.3:exo4][Voir l'énoncé de l'exercice 4]]
+  #+LATEX: page~\pageref{page:sec2.2.3exo4}
+
+
+#+LATEX: \clearpage
+
+*** Solution du petit jeu
+<<sec8.2.3:sol-game>>
+#+LATEX: \label{page:sec8.2.3sol-game}
+#+LATEX: \clearpage
+
+**** Partie 1
+
+   Voilà pour la première partie de la question
+   
+   1. \[u = 0,1\dots\in I_u = [0,09 ; 0,19]\] en effet \[|I_u| =
+      0,19 - 0,09 = 0,1\]
+   2. \[v = 0,12\dots\in I_v = [0,118 ; 0,128]\] en effet \[|I_v| =
+      0,128 - 0,118 = 0,01\]
+   3. \[w = 0,123\dots\in I_w = [0,1227 ; 0,1237]\] en effet \[|I_w| =
+      0,1237 - 0,1227 = 0,001\]
+   4. \[x = 0,1234\dots\in I_x = [0,12336 ; 0,12346]\] en effet
+      \[|I_x| = 0,12346 - 0,12336 = 0,0001\]
+   5. \[y = 0,12345\dots\in I_y = [0,123455 ; 0,123465]\] en effet
+      \[|I_y| = 0,123465 - 0,123455 = 0,0001\]
+
+
++ [[sec2.2.4:small-game][Voir l'énoncé du petit jeu]]
+  #+LATEX: page~\pageref{page:sec2.2.4small-game}
+
+#+LATEX: \clearpage
+
+**** Partie 2
+
+   Maintenant occupons-nous de la seconde partie.
+   
+   1. \[10u = 1,1\dots\] donc \[10u - u = 1\] d'où \[u =
+      \dfrac{1}{9}\in I_u = [0,09 ; 0,19]\]
+   2. \[100v = 12,12\dots\] donc \[100v - v = 12\] d'où \[v =
+      \dfrac{12}{99} = \dfrac{4}{33}\in I_v = [0,118 ; 0,128]\]
+   3. \[1000w = 123,123\dots\] donc \[1000w - w = 123\] d'où \[w =
+      \dfrac{123}{999} = \dfrac{41}{333}\in I_w = [0,1227 ; 0,1237]\]
+   4. \[10000x = 1234,1234\dots\] donc \[10000x - x = 1234\] d'où \[x
+      = \dfrac{1234}{9999}\in I_x = [0,12336 ; 0,12346]\]
+   5. \[100000y = 12345,12345\dots\] donc \[100000y - y = 12345\] d'où
+      \[y = \dfrac{12345}{99999}\in I_y = [0,123455 ; 0,123465]\]
+
+
+
++ [[sec2.2.4:small-game][Voir l'énoncé du petit jeu]]
+  #+LATEX: page~\pageref{page:sec2.2.4small-game}
+
+#+LATEX: \clearpage  
+   
+** Solutions des exercices du contenu 3
+<<sec8.3:sols-cont3>>
+#+LATEX: \label{page:sec8.3sols-cont3}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{James Joseph Sylvester}
+\enquote{Mathematics is the music of reason.}
+\footnote{Lire la page sur Sylvester : \url{https://en.wikipedia.org/wiki/James_Joseph_Sylvester}}
+\end{myquote}
+#+END_EXPORT
+\index{Sylvester, James}
+
+#+LATEX: \clearpage
+
+<<sols-cont3-menu>>
+#+LATEX: \label{page:sols-cont3-menu}
++ [[sec8.3.1:sol5][Solution de l'exercice 5]] page \pageref{page:sec8.3sols-cont3}
++ [[sec8.3.2:sol6][Solution de l'exercice 6]] page \pageref{page:sec8.3.2sol6}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.2:sols-cont2][Solutions des exercices du contenu 2]] page \pageref{page:sec8.2sols-cont2}
++ [[sec8.4:sols-cont4][Solutions des exercices du contenu 4]] page \pageref{page:sec8.4sols-cont4}   
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 5
+<<sec8.3.1:sol5>>
+#+LATEX: \label{page:sec8.3.1sol5}
+
+1. Calcul de la distance\index{distance} entre \(\pi\) et \(\Phi = \dfrac{1 +
+   \sqrt{5}}{2}\) à 3 chiffres après la virgule.
+   \[d(\Phi ; \pi) = \pi - \Phi \simeq 1,524\]
+2. Calcul de la distance \(\dfrac{1}{4}\) et \(\dfrac{1}{3}\) à 3
+   chiffres près.
+   \[d\left(\dfrac{1}{4} ; \dfrac{1}{3}\right) =
+       \left\lvert\dfrac{3}{12} - \dfrac{4}{12}\right\rvert =
+       \dfrac{1}{12} \simeq 0,083\]
+3. Calcul de la distance \(\dfrac{1}{7}\) et \(\dfrac{1}{8}\) à 6 chiffres.
+   \[d\left(\dfrac{1}{7} ; \dfrac{1}{8}\right) =
+       \left\lvert\dfrac{8}{56} - \dfrac{7}{56}\right\rvert =
+       \dfrac{1}{56} \simeq 0,017857\]
+4. Calcul de la distance entre \(\Phi\) et \(\sqrt{2}\) à 2 chiffres.
+   \[d\left(\Phi ; \sqrt{2}\right) = \Phi - \sqrt{2} \simeq 0,20\]
+5. Calcul de la distance entre \(\Phi\) et \(\sqrt{3}\) à 5 chiffres.
+   \[d\left(\Phi ; \sqrt{3}\right) = \sqrt{3} - \Phi \simeq 0,11402\]
+
++ [[sec2.3.2:exo5][Voir l'énoncé de l'exercice 5]]
+  #+LATEX: page~\pageref{page:sec2.3.2exo5}
+  
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 6
+<<sec8.3.2:sol6>>
+#+LATEX: \label{page:sec8.3.2sol6}
+
+
+1. Calcul des nombres à une distance\index{distance} 1 de 1. Là c'est facile on peut
+   le faire de tête c'est \(x_1 = 0\) et \(x_2 = 2\).
+   \[----0--1--2------>\]
+2. Calcul des nombres à une distance \(0,5\) de \(-1\). Là on peut
+   poser les calculs :
+   \[x_1 = -1 - 0,5 = -1,5\]
+   et
+   \[x_2 = -1 + 0,5 = -0,5\]
+   \[------(-1,5)---(-1)---(-0,5)----->\]
+3. Calcul des nombres à une distance \(\dfrac{1}{3}\) de
+   \(\dfrac{1}{4}\). Mettons les fractions au même dénominateur :
+   \[x_1 = \dfrac{1}{4} - \dfrac{1}{3} = \dfrac{3}{12} - \dfrac{4}{12} =
+   -\dfrac{1}{12}\]
+   et
+   \[x_2 = \dfrac{1}{4} + \dfrac{1}{3} = \dfrac{3}{12} + \dfrac{4}{12}
+   = \dfrac{7}{12}\]
+   
+   \[------\left(-\dfrac{1}{12}\right)----\left(\dfrac{3}{12}\right)----\left(\dfrac{7}{12}\right)----->\]
+4. Calcul des nombres à une distance \(\sqrt{2}\) de 1.
+   \[x_1 = 1 - \sqrt{2}\simeq -0,414\]
+   et
+   \[x_2 = 1 + \sqrt{2} \simeq 2,414\]
+   \[--(1-\sqrt{2})--1--(1+\sqrt{2})--->\]
+5. Calcul des nombres à une distance \(\sqrt{3}\) de \(\sqrt{2}\). Ici
+   il faut faire appel à une astuce classique pour les racines
+   carrées, la multiplication par la quantité conjuguée (cf l'identité
+   remarquable \((a - b)(a + b) = a^2 - b^2\) qui permet d'enlever les
+   racines).
+   + \[x_1 = \sqrt{2} - \sqrt{3} \]
+   + \[x_1 = \dfrac{(\sqrt{2} - \sqrt{3})(\sqrt{2} + \sqrt{3})}{\sqrt{2} + \sqrt{3}}\]
+   + \[x_1 = \dfrac{2 - 3}{\sqrt{2} + \sqrt{3}}\]
+   + \[x_1 = -\dfrac{1}{\sqrt{2} + \sqrt{3}}\]
+   + \[x_2 = \sqrt{2} + \sqrt{3}\simeq 3,15\]
+   + \[x_1 \simeq -0,32\]
+   \[----\left(-\dfrac{1}{\sqrt{2} + \sqrt{3}}\right)--\sqrt{2}--(\sqrt{2} + \sqrt{3})---->\]
+6. Calcul des nombres à une distance \(\Phi = \dfrac{1 +
+   \sqrt{5}}{2}\) de \(1\).
+  
+   + \[x_1 = 1 + \Phi = \dfrac{2}{2} + \dfrac{1 + \sqrt{5}}{2}\]
+   + \[x_1 = 1 + \Phi = \dfrac{3 + \sqrt{5}}{2}\simeq 2,618\]
+   + \[x_2 = 1 - \Phi = \dfrac{2}{2} - \dfrac{1 + \sqrt{5}}{2}\]
+   + \[x_2 = 1 - \Phi = \dfrac{1 - \sqrt{5}}{2}\simeq -0,618\]
+   \[-------\left(\dfrac{1 - \sqrt{5}}{2}\right)--1--\left(\dfrac{3 + \sqrt{5}}{2}\right)------>\]
+7. Calcul des nombres à une distance \(\tau = 2\pi\) de \(\pi\).
+   \[x_1 = \pi - \tau = \pi - 2\pi = -\pi\]
+   et \[x_2 = \pi + \tau = \pi + 2\pi = 3\pi\]
+
+   \[----(-\pi)------\pi------3\pi---->\]
+
++ [[sec2.3.3:exo6][Voir l'énoncé de l'exercice 6]]
+  #+LATEX: page~\pageref{page:sec2.3.3exo6}
+
+  
+#+LATEX: \clearpage   
+** Solutions des exercices du contenu 4
+<<sec8.4:sols-cont4>>
+#+LATEX: \label{page:sec8.4sols-cont4}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Edsger W. Dijkstra}
+\enquote{There should be no such thing as boring mathematics.}
+\footnote{Consultez la page Wikipédia dédiée à Dijkstra : \url{https://en.wikipedia.org/wiki/Edsger_W._Dijkstra}}
+\end{myquote}
+#+END_EXPORT
+\index{Dijkstra, Edsger}
+
+
+#+LATEX: \clearpage
+
+<<sols-cont4-menu>>
+#+LATEX: \label{page:sols-cont4-menu}
++ [[sec8.4.1:sol7][Solution de l'exercice 7]] page \pageref{page:sec8.4.1sol7}
++ [[sec8.4.2:sol8][Solution de l'exercice 8]] page \pageref{page:sec8.4.2sol8}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.3:sols-cont3][Solutions des exercices du contenu 3]] page \pageref{page:sec8.3sols-cont3}
++ [[sec8.5:sols-cont5][Solutions des exercices du contenu 5]] page \pageref{page:sec8.5sols-cont5} 
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 7
+<<sec8.4.1:sol7>>
+#+LATEX: \label{page:sec8.4.1sol7}
+
+1. Calculs avec \((a, r) = (1, \sqrt{2})\)
+   + \[D_a = [1-\sqrt{2} ; 1+\sqrt{2}]\]
+   + \[x\in D_a \Rightarrow 1-\sqrt{2}\leq x\leq 1+\sqrt{2}\]
+   + \[\Rightarrow -\sqrt{2}\leq x - 1\leq \sqrt{2}\]
+   + \[\Rightarrow \lvert x - 1\rvert \leq \sqrt{2}\]
+2. Calculs avec \((a, r) = (\sqrt{2}, \sqrt{3})\)
+   + \[D_a = [\sqrt{2}-\sqrt{3} ; \sqrt{2}+\sqrt{3}]\]
+   + \[x\in D_a \Rightarrow \sqrt{2}-\sqrt{3}\leq x\leq \sqrt{2}+\sqrt{3}\]
+   + \[\Rightarrow -\sqrt{3}\leq x - \sqrt{2}\leq \sqrt{3}\]
+   + \[\Rightarrow \lvert x - \sqrt{2}\rvert \leq \sqrt{3}\]
+3. Calculs avec \((a, r) = (1, \Phi)\)
+   + \[D_a = [1-\Phi ; 1+\Phi]\]
+   + \[x\in D_a \Rightarrow 1-\Phi\leq x\leq 1+\Phi\]
+   + \[\Rightarrow -\Phi\leq x - 1\leq \Phi\]
+   + \[\Rightarrow \lvert x - 1\rvert \leq \Phi\]
+4. Calculs avec \((a, r) = (\pi, \tau)\)
+   + \[D_a = [\pi-\tau ; \pi+\tau]\]
+   + \[x\in D_a \Rightarrow \pi-\tau\leq x\leq \pi+\tau\]
+   + \[\Rightarrow -\tau\leq x - \pi\leq \tau\]
+   + \[\Rightarrow \lvert x - \pi\rvert \leq \tau\]
+
++ [[sec2.4.2:exo7][Voir l'énoncé de l'exercice 7]]
+  #+LATEX: page~\pageref{page:sec2.4.2exo7}
+  
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 8
+<<sec8.4.2:sol8>>
+#+LATEX: \label{page:sec8.4.2sol8}
+
+
+
+
+1. Pour rappels tous les codes sont accessibles sur Google Colab à
+   l'adresse communiquée dans la section concernée lorsque vous aurez
+   rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+   (vous trouverez également les corrections de tous les exercices du
+   livre).
+
+   #+BEGIN_SRC python
+     def borne_inf_sup(a, r):
+       if r < 0: return False
+       else: return a - r, a + r
+
+     # Test
+     a, r = 2, -2**0.5
+     print(borne_inf_sup(a, r))
+     # Sortie
+     #False
+     a, r = 2, 2**0.5
+     print(borne_inf_sup(a, r))
+     # Sortie
+     #(0.5857864376269049, 3.414213562373095)
+   #+END_SRC
+2. Pour rappels tous les codes sont accessibles sur Google Colab à
+   l'adresse communiquée dans la section concernée lorsque vous aurez
+   rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+   (vous trouverez également les corrections de tous les exercices du
+   livre).
+   #+BEGIN_SRC python
+     def borne_inf_sup(a, r, precision):
+       if r < 0: return False
+       else:
+	 borne_inf = round(a - r, precision)
+	 borne_sup = round(a + r, precision)
+	 return borne_inf, borne_sup
+
+     # Tests
+     a, r = 2, 2**0.5
+     for precision in range(1, 10):
+       print(borne_inf_sup(a, r, precision))
+
+     # Sorties
+     #(0.6, 3.4)
+     #(0.59, 3.41)
+     #(0.586, 3.414)
+     #(0.5858, 3.4142)
+     #(0.58579, 3.41421)
+     #(0.585786, 3.414214)
+     #(0.5857864, 3.4142136)
+     #(0.58578644, 3.41421356)
+     #(0.585786438, 3.414213562)
+   #+END_SRC
+3. Pour rappels tous les codes sont accessibles sur Google Colab à
+   l'adresse communiquée dans la section concernée lorsque vous aurez
+   rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+   (vous trouverez également les corrections de tous les exercices du
+   livre).
+   #+BEGIN_SRC python
+     def distance(a, b):
+       if a < b: return b - a
+       else: return a - b
+
+     # Tests
+     a, b = 1, 2
+     print(f"d({a}, {b}) = {distance(a, b)}")
+     a, b = 2**0.5, 1
+     print(f"d({a}, {b}) = {distance(a, b)}")
+     #d(1, 2) = 1
+     #d(1.4142135623730951, 1) = 0.41421356237309515
+   #+END_SRC
+
+
++ [[sec2.4.5:exo8][Voir l'énoncé de l'exercice 8]]
+  #+LATEX: page~\pageref{page:sec2.4.5exo8}
+  
+#+LATEX: \clearpage   
+** Solutions des exercices du contenu 5
+<<sec8.5:sols-cont5>>
+#+LATEX: \label{page:sec8.5sols-cont5}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Eric Temple Bell}
+\enquote{‘Obvious’ is the most dangerous word in mathematics.}
+\footnote{Lire la page Wikipédia dédiée à Bell : \url{https://en.wikipedia.org/wiki/Eric_Temple_Bell}}
+\end{myquote}
+#+END_EXPORT
+\index{Bell, Eric}
+
+
+#+LATEX: \clearpage
+
+<<sols-cont5-menu>>
+#+LATEX: \label{page:sols-cont5-menu}
++ [[sec8.5.1:sol9][Solution de l'exercice 9]] page \pageref{page:sec8.5.1sol9}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.4:sols-cont4][Solutions des exercices du contenu 4]] page \pageref{page:sec8.4sols-cont4}
++ [[sec8.6:sols-cont6][Solutions des exercices du contenu 6]] page \pageref{page:sec8.6sols-cont6}   
+
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 9
+<<sec8.5.1:sol9>>
+#+LATEX: \label{page:sec8.5.1sol9}
+
+Si vous l'avez fait sur papier vous avez dû utiliser une machine
+pour calculer les décimales de \(\tau\), de \(\Phi\) et des racines
+carrées. Exactement comme je l'avais montré pour \(\sqrt{2}\). Ici
+la façon la plus intelligente de procéder consiste à utiliser
+Python.
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+  from math import ceil, pi, trunc
+
+  def decimal_frame(real, nb_digits):
+    """
+    Cette fonction prend en entrées : 
+    real: un nombre réel à encadrer
+    nb_digits: le nombre de décimales de l'encadrement
+    Elle renvoie en sortie les bornes inférieures et
+    supérieures de cet encadrement décimal.
+    """
+    # on décale la virgule de nb_digits vers la droite
+    real_power_nb_digits = real * 10**nb_digits 
+    # on coupe
+    infimum = trunc(real_power_nb_digits) * 10**(-nb_digits)
+    infimum = round(infimum, nb_digits)
+    supremum = ceil(real_power_nb_digits) * 10**(-nb_digits)
+    supremum = round(supremum, nb_digits)
+    return infimum, supremum
+
+  # Tests
+  tau, phi = 2*pi, (1+5**0.5)/2
+  sqrts = [x**0.5 for x in [2, 3, 5, 7]]
+  reals = [tau, phi] + sqrts
+  for real in reals:
+    print(f"Encadrement du nombre réel {real} à :")
+    for nb_digits in range(1, 6): 
+      print(f"10**(-{nb_digits}) près :", end=" ")
+      print(decimal_frame(real, nb_digits))
+#+END_SRC
+
++ [[sec2.5.2:exo9][Voir l'énoncé de l'exercice 9]]
+  #+LATEX: page~\pageref{page:sec2.5.2exo9}
+  
+#+LATEX: \clearpage  
+
+** Solutions des exercices du contenu 6
+<<sec8.6:sols-cont6>>
+#+LATEX: \label{page:sec8.6sols-cont6}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Marston Morse}
+\enquote{Mathematics are the result of mysterious powers which no one
+understands, and which the unconscious recognition of beauty must
+play an important part. Out of an infinity of designs a
+mathematician chooses one pattern for beauty’s sake and pulls it
+down to earth.}
+\footnote{Lire la page sur Morse : \url{https://en.wikipedia.org/wiki/Marston_Morse}}
+\end{myquote}
+#+END_EXPORT
+\index{Morse, Marston}
+
+#+LATEX: \clearpage
+
+<<sols-cont6-menu>>
+#+LATEX: \label{page:sols-cont6-menu}
++ [[sec8.6.1:sol10][Solution de l'exercice 10]] page \pageref{page:sec8.6.1sol10}
++ [[sec8.6.2:sol11][Solution de l'exercice 11]] page \pageref{page:sec8.6.2sol11}
++ [[sec8.6.3:sol12][Solution de l'exercice 12]] page \pageref{page:sec8.6.3sol12}
++ [[sols-contents-menu][Menu précédent]] page \pageref{page:sols-contents-menu}
++ [[sec8.5:sols-cont5][Solutions des exercices du contenu 5]] page
+  \pageref{page:sec8.5sols-cont5}
+
+  
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 10
+<<sec8.6.1:sol10>>
+#+LATEX: \label{page:sec8.6.1sol10}
+
+Trouvons l'écriture fractionnaire des nombres suivants :
+
+1. \[x = 0,07\dots7\dots\] avec des \(7\) à l'infini.
+   \[100x = 7,7\dots\]
+   \[10x  = 0,7\dots\]
+   \[90x = 7\]
+   \[x = \dfrac{7}{90}\]
+   Vous connaissez maintenant la fraction de James Bond !
+2. \[y = 0,076923\dots\] avec la période 076923 qui se répète à l'infini.
+   \[y \times 10^6 = 76923,076923\dots\]
+   \[y  = 0,076923\dots\]
+   \[999999y = 76923\]
+   \[y = \dfrac{76923}{999999} = \dfrac{1\times 76923}{13\times 76923} \]
+   \[y = \dfrac{1}{13}\]
+   Le nombre 13 propose une période à 6 chiffres comme le nombre 7.
+3. \[z = 0,0588235294117647\] avec la période 0588235294117647 qui se
+   répète à l'infini.
+   \[z\times 10^{16} = 588235294117647,0588235294117647\dots\]
+   \[z  = 0,0588235294117647\dots\]
+   \[9999999999999999z = 588235294117647\]
+   \[z = \dfrac{588235294117647}{9999999999999999}\]
+   \[9999999999999999 = 17\times 588235294117647 \]
+   \[z = \dfrac{1}{17}\]
+   Le nombre 17 cachait bien son jeu avec sa période à 16 chiffres !
+
+
++ [[sec2.6.2:exo10][Voir l'énoncé de l'exercice 10]]
+  #+LATEX: page~\pageref{page:sec2.6.2exo10}
+
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 11
+<<sec8.6.2:sol11>>
+#+LATEX: \label{page:sec8.6.2sol11}
+
+1. Chacune des 6 faces du cube d'arête 1 est un carré de côté 1 donc
+   de diagonale \(\sqrt{2}\) (voir les démonstrations précédentes dans
+   la section [[sqrt2proofs][quelques preuves de l'irrationalité de
+   \(\sqrt{2}\)]][fn:sqrtproofs]).
+   Si on considère un triangle formé par une diagonale de la face du
+   bas et d'une arête verticale alors l'hypoténuse sera la diagonale
+   cherchée. Nommons ABC ce triangle avec \(AB = 1\) (l'arête
+   verticale), \(BC = \sqrt{2}\) (la diagonale de la face du bas) et
+   \(AC\) l'hypoténuse.
+   
+   Par Pythagore :
+   \[CA^2 = AB^2 + BC^2 = 1 + 2 = 3\]
+   d'où \(CA = \sqrt{3}\).
+
+   *CQFD*
+   #+CAPTION: Cube d'arrête 1
+   #+ATTR_HTML: :width 600px :height 400px
+   [[./manip_real/img/cube-sqrt3-png.png]]   
+2. Montrons par l'absurde\index{raisonnement!absurde} que \(\sqrt{3}\)
+   est irrationnel\index{ensembles!des nombres irrationnels}.
+   Soit \(a\) et \(b\) deux entiers tels que
+   \[\sqrt{3} = \dfrac{a}{b}\]
+   et \(pgcd(a, b) = 1\).\index{pgcd}
+   
+   Alors \(a^2 = 3b^2\).
+
+   Puisque \(a\) et \(b\) n'ont pas de diviseur commun il en va de
+   même pour leurs carrés.
+
+   Donc 3 est un diviseur de \(a\) puisqu'il divise son carré.
+
+   Ainsi \[a = 3k\] avec \(k\in\mathbb{Z}\).
+
+   On peut alors établir que
+   \[a^2 = 9k^2\]
+   ce qui implique \[b^2 = 3k^2\]
+
+   Comme \(a^2\) et \(b^2\) n'ont pas de diviseur commun (car \(a\) et
+   \(b\) n'en ont pas) alors \(k^2\) ne divise pas \(b^2\) (car il
+   divise déjà \(a^2\)).
+
+   Mais alors, on a nécessairement 3 comme diviseur de \(b^2\).
+
+   Problème, si 3 divise \(b^2\) alors il divise aussi \(b\) ce qui
+   contredit \(pgcd(a, b) = 1\).\index{pgcd}
+   
+
+   *CQFD*
+   
++ [[sec2.6.5:exo11][Voir l'énoncé de l'exercice 11]]
+  #+LATEX: page~\pageref{page:sec2.6.5exo11}
+
+
+[fn:sqrtproofs] Voir page \pageref{page:sqrt2proofs}
+
+
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 12
+<<sec8.6.3:sol12>>
+#+LATEX: \label{page:sec8.6.3sol12}
+
+1. Le nombre 4 divise le carré de 10 mais pas 10. Le nombre 8 divise
+   le carré de 4 mais pas 4. Le nombre 12 divise le carré de 6 mais
+   pas 6. Le nombre 16 divise le carré de 8 mais pas 8. Le nombre 9
+   divise le carré de 12 mais pas 12.
+2. Supposons par l'absurde que le nombre d'or
+   \[\Phi = \dfrac{1 + \sqrt{5}}{2}\] soit rationnel.
+   Alors
+   \[\Phi = \dfrac{a}{b}\] avec \(pgcd(a, b) = 1\).\index{pgcd}
+   Or
+   \[\Phi^2 = 1 + \Phi\]
+   donc
+   \[\Phi^2 = \dfrac{a + b}{b}\in\mathbb{Q}\]
+   mais alors
+   \[\dfrac{a + b}{b} = \dfrac{a^2}{b^2}\]
+   conduit à
+   \[ab + b^2 = a\]
+   soit
+   \[b^2 = a(b+1)\]
+   ce qui est absurde car \(a\) ne divise pas \(b\) donc pas son carré
+   non plus et d'autre par
+   \[b + 1\]
+   ne divise pas \(b^2\) non plus.
+
+   *CQFD*
+
++ [[sec2.6.7:exo12][Voir l'énoncé de l'exercice 12]]
+  #+LATEX: page~\pageref{page:sec2.6.7exo12}
+
+
+#+LATEX: \clearpage
+
+* Solutions des exercices des capacités attendues
+<<sec9:sols-capacities>>
+#+LATEX: \label{page:sec9sols-capacities}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{John Forbes Nash Jr.}
+\enquote{You don’t have to be a mathematician to have a feel for numbers.}
+\footnote{Voir la page Wikipédia sur Nash : \url{https://en.wikipedia.org/wiki/John_Forbes_Nash_Jr.}}
+\end{myquote}
+#+END_EXPORT
+\index{Nash, John}
+
+#+LATEX: \clearpage
+
+<<sols-capacities-menu>>
+#+LATEX: \label{page:sols-capacities-menu}
++ [[sec9.1:sols-capacity1][Solutions des exercices de la capacité \(C_1\)]] page
+  \pageref{page:sec9.1sols-capacity1}
++ [[sec9.2:sols-capacity2][Solutions des exercices de la capacité \(C_2\)]] page
+  \pageref{page:sec9.2sols-capacity2}
++ [[sec9.3:sols-capacity3][Solutions des exercices de la capacité \(C_3\)]] page
+  \pageref{page:sec9.3sols-capacity3}
++ [[sec9.4:sols-capacity4][Solutions des exercices de la capacité \(C_4\)]] page
+  \pageref{page:sec9.4sols-capacity4}
++ [[sec8:sols-contents][Solutions des exercices des contenus]] page
+  \pageref{page:sec8sols-contents}
+  
+
+
+#+LATEX: \clearpage
+
+** Solutions des exercices de la capacité \(C_1\)
+<<sec9.1:sols-capacity1>>
+#+LATEX: \label{page:sec9.1sols-capacity1}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Sofya Kovalveskaya}
+\enquote{It is impossible to be a mathematician without being a poet in soul.}
+\footnote{Voir la page Wikipédia sur Kovalveskaya : \url{https://en.wikipedia.org/wiki/Sofya_Kovalevskaya}}
+\end{myquote}
+#+END_EXPORT
+\index{Kovalveskaya, Sofya}
+
+<<sols-capacity1-menu>>
+#+LATEX: \label{page:sols-capacity1-menu}
++ [[sec9.1.1:sol13][Solution de l'exercice 13]]
+  #+LATEX: page~\pageref{page:sec9.1.1sols13}
++ [[sols-capacities-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:sols-capacities-menu}
+  
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 13
+<<sec9.1.1:sol13>>
+#+LATEX: \label{page:sec9.1.1sols13}
+
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+
+#+LATEX: \clearpage
+
+
+#+BEGIN_SRC python
+  # Solution
+  import matplotlib.pyplot as plt
+  import numpy as np
+
+  numbers = [-2, -0.5, 0, 1, np.sqrt(2), np.pi]
+  labels = [
+      'P_0 (-2)', 'P_1 (-0.5)', 'P_2 (0)',
+      'P_3 (1)', 'P_4 (sqrt{2})', r'P_5 (\pi)'
+  ]
+
+  plt.figure(figsize=(10, 1))
+
+  # Ploter une ligne horizontale
+  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+
+  # Placer les nombres sur la ligne graduée
+  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+
+  # Ajouter des étiquettes aux nombres
+  for i, label in enumerate(labels):
+      plt.text(numbers[i], 0.02, label, ha='center')
+
+  # Masquer les axes
+  plt.axis('off')
+
+  plt.show()
+#+END_SRC
+
+#+LATEX: \clearpage
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+
++ [[sec3.2.2:exo13][Voir l'énoncé de l'exercice 13]]
+  #+LATEX: page~\pageref{page:sec3.2.2exo13}
+
+
+#+LATEX: \clearpage
+** Solutions des exercices de la capacité \(C_2\)
+<<sec9.2:sols-capacity2>>
+#+LATEX: \label{page:sec9.2sols-capacity2}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Karl Weierstrass}
+\enquote{A mathematician who is not also something of a poet will never be a
+complete mathematician.}
+\footnote{Lire la page Wikipédia sur Weierstrass : \url{https://en.wikipedia.org/wiki/Karl_Weierstrass}}
+\end{myquote}
+#+END_EXPORT
+\index{Weierstrass, Karl}
+
+#+LATEX: \clearpage
+
+<<sols-capacity2-menu>>
++ [[sec9.2.1:sol14][Solution de l'exercice 14]]
+  #+LATEX: page~\pageref{page:sec9.2.1sol14}
++ [[sols-capacities-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:sols-capacities-menu}
+
+#+LATEX: \clearpage  
+*** Solution de l'exercice 14
+<<sec9.2.1:sol14>>
+#+LATEX: \label{page:sec9.2.1sol14}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+#+LATEX: \clearpage
+
+#+BEGIN_SRC python
+  # Solution
+  from math import floor, ceil
+
+
+  def default(number, decimals):
+    """
+    Cette fonction prend 2 paramètres en entrées :
+    number: le nombre qu'on cherche à arrondir par défaut
+    decimals: le nombre de chiffres après la virgule
+    Elle renvoie le nombre arrondi par défaut
+    à decimals décimales
+    """
+    num = floor(number * 10**decimals)
+    den = 10**decimals
+    return num / den
+
+  def excess(number, decimals):
+    """
+    Cette fonction prend 2 paramètres en entrées :
+    number: le nombre qu'on cherche à arrondir par excès
+    decimals: le nombre de chiffres après la virgule
+    Elle renvoie le nombre arrondi par excès à
+    decimals décimales
+    """
+    if number == int(number):
+      num = ceil(number * 10**decimals + 1)
+    else: num = ceil(number * 10**decimals)
+    den = 10**decimals
+    return num / den
+
+  def get_boundary(nums, method, decimals):
+    """
+    Cette fonction prend 3 paramètres en entrées :
+    nums: nombres dont on cherche la borne (inf ou sup)
+    method: la fonction utilisée (default ou excess)
+    decimals: le nombre de décimales
+    Elle renvoie la liste des bornes
+    (que des infs ou que des sups)
+    """
+    bounds = [method(num, decimals) for num in nums]
+    return bounds
+
+
+  num_to_square = [1 + i/10 for i in range(5)]
+  squares = [round(n2s**2, 2) for n2s in num_to_square]
+  infs = get_boundary(squares, default, 1)
+  sups = get_boundary(squares, excess, 1)
+  list_of_intervals = [
+    [infs[i], sups[i]] for i in range(len(infs))
+  ]
+
+  nums = []
+  for i in range(len(squares)):
+    nums.extend([infs[i], squares[i], sups[i]])
+    n2s, interval = num_to_square[i], list_of_intervals[i]
+    msg = f"{n2s}**2 = {squares[i]} appartient à "
+    msg += f"l'intervalle {interval}"
+    print(msg)
+
+  plt.figure(figsize=(10, 1))
+
+  # Tracer une ligne horizontale
+  plt.plot([min(nums), max(nums)], [0, 0], 'k')
+
+  # Placer les nombres sur la ligne graduée
+  plt.scatter(
+    squares, np.zeros_like(squares),
+    color='green', marker='x'
+  )
+  plt.scatter(
+    infs, np.zeros_like(infs),
+    color='red', marker='$[$'
+  )
+  plt.scatter(
+    sups, np.zeros_like(sups),
+    color='red', marker='$]$'
+  )
+
+  infs_labels = [str(inf) for inf in infs]
+  sqrs_labels = [str(sqr) for sqr in squares]
+  sups_labels = [str(sup) for sup in sups]
+  # Ajouter des étiquettes aux nombres
+  for i, inf_label in enumerate(infs_labels):
+      plt.text(infs[i], 0.02, inf_label, ha='center')
+
+  for i, sqr_label in enumerate(sqrs_labels):
+      plt.text(
+	squares[i], -0.02, sqr_label,
+	ha='center', va='top'
+      )
+
+  for i, sup_label in enumerate(sups_labels):
+      plt.text(
+	sups[i], 0.02,
+	sup_label, ha='center'
+      )
+
+
+  # Masquer les axes
+  plt.axis('off')
+
+  plt.show()
+#+END_SRC
+
+#+LATEX: \clearpage
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
++ [[sec3.3.2:exo14][Voir l'énoncé de l'exercice 14]]
+  #+LATEX: page~\pageref{page:sec3.3.2exo14}
+  
+#+LATEX: \clearpage
+** Solutions des exercices de la capacité \(C_3\)
+<<sec9.3:sols-capacity3>>
+#+LATEX: \label{page:sec9.3sols-capacity3}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{Georg Cantor}
+\enquote{In mathematics the art of proposing a question must be held of
+higher value than solving it.}
+\footnote{Voir la page Wikipédia sur Cantor : \url{https://en.wikipedia.org/wiki/Georg_Cantor}}
+\end{myquote}
+#+END_EXPORT
+\index{Cantor, Georg}
+
+#+LATEX: \clearpage
+
+<<sols-capacity3-menu>>
+#+LATEX: \label{page:sols-capacity3-menu}
++ [[sec9.3.1:sol15][Solution de l'exercice 15]]
+  #+LATEX: page~\pageref{page:sec9.3.1-sol15}
++ [[sec9.3.2:sol16][Solution de l'exercice 16]]
+  #+LATEX: page~\pageref{page:sec9.3.2sol16}
++ [[sols-capacities-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:sols-capacities-menu}
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 15
+<<sec9.3.1:sol15>>
+#+LATEX: \label{page:sec9.3.1-sol15}
+
+Les solutions sont générées automatiquement après la saisie
+utilisateur.
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
++ [[sec3.4.1:exo15][Voir l'énoncé de l'exercice 15]]
+  #+LATEX: page~\pageref{page:sec3.4.1exo15}
+
+
+
+#+LATEX: \clearpage
+
+*** Solution de l'exercice 16
+
+<<sec9.3.2:sol16>>
+#+LATEX: \label{page:sec9.3.2sol16}
+
+Les solutions sont générées automatiquement après la saisie
+utilisateur.
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : [[https://forms.gle/qY8ym3ZxSo9NVH3S7]]
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
+
++ [[sec3.4.2:exo16][Voir l'énoncé de l'exercice 16]]
+  #+LATEX: page~\pageref{page:sec3.4.2exo16}
+  
+#+LATEX: \clearpage
+
+** Solutions des exercices de la capacité \(C_4\)
+<<sec9.4:sols-capacity4>>
+#+LATEX: \label{page:sec9.4sols-capacity4}
+
+#+BEGIN_EXPORT latex 
+\begin{myquote}{John Wesley Young}
+\enquote{It is clear that the chief end of mathematical study must be to
+make the students think.}
+\footnote{Lire la page Wikipédia sur Young : \url{https://en.wikipedia.org/wiki/John_Wesley_Young}}
+\end{myquote}
+#+END_EXPORT
+\index{Young, John}
+
+#+LATEX: \clearpage
+
+<<sols-capacity4-menu>>
+#+LATEX: \label{page:sols-capacity4-menu}
++ [[sec9.4.1:sol17][Solution de l'exercice 17]]
+  #+LATEX: page~\pageref{page:sec9.4.1sol17}
++ [[sols-capacities-menu][Menu précédent]]
+  #+LATEX: page~\pageref{page:sols-capacities-menu}
+
+#+LATEX: \clearpage  
+*** Solution de l'exercice 17
+<<sec9.4.1:sol17>>
+#+LATEX: \label{page:sec9.4.1sol17}
+
+Pour rappels tous les codes sont accessibles sur Google Colab à
+l'adresse communiquée dans la section concernée lorsque vous
+aurez rempli ce petit formulaire : https://forms.gle/qY8ym3ZxSo9NVH3S7
+(vous trouverez également les corrections de tous les exercices du
+livre).
+
+C'est également sur Google Colab que vous pourrez tester tous les
+programmes qui vous permettent de pratiquer les capacités attendues
+de manière interactive.
+
++ [[sec3.5.1:exo17][Voir l'énoncé de l'exercice 17]]
+  #+LATEX: page~\pageref{page:sec3.5.1exo17}
+
+* Remerciements
+
+Merci d’avoir lu ce livre jusqu’au bout.
+
+Si tu as aimé cette exploration des nombres réels, je t’invite à :
++ Laisser un avis sur Amazon
++ Mettre le maximum d'étoiles sur Amazon
++ Partager le livre autour de toi
++ Me contacter pour des suggestions
+
+#+ATTR_LATEX: :width 1.5in :center t
+[[./manip_real/img/qr-code.png]]
+
+Scanne ce QR code pour accéder directement à la page du livre sur Amazon.
+* Index
+#+LATEX: \printindex  
+
+
+#+LATEX: \printglossaries
+#+LATEX: \printglossary[type=\acronymtype]
