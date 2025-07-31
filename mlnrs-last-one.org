@@ -16,8 +16,11 @@
 
 # --- POLICES (XeLaTeX) ---
 #+LATEX_HEADER: \usepackage{fontspec}
-#+LATEX_HEADER: \setmainfont{Palatino}
-#+LATEX_HEADER: \setsansfont{Palatino}
+#+LATEX_HEADER: \setmainfont{Palatino} % Conserver Palatino
+#+LATEX_HEADER: \setsansfont{Helvetica Neue} % Ou .SF Pro Text
+#+LATEX_HEADER: \setmonofont{Courier} % Une police monospace présente sur macOS
+#+LATEX_HEADER: \usepackage{unicode-math}
+#+LATEX_HEADER: \setmathfont{STIX Two Math} % Tentative avec STIX Two Math (plus fiable)
 
 # --- LANGUE (recommandé pour XeLaTeX) ---
 #+LATEX_HEADER: \usepackage{polyglossia}
@@ -31,85 +34,95 @@
 # --- EN-TÊTES ET PIEDS DE PAGE ---
 #+LATEX_HEADER: \usepackage{fancyhdr}
 #+LATEX_HEADER: \pagestyle{fancy}
-#+LATEX_HEADER: \fancyhf{}
-#+LATEX_HEADER: \fancyhead[LE,RO]{\thepage} % Numéro de page
-#+LATEX_HEADER: \fancyhead[RE]{\nouppercase{\leftmark}}  % Chapitre à droite (paires)
-#+LATEX_HEADER: \fancyhead[LO]{\nouppercase{\rightmark}} % Section à gauche (impaires)
-#+LATEX_HEADER: \renewcommand{\headrule}{\hbox to\headwidth{\hss\color{blue!75!black}\leaders\hrule height 0.8pt\hfill\hss}}
+#+LATEX_HEADER: \fancyhf{} % Clear all headers and footers
+#+LATEX_HEADER: \fancyhead[L]{\nouppercase{\leftmark}} % Chapter name on left header
+#+LATEX_HEADER: \fancyhead[R]{\thepage} % Page number on right header
+#+LATEX_HEADER: \fancyfoot[C]{\nouppercase{\rightmark}} % Section name on center footer
+#+LATEX_HEADER: \renewcommand{\headrulewidth}{0.4pt}
+#+LATEX_HEADER: \renewcommand{\footrulewidth}{0.4pt}
+#+LATEX_HEADER: \fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}} % Pour la première page de chaque chapitre
+
+# --- HYPERLIENS ---
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{
+#+LATEX_HEADER:   colorlinks=true,
+#+LATEX_HEADER:   linkcolor=orange,
+#+LATEX_HEADER:   citecolor=purple,
+#+LATEX_HEADER:   filecolor=magenta,
+#+LATEX_HEADER:   urlcolor=cyan,
+#+LATEX_HEADER: }
 
 
-# --- MATHS ET COULEURS ---
-#+LATEX_HEADER: \usepackage{xcolor}
-#+LATEX_HEADER: \definecolor{mathblue}{rgb}{0,0.4,0.6}
-#+LATEX_HEADER: \everymath{\color{mathblue}}
-#+LATEX_HEADER: \everydisplay{\color{mathblue}}
+
+
+
+# --- INDEX ---
+#+LATEX_HEADER: \usepackage{imakeidx} 
+#+LATEX_HEADER: \makeindex
+
+
+# --- GLOSSAIRE ---
+#+LATEX_HEADER: \usepackage[acronym, nonumberlist, toc]{glossaries}
+#+INCLUDE: "glossaire.org"
+
+
+# % Inclusion des définitions du glossaire via LaTeX.
+# % Vous DEVEZ avoir un fichier nommé glossaire.tex dans le même répertoire
+# % que mlnrs-last-one.org. Ce fichier doit contenir VOS DEFINITIONS LaTeX PURES.
+#+LATEX_HEADER: \AtBeginDocument{\input{glossaire.tex}}
+#+LATEX_HEADER: \makeglossaries % Doit être appelé après toutes les définitions \newglossaryentry
+
+# % --- DIVERS ---
+
+#+LATEX_HEADER: \usepackage{graphicx} % Pour inclure des images
+#+LATEX_HEADER: \graphicspath{{./img/}} % Définit le chemin par défaut pour les images
+#+LATEX_HEADER: \usepackage{enumitem} % Pour personnaliser les listes
+#+LATEX_HEADER: \usepackage{caption} % Pour personnaliser les légendes
+#+LATEX_HEADER: \usepackage{subcaption} % Pour les sous-figures
+#+LATEX_HEADER: \usepackage{tikz} % Pour les graphiques vectoriels
+#+LATEX_HEADER: \usepackage{pgfplots} % Pour les tracés de fonctions
+#+LATEX_HEADER: \pgfplotsset{compat=1.18}
+#+LATEX_HEADER: \usepackage{xcolor} % Pour les couleurs
+#+LATEX_HEADER: \definecolor{MyOrange}{HTML}{FF6600}
+#+LATEX_HEADER: \usepackage{minted}
+
+#+LATEX_HEADER: \usepackage{environ} % Pour créer de nouveaux environnements
+
 
 # --- TABLE DES MATIÈRES ---
 #+LATEX_HEADER: \usepackage{tocloft}
 #+LATEX_HEADER: \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 #+LATEX_HEADER: \renewcommand{\cftsecfont}{\color{orange}\bfseries}
 
+
 # --- CITATIONS AVEC TCOLORBOX ---
-#+LATEX_HEADER: \usepackage[most]{tcolorbox}
-#+LATEX_HEADER: \newtcolorbox{myquote}[1]{%
-#+LATEX_HEADER:     colback=blue!3!white,%
-#+LATEX_HEADER:     colframe=blue!75!black,%
-#+LATEX_HEADER:     fonttitle=\bfseries\itshape\Large\sffamily,%
-#+LATEX_HEADER:     fontupper=\itshape\large\rmfamily,%
-#+LATEX_HEADER:     sharp corners,%
-#+LATEX_HEADER:     boxrule=1pt,%
-#+LATEX_HEADER:     left=6mm, right=6mm, top=6mm, bottom=6mm,%
-#+LATEX_HEADER:     title=#1%
-#+LATEX_HEADER: }
-
-# --- HYPERREF (DOIT ÊTRE PRESQUE À LA FIN) ---
-#+LATEX_HEADER: \usepackage{hyperref}
-#+LATEX_HEADER: \hypersetup{
-#+LATEX_HEADER:     colorlinks=true,
-#+LATEX_HEADER:     linkcolor=orange,
-#+LATEX_HEADER:     urlcolor=cyan,
-#+LATEX_HEADER:     filecolor=black,
-#+LATEX_HEADER:     citecolor=purple,
-#+LATEX_HEADER:     pdftitle={Manipuler les nombres réels},
-#+LATEX_HEADER:     pdfauthor={Laurent Garnier},
-#+LATEX_HEADER:     pdfsubject={Exercices et explications sur les nombres réels},
-#+LATEX_HEADER:     pdfkeywords={mathématiques, exercices, réels, lycée, Python},
-#+LATEX_HEADER:     pdflang={fr-FR},
-#+LATEX_HEADER:     bookmarksnumbered=true,
-#+LATEX_HEADER:     pdfpagelayout=OneColumn,
-#+LATEX_HEADER:     pdfstartview=FitH
-#+LATEX_HEADER: }
-
-# --- INDEX ---
-#+LATEX_HEADER: \usepackage{imakeidx}
-#+LATEX_HEADER: \makeindex[options=-s org-index-style]
+#+LATEX_HEADER_EXTRA: \usepackage[most]{tcolorbox}
+#+LATEX_HEADER_EXTRA: \newtcolorbox{myquote}[1]{%
+#+LATEX_HEADER_EXTRA:     colback=blue!3!white,%
+#+LATEX_HEADER_EXTRA:     colframe=blue!75!black,%
+#+LATEX_HEADER_EXTRA:     fonttitle=\bfseries\itshape\Large\sffamily,%
+#+LATEX_HEADER_EXTRA:     fontupper=\itshape\large\rmfamily,%
+#+LATEX_HEADER_EXTRA:     sharp corners,%
+#+LATEX_HEADER_EXTRA:     boxrule=1pt,%
+#+LATEX_HEADER_EXTRA:     left=6mm, right=6mm, top=6mm, bottom=6mm,%
+#+LATEX_HEADER_EXTRA:     title=#1%
+#+LATEX_HEADER_EXTRA: }
 
 
-# --- GLOSSAIRE ---
-#+LATEX_HEADER: \usepackage[acronym, automake, nonumberlist, toc, xindy]{glossaries-extra}
-#+LATEX_HEADER: \setglossarystyle{long} % ou list, altlist, super, etc.
-#+LATEX_HEADER: \setglossarysection[\chapter*]{Glossaire} % Si vous voulez un chapitre non numéroté pour le glossaire
-#+LATEX_HEADER: \setacronymstyle{long-short} % Pour les acronymes
-#+INCLUDE: "glossaire.org" :only-contents t % Utilisez :only-contents t pour ne pas inclure les en-têtes/pieds de glossaire.org
-
-
-#+LATEX_HEADER: \makeglossaries
+#+OPTIONS: toc:t % Indique à Org mode d'exporter la table des matières
+#+TOC: headlines 1 % Export Org mode (génère le \tableofcontents en LaTeX)
 
 
 
-# --- OPTIONS D'EXPORT ---
-#+OPTIONS: num:t toc:t H:3 ^:{} 
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="styles.css"/>
 
-# --- MACROS ---
-#+MACRO: voirpage Voir page~{{{pageref(${1})}}}
-#+MACRO: pageref @@latex:\pageref{page:${1}}@@
+
+
 
 * À qui s'adresse ce livre
 <<sec1:intro>>
 #+LATEX: \label{page:sec1intro}
 
-#+LATEX: \clearpage
+
 
 #+BEGIN_EXPORT latex
 \begin{myquote}{Josiah Willard Gibbs}
@@ -516,7 +529,7 @@ Tout d'abord nous allons utiliser le
 
 Le raisonnement par l'absurde repose sur un principe de la logique
 classique qu'on appelle le /principe du tiers exclu/[fn:tiers-exclu].
-Le \gls{tiers-exclu}\index{tiers exclu} qu'une affirmation
+Le \gls{tiers-exclu}\index{tiers exclu} dit qu'une affirmation
 est soit vraie soit fausse (pas de troisième alternative).
 
 
@@ -525,7 +538,7 @@ fondamental de la logique classique, qui stipule que pour toute
 proposition P, soit P est vraie, soit sa négation ¬P est vraie. Il n'y
 a pas de troisième possibilité. Il apparaît pour la première fois dans
 la /Métaphysique/ d'Aristote. Certaines logiques non classiques comme
-la logique /intuitioniste/ ou la logique /floue/ le rejette.
+la logique /intuitioniste/ ou la logique /floue/ le rejettent.
 
 
 
@@ -601,7 +614,7 @@ On peut classer les nombres entiers en deux catégories :
    (par exemple \(6 = 2\times 3\) donc dans ce cas \(n = 3\)).
 
    On pourrait noter
-   \[\mathbb{P} = \{ p = 2n | n\in\mathbb{Z}\}\]
+   \[\mathbb{P} = \{ p = 2n\, |\, n\in\mathbb{Z}\}\]
    
    l'ensemble des nombres (entiers)
    pairs\index{ensemble!des nombres pairs} et ainsi \[6\in\mathbb{P}\]
@@ -610,7 +623,7 @@ On peut classer les nombres entiers en deux catégories :
 2. Les nombres impairs de la forme \[i = 2n + 1\] où \(n\) est un
    entier (par exemple \(9 = 2\times 4 + 1\) donc dans ce cas \(n = 4\)).
    On pourrait noter
-   \[\mathbb{I} = \{ i = 2n + 1| n\in\mathbb{Z}\}\]
+   \[\mathbb{I} = \{ i = 2n + 1\,|\, n\in\mathbb{Z}\}\]
    
    l'ensemble des nombres (entiers)
    impairs\index{ensemble!des nombres impairs} et ainsi \(9\in\mathbb{I}\)
@@ -750,7 +763,7 @@ pouvez déjà revoir cette démonstration en vidéo ici :
 Le raisonnement par l'absurde\index{raisonnement!absurde} consiste à partir
 d'une hypothèse contraire à celle qu'on souhaite montrer et ensuite à
 enchaîner des déductions logiques parfaitement valides jusqu'à aboutir
-à une contradiction (quelque chose une conclusion absurde). La
+à une contradiction (quelque chose ou une conclusion absurde). La
 chaîne de déductions peut parfois s'avérer (très) longue et impliquer
 des résultats intermédiaires nécessitant à leur tour (éventuellement)
 d'autres types de raisonnement\index{raisonnement!types}.
@@ -980,23 +993,35 @@ jours :
 + Exemple 3 : Les films pornographiques sont interdits aux mineurs
   donc aux gens qui ont un âge inférieur à 18 ans.
 + Exemple 4 : En boxe anglaise la catégorie de poids pailles concerne
-  les gens dont le poids est inférieur à 47,128 kg (soit 105 livres,
-  source : [[https://fr.wikipedia.org/wiki/Boxe_anglaise]]
+  les gens dont le poids est inférieur à 47,128 kg.
+  Soit 105 livres source :
+
+   [[https://fr.wikipedia.org/wiki/Boxe_anglaise]] 
 + Exemple 5 : En France, seuls les gens qui ont moins de 10 777€ par
   an sont exonérés d'impôt (0%), ensuite de 10 778 à 27 478 c'est 11%,
   puis 30% de 27 479 à 78 570, puis 41% de 78 571 à 168 994 et enfin
-  45% pour ceux qui ont plus de 168 994 (source :
-  [[https://www.service-public.fr/particuliers/vosdroits/F1419]])
+  45% pour ceux qui ont plus de 168 994.
+  Source :
+  
+  [[https://www.service-public.fr/particuliers/vosdroits/F1419]]
 + Exemple 6 : La limite autorisée du taux d'alcool dans le sang par la
   loi en 2023 est de 0,5 g/L soit en équivalent 0,25 mg par litre
-  d'air expiré (source :
-  [[https://www.legipermis.com/infractions/alcool-permis-conduire.html]])
+  d'air expiré.[fn:permis]
+  
 + Exemple 7 : L'IMC (Indice de Masse Corporelle) permet d'établir des
   catégories pour mesurer l'obésité avec par exemple le début de la
-  surcharge pondérale (surpoids) à partir de 25 kg/m^{2} (source :
-  [[https://fr.wikipedia.org/wiki/Indice_de_masse_corporelle]])
+  surcharge pondérale (surpoids) à partir de 25 kg/m^{2}.
+  Source :
   
-   
+  [[https://fr.wikipedia.org/wiki/Indice_de_masse_corporelle]]
+  
+
+
+
+[fn:permis] Source :
+[[https://www.legipermis.com/infractions/alcool-permis-conduire.html]]
+
+
 
 Traduisons ces exemples concrets en inégalités mathématiques.
 
@@ -1019,7 +1044,7 @@ borne\index{borne} apparente alors ça veut dire que l'autre est du
 type \(\infty\) avec le signe adéquat.
 
 
-Ces représentations graphiques peuvent être << /résumées/ >> de façon
+Ces représentations graphiques peuvent être /résumées/ de façon
 abstraite grâce au concept d'intervalle. Ainsi un \gls{intervalle} est
 juste une façon abstraite de représenter un segment (ou demi-droite ou
 droite selon sa nature) sans avoir à le dessiner.
@@ -1028,19 +1053,19 @@ Traduisons ces inégalités en intervalles\index{intervalles} :
 
 
 + Intervalle 1 : \[x \geq 14 \iff x\in [14 ; +\infty[\] on parle
-  d'intervalle fermé\index{intervalle!fermé}.
+  d'intervalle fermé\index{intervalle!fermé} non borné à droite.
 + Intervalle 2 : \[12 \leq x \leq 25\iff x\in [12 ; 25]\] on parle
-  d'intervalle fermé.
+  d'intervalle fermé et borné.
 + Intervalle 3 : \[0 < x < 18\iff x\in ]0 ; 18[\] on parle
-  d'intervalle ouvert\index{intervalle!ouvert}.
+  d'intervalle ouvert\index{intervalle!ouvert} et borné.
 + Intervalle 4 : \[0 < x < 47,128\iff x\in ]0 ; 47,128[\] on parle
-  d'intervalle ouvert.
+  d'intervalle ouvert et borné.
 + Intervalle 5 : \[0\leq x \leq 10 777\iff x\in [0 ; 10777]\] on parle
-  d'intervalle fermé.
+  d'intervalle fermé et borné.
 + Intervalle 6 : \[0 \leq x < 0,5\iff x\in [0 ; 0,5[\] on parle
-  d'intervalle ouvert à droite.
+  d'intervalle ouvert à droite et borné.
 + Intervalle 7 : \[x \geq 25\iff \in [25 ; +\infty[\] on parle
-  d'intervalle fermé.
+  d'intervalle fermé non borné à droite.
 
 
 
@@ -1088,49 +1113,35 @@ la droite des réels.
 1. \[x \geq 14 \iff x\in [ 14 ; +\infty [ \] on parle
    d'intervalle fermé non borné\index{intervalle!fermé non borné}. 14
    est compris dans l'intervalle\index{intervalle}.
-   #+CAPTION: Intervalle fermé non borné à droite \([14 ; +\infty [\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int14inf.png]]
+   \[-\infty ---- [14 ---- x ----> +\infty\]
 
 2. \[12 \leq x \leq 25\iff x\in [12; 25]\] on parle
    d'intervalle fermé borné\index{intervalle!fermé borné}. 12 et 25
    sont inclus dans l'intervalle.
-   #+CAPTION: Intervalle fermé borné \([12 ; 25]\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int1225.png]]
+   \[-\infty ---- [12 ---- x ----25] ----> +\infty\]
    
 3. \[0 < x < 18\iff x\in ]0; 18[\] on parle
    d'intervalle ouvert borné\index{intervalle!ouvert borné}. 0 et 18
    sont exclus de l'intervalle.
-   #+CAPTION: Intervalle ouvert borné \(]0 ; 18[\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int018ouvert.png]]
+   \[-\infty ----] 0 ---- x ---- 18 [----> +\infty\]
    
 4. \[0 < x < 47,128\iff x\in ]0; 47,128[\] on parle
    d'intervalle ouvert borné\index{intervalle!ouvert borné}. \(0\) et
    \(47,128\) sont exclus de l'intervalle.
-   #+CAPTION: Intervalle ouvert borné \(]0 ; 47,128[\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int047128ouvert.png]]
+   \[-\infty ----] 0 ---- x ---- 47,128 [ ----> +\infty\]
    
 5. \[0\leq x \leq 10 777\iff x\in [0; 10777]\] on parle
    d'intervalle fermé borné\index{intervalle!fermé borné}. 0 et 10777
    sont inclus dans l'intervalle.
-   #+CAPTION: Intervalle fermé borné \([0 ; 1077]\)
-   #+ATTR_LATEX: :width 0.35\textwidth :center t
-   [[./manip_real/img/int01077.png]]
+   \[-\infty ---- [0 ---- x ----10777] ----> +\infty\]
    
 6. \[0 \leq x < 0,5\iff x\in [0; 0,5[\] on parle d'intervalle ouvert à
    droite. \(0\) est inclu mais \(0,5\) est exclu de l'intervalle.
-   #+CAPTION: Intervalle borné et ouvert à droite \([0 ; 0,5[\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int005ouv.png]]
+   \[-\infty ---- [0 ---- x ---- 0,5 [----> +\infty\]
    
 7. \[x \geq 25\iff \in [25; +\infty[\] on parle d'intervalle fermé non
    borné à droite. 25 est inclu dans l'intervalle.
-   #+CAPTION: Intervalle fermé non borné à droite \([25 ; +\infty [\)
-   #+ATTR_HTML: :width 450px :height 300px
-   [[./manip_real/img/int25inf.png]]
+   \[-\infty ---- [25 ---- x ----> +\infty\]
 
 
 Ces exemples concrets avaient pour but de vous montrer pourquoi ce
@@ -1249,17 +1260,19 @@ Et de façon générale, comment mesure-t-on la longueur d'un intervalle
 
 C'est très simple, un intervalle\index{intervalle} étant un
 ensemble ordonné\index{ensemble!ordonné}, on mesure sa longueur en
-soustrayant la inf\index{borne!inférieure} à la
-sup\index{borne!supérieure} (que l'intervalle soit ouvert
+soustrayant la borne inférieure\index{borne!inférieure} à la
+borne supérieure\index{borne!supérieure} (que l'intervalle soit ouvert
 ou fermé).
 
 
 
 Il y a donc deux cas de figure :
 
-1. Les \index{bornes} \(a\) et \(b\) sont finies et dans ce cas c'est juste
-   une soustraction normale \(|I| = |b - a|\).
-2. Au moins l'une des bornes est infinie et dans ce cas \(|I| = +\infty\).
+1. Les \index{bornes} inférieure \(a\) et supérieure \(b\) sont finies
+   et dans ce cas c'est juste une soustraction normale :
+   \[|I| = |b - a| = b - a\]
+2. Au moins l'une des bornes est infinie et dans ce cas :
+   \[|I| = +\infty\]
 
 
 Voici quelques exemples :
@@ -1318,7 +1331,7 @@ si vous regardez la solution directement votre progression sera nulle.
 #+LATEX: \label{page:sec2.2.3exo4}
 
 
-1. À l'aide d'une machine calculez les 5 premières décimales\index{décimales}
+1. À l'aide d'une machine, calculez les 5 premières décimales\index{décimales}
    du nombre d'or :
    \[\Phi = \dfrac{1 + \sqrt{5}}{2}\]
 2. Considérez la suite de nombres :
@@ -1330,7 +1343,7 @@ si vous regardez la solution directement votre progression sera nulle.
 4. Calculer les quotients successifs en prenant comme numérateur le
    suivant et comme dénominateur le prédécesseur ainsi \(\dfrac{1}{1},
    \dfrac{2}{1}, \dfrac{3}{2},\dots\).
-5. La suite de nombre de la question 2 est connue sous le nom de
+5. La suite de nombres de la question 2 est connue sous le nom de
    [[https://fr.wikipedia.org/wiki/Suite_de_Fibonacci][suite de Fibonacci]][fn:fibo] (mathématicien italien du XII^{ème}
    siècle qui a appris l'usage des chiffres indo-arabes grâce à son
    père qui commerçait avec des marchands arabes près
@@ -1476,7 +1489,7 @@ Faisons un schéma :
 On notera \(|a|\) la distance\index{distance} du nombre \(a\) par
 rapport à zéro.
 
-On l'appelle aussi la valeur-absolue\index{valeur absolue} de \(a\). 
+On l'appelle aussi la valeur absolue\index{valeur absolue} de \(a\). 
 
 Donnons quelques exemples :
 
@@ -1513,9 +1526,9 @@ Ce qui donne :
 #+LATEX: \[
 #+LATEX: \lvert\cdot\rvert : \mathbb{R} \to \mathbb{R}_{+},\quad x \mapsto
 #+LATEX: \begin{cases}
-#+LATEX:   \lvert x \rvert = 1   & \text{si } x > 0, \\
+#+LATEX:   \lvert x \rvert = x   & \text{si } x > 0, \\
 #+LATEX:   \lvert x \rvert = 0   & \text{si } x = 0, \\
-#+LATEX:   \lvert x \rvert = -1  & \text{si } x < 0.
+#+LATEX:   \lvert x \rvert = -x  & \text{si } x < 0.
 #+LATEX: \end{cases}
 #+LATEX: \]
 
@@ -2007,37 +2020,56 @@ et ainsi de suite jusqu'à
 #+LATEX: \clearpage
 
 #+BEGIN_SRC python
-      def disque(a, r, h):
-	"""
-	+ a: le centre de l'intervalle
-	+ r: le rayon de l'intervalle (ou la demi-amplitude)
-	+ h: le pas de la subdivision
-	Cette fonction renverra une liste de réels
-	(bon numériquement ça sera des float donc des décimaux)
-	contenu dans l'intervalle espacés régulièrement par pas de h.
-	"""
-	borne_inf, borne_sup = a - r, a + r
-	x = borne_inf
-	disk = [x]
-	nb_digits = round(1/h)
-	while x <= borne_sup - h:
-	  x += h
-	  disk.append(round(x, nb_digits))
-	return disk
+  def disque(a, r, h):
+    """
+    + a: le centre de l'intervalle
+    + r: le rayon de l'intervalle
+	 (ou la demi-amplitude)
+    + h: le pas de la subdivision
+    Cette fonction renverra une liste de réels
+    (bon numériquement ça sera des float donc des
+    décimaux) contenu dans l'intervalle espacés
+    régulièrement par pas de h.
+    """
+  
+    borne_inf, borne_sup = a - r, a + r
+    x = borne_inf
+    Disk = [x]
+    nb_digits = round(1/h)
 
-      # Tests
-      a, r, h = 3, 2, 0.4
-      print(disque(a, r, h))
-      # Sortie
-      # [1, 1.4, 1.8, 2.2, 2.6, 3.0, 3.4, 3.8, 4.2, 4.6, 5.0]
-      a, r, h = 3, 2, 0.5
-      print(disque(a, r, h))
-      # Sortie
-      # [1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
-      a, r, h = 0, 1, 0.25
-      print(disque(a, r, h))
-      # Sortie 
-      # [-1, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0]
+  
+    while x <= borne_sup - h:
+      x += h
+      disk.append(round(x, nb_digits))
+    return disk
+
+
+
+  # Tests
+
+  a, r, h = 3, 2, 0.4
+  print(disque(a, r, h))
+  # Sortie
+  # [
+  #  1, 1.4, 1.8, 2.2, 2.6, 3.0,
+  #  3.4, 3.8, 4.2, 4.6, 5.0
+  # ]
+
+  a, r, h = 3, 2, 0.5
+  print(disque(a, r, h))
+  # Sortie
+  # [
+  #  1, 1.5, 2.0, 2.5, 3.0,
+  #  3.5, 4.0, 4.5, 5.0
+  # ]
+
+  a, r, h = 0, 1, 0.25
+  print(disque(a, r, h))
+  # Sortie 
+  # [
+  #  -1, -0.75, -0.5, -0.25,
+  #  0.0, 0.25, 0.5, 0.75, 1.0
+  # ]
 #+END_SRC
 
 #+LATEX: \clearpage
@@ -2301,42 +2333,71 @@ avec sa puissance de 10 positive associée. Et pour la partie
 décimale\index{décimale} il s'agit de sommer le produit de chaque
 chiffre avec sa puissance de 10 négative associée.
 
-Prenons par exemple le nombre \[x = 12345,6789\] on pourrait le
-réécrire :
+Prenons par exemple le nombre :
+
+\[x = 12345,6789\]
+
+on pourrait le réécrire :
 
 \[x = \sum_{k = 0}^4e_k\times 10^k + \sum_{k = 1}^4d_k\times 10^{-k}\]
 
 Où les \(e_k\) désignent les chiffres qui composent la partie
-entière donc \(e_0 = 5\), \(e_1 = 4\), \(e_2 = 3\), \(e_3 = 2\), \(e_4 =
-    1\). Et les \(d_k\) désignent les chiffres composant la partie
-décimale (on dit aussi fractionnaire) donc \(d_1 = 6\), \(d_2 = 7\),
-\(d_3 = 8\), \(d_4 = 9\).
+entière donc :
+
+\[e_0 = 5\quad e_1 = 4\quad e_2 = 3\quad e_3 = 2\quad e_4 = 1\]
+
+Et où les \(d_k\) désignent les chiffres composant la partie
+décimale (on dit aussi fractionnaire) donc :
+
+\[d_1 = 6\quad d_2 = 7\quad d_3 = 8\quad d_4 = 9\]
+
+#+LATEX: \newpage
+
+#+BEGIN_EXPORT latex
+\begin{align*}
+e_0 &= 5& e_1 &= 4& e_2 &= 3& e_3 &= 2& e_4 &= 1\\
+&& d_1 &= 6&  d_2 &= 7&  d_3 &= 8&  d_4 &= 9
+\end{align*}
+#+END_EXPORT
 
 
-+ \[e_0 = 5\quad e_1 = 4\quad e_2 = 3\quad e_3 = 2\quad e_4 = 1\]
-+ \[\qquad \qquad d_1 = 6\quad  d_2 = 7\quad  d_3 = 8\quad  d_4 = 9\]
 
 
-On sépare d'une part la \gls{part-ent}\index{partie!entière} de \(x\) :
+#+LATEX: \newpage
 
-+ \[\lfloor x \rfloor = \sum_{k = 0}^4e_k\times 10^k\]
-+ \[\lfloor x \rfloor = e_0\times 10^0 + e_1\times 10^1 + e_2\times 10^2 + e_3\times 10^3 +
-    e_4\times 10^4\]
-+ \[\lfloor x \rfloor = 5\times 10^0 + 4\times 10^1 + 3\times 10^2 + 2\times 10^3 +
-    1\times 10^4\]
-+ \[\lfloor x \rfloor = 5 + 40 + 300 + 2000 + 10000\]
-+ \[\lfloor x \rfloor = 12345\]
+On sépare d'une part la \gls{part-ent}\index{partie!entière} de
+\(x\) :
+
+#+BEGIN_EXPORT latex
+\begin{align*}
+\lfloor x \rfloor &= \sum_{k = 0}^{k = 4}e_k\times 10^k\\ \\
+\lfloor x \rfloor &= e_0\times 10^0 + e_1\times 10^1 + e_2\times 10^2 + e_3\times 10^3 +
+    e_4\times 10^4\\ \\
+\lfloor x \rfloor &= 5\times 10^0 + 4\times 10^1 + 3\times 10^2 + 2\times 10^3 +
+    1\times 10^4\\ \\
+\lfloor x \rfloor &= 5 + 40 + 300 + 2000 + 10000\\ \\
+\lfloor x \rfloor &= 12345
+\end{align*}
+#+END_EXPORT
+
+#+LATEX: \newpage
   
 et d'autre part la \gls{part-dec}\index{partie!décimale} (ou
 partie fractionnaire\index{partie!fractionnaire}, les deux se disent) :
 
-+ \[\{ x \} = \sum_{k = 1}^4d_k\times 10^{-k}\]
-+ \[\{ x \} = d_1\times 10^{-1} + d_2\times 10^{-2} + d_3\times 10^{-3} +
-    d_4\times 10^{-4}\]  
-+ \[\{ x \} = 6\times 10^{-1} + 7\times 10^{-2} + 8\times 10^{-3} +
-    9\times 10^{-4}\]
-+ \[\{ x \} = 0,6 + 0,07 + 0,008 + 0,0009\]
-+ \[\{ x \} = 0,6789\]
+#+BEGIN_EXPORT latex
+\begin{align*}
+\{ x \} &= \sum_{k = 1}^{k = 4}d_k\times 10^{-k}\\ \\
+\{ x \} &= d_1\times 10^{-1} + d_2\times 10^{-2} + d_3\times 10^{-3} +
+    d_4\times 10^{-4}\\ \\
+\{ x \} &= 6\times 10^{-1} + 7\times 10^{-2} + 8\times 10^{-3} +
+    9\times 10^{-4}\\ \\
+\{ x \} &= 0,6 + 0,07 + 0,008 + 0,0009\\ \\
+\{ x \} &= 0,6789
+\end{align*}
+#+END_EXPORT
+
+#+LATEX: \newpage
 
 Avec naturellement :
 \[x = \lfloor x \rfloor + \{ x \} = 12345 + 0,6789 = 12345,6789\]
@@ -2355,23 +2416,38 @@ droite selon les puissances décroissantes.
 Cette fois-ci \(c_k\) désigne le chiffre associé à \(10^k\) peu importe
 que \(k\) soit positif ou négatif.
 
+#+BEGIN_EXPORT latex
+\begin{align*}
+c_4 &= 1 & c_3 &= 2& c_2 &= 3& c_1 &= 4& c_0 &= 5\\
+c_{-1} &= 6& c_{-2} &= 7& c_{-3} &= 8& c_{-4} &= 9
+\end{align*}
+#+END_EXPORT
 
-+ \[c_4 = 1\quad c_3 = 2\quad c_2 = 3\quad c_1 = 4\quad c_0 = 5\]
-+ \[c_{-1} = 6\quad c_{-2} = 7\quad c_{-3} = 8\quad c_{-4} = 9\]
 
+
+#+LATEX: \newpage
 
 Ici on peut écrire \(x\) en un seul développement
 décimal\index{développement décimal} selon les puissances
-décroissantes de 10:
+décroissantes de 10 :
 
+#+BEGIN_EXPORT latex
+\begin{align*}
+x &= \sum_{k = 4}^{k = -4}c_k\times 10^k\\ \\
+x &= c_4\times 10^4 + c_3\times 10^3 + c_2\times 10^2 + c_1\times 10^1\notag \\
+  &+ c_0\times 10^0 + c_{-1}\times 10^{-1} + c_{-2}\times
+  10^{-2}\notag \\
+  &+ c_{-3}\times 10^{-3} + c_{-4}\times 10^{-4}\\ \\
+x &= 1\times 10^4 + 2\times 10^3 + 3\times 10^2 + 4\times 10^1\notag
+\\
+  &+ 5\times 10^0 + 6\times 10^{-1} + 7\times 10^{-2}\notag \\
+  &+ 8\times 10^{-3} + 9\times 10^{-4}\\ \\
+x &= 10 000 + 2 000 + 300 + 40 + 5 + 0,6 + 0,07 + 0,008 + 0,0009\\ \\
+x &= 12345,6789
+\end{align*}
+#+END_EXPORT
 
-+ \[x = \sum_{k = 4}^{k = -4}c_k\times 10^k\]
-+ \[x = c_4\times 10^4 + c_3\times 10^3 + c_2\times 10^2 + c_1\times 10^1 +
-  c_0\times 10^0 + c_{-1}\times 10^{-1} + c_{-2}\times 10^{-2} + c_{-3}\times 10^{-3} + c_{-4}\times 10^{-4}\]
-+ \[x = 1\times 10^4 + 2\times 10^3 + 3\times 10^2 + 4\times 10^1 +
-  5\times 10^0 + 6\times 10^{-1} + 7\times 10^{-2} + 8\times 10^{-3} + 9\times 10^{-4}\]
-+ \[x = 10 000 + 2 000 + 300 + 40 + 5 + 0,6 + 0,07 + 0,008 + 0,0009\]
-+ \[x = 12345,6789\]
+#+LATEX: \newpage
 
 Cette façon de faire est peu habituelle voire inexistante au
 lycée. C'est à vous de voir si ça vous aide ou pas. D'un côté ça
@@ -2525,7 +2601,7 @@ plaît, que ça soit votre date de naissance ou l'année de la
 première victoire en coupe du monde ou ce que vous voulez et
 cherchez la fraction associée.
 
-Par exemple, prenons la première de victoire la France en coupe du
+Par exemple, prenons la première victoire de la France en coupe du
 monde.
 
 Posons \[x = 0,1998\dots\] où l'on considère que 1998 correspond à la
@@ -2793,7 +2869,7 @@ Il vient :
 \[a^2 = pb^2\]
 
 or \(a^2\) et \(b^2\) n'ont pas de diviseur commun donc \(p\) divise
-\(a^2\) et donc \(a\).
+\(a^2\) et donc \(a\) (car \(p\) ne peut pas être un carré).
 
 Ainsi \(a = pk\) avec \(k\in\mathbb{Z}\).
 
@@ -2809,8 +2885,15 @@ d'où
 
 \[b^2 = pk^2\]
 
-Puisque \(a^2\) et \(b^2\) n'ont pas de diviseur commun \(k^2\) ne
-divise pas \(b^2\). Donc c'est forcément \(p\) d'où la contradiction.
+Puisque \(a^2\) et \(b^2\) n'ont pas de diviseur commun alors \(k^2\) ne
+divise pas \(b^2\).
+
+Donc c'est forcément \(p\) ce qui est absurde parce que cela contredit
+l'hypothèse \(pgcd(a, b) = 1\).
+
+*CQFD*
+
+#+LATEX: \newpage
 
 En fait, que l'on choisisse \(k^2\) ou \(p\) comme diviseur de \(b^2\)
 dans les deux cas on aboutit à une contradiction.
@@ -2821,9 +2904,10 @@ divise \(a^2\) entraîne \(p\) divise \(a\).
 
 
 Prenez le nombre 4, il divise \(2^2\) mais ne divise pas \(2\). Ou
-encore 9 divise \(6^2\) mais ne divise pas 6. Donc la primalité de
-\(p\) est importante sinon la démonstration\index{démonstration} est
-invalide.
+encore le nombre 9 qui divise \(6^2\) mais qui ne divise pas 6.
+
+Donc la primalité de \(p\) est importante sinon la
+démonstration\index{démonstration} est invalide.
 
 
 
@@ -2840,8 +2924,8 @@ invalide.
 #+LATEX: \label{page:sec2.6.7exo12}
 
 
-1. Trouver 5 contre-exemples de \(k\) divise \(a^2\) mais \(k\) ne
-   divise pas \(a\).
+1. Trouver 5 contre-exemples de nombres \(k\) qui divisent \(a^2\) mais
+   \(k\) qui ne divisent pas \(a\).
 2. Montrer que \[\Phi = \dfrac{1 + \sqrt{5}}{2}\] est
    irrationnel.\index{nombre!irrationnel}
    
@@ -2883,7 +2967,7 @@ d'analyse topologique à propos de la notion de densité.
 
 Tout ça pour vous dire que l'aventure avec les nombres
 réels\index{nombres!réels} (et les nombres en général) continue bien
-au-delà des limites de ce livres.
+au-delà des limites de ce livre.
 
 Et c'est avec regret que je suis contraint de vous laissez sans preuve
 pour l'irrationalité\index{ensemble!des nombres irrationnels} de
@@ -2964,15 +3048,17 @@ programmes qui vous permettent de pratiquer les capacités attendues
 de manière interactive.
 
 
-+ \(C_1\) : Associer à chaque point de la droite graduée un unique nombre
-  réel et réciproquement.
-+ \(C_2\) : Représenter un intervalle de la droite numérique. Déterminer
-  si un nombre réel appartient à un intervalle donné.
-+ \(C_3\) : Donner un encadrement, d'amplitude\index{amplitude} donnée,
-  d'un nombre réel par des décimaux\index{nombres!décimaux}.
-+ \(C_4\) : Dans le cadre de la résolution de problèmes, arrondir en
-  donnant le nombre de chiffres significatifs adapté à la situation
-  étudiée.
++ \(C_1\) : << Associer à chaque point de la droite graduée un unique
+  nombre réel et réciproquement. >>
++ \(C_2\) : << Représenter un intervalle de la droite
+  numérique. Déterminer si un nombre réel appartient à un intervalle
+  donné. >>
++ \(C_3\) : << Donner un encadrement, d'amplitude\index{amplitude}
+  donnée, d'un nombre réel par des
+  décimaux\index{nombres!décimaux}. >> 
++ \(C_4\) : << Dans le cadre de la résolution de problèmes, arrondir
+  en donnant le nombre de chiffres significatifs adapté à la situation
+  étudiée. >>
 
   
 Tout ça se trouve sur Google Colab de façon interactive.
@@ -3001,7 +3087,7 @@ celui qui peut voir des analogies entres les analogies.}
 
 Cette partie développe la rubrique intitulée :
 
-<< \(C_{1}\) : Associer à chaque point de la droite graduée un unique
+\(C_{1}\) : << Associer à chaque point de la droite graduée un unique
 nombre réel et réciproquement. >>
 
 dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:poff].
@@ -3047,8 +3133,9 @@ Voici le code pour construire les points :
   import matplotlib.pyplot as plt
   import numpy as np
 
-  c_1 = "Associer à chaque point de la droite graduée "
-  c_1 += "un unique nombre réel et réciproquement."
+  c_1 = "Associer à chaque point de la droite "
+  c_1 += "graduée un unique nombre réel et "
+  c_1 += "réciproquement."
   print(c_1)
   numbers = [-2, -0.5, 0, 1, np.sqrt(2), np.pi]
   labels = ['P_0', 'P_1', 'P_2', 'P_3', 'P_4', 'P_5']
@@ -3056,14 +3143,26 @@ Voici le code pour construire les points :
   plt.figure(figsize=(10, 1))
 
   # Ploter une ligne horizontale
-  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+  plt.plot(
+      [min(numbers), max(numbers)],
+      [0, 0],
+      'k'
+  )
 
   # Placer les nombres sur la ligne graduée
-  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+  plt.scatter(
+      numbers,
+      np.zeros_like(numbers),
+      color='red'
+  )
 
   # Ajouter des étiquettes aux nombres
   for i, label in enumerate(labels):
-      plt.text(numbers[i], 0.02, label, ha='center')
+      plt.text(
+	  numbers[i],
+	  0.02,
+	  label, ha='center'
+      )
 
   # Masquer les axes
   plt.axis('off')
@@ -3192,14 +3291,26 @@ Voici le code :
   plt.figure(figsize=(10, 1))
 
   # Ploter une ligne horizontale
-  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+  plt.plot(
+      [min(numbers), max(numbers)],
+      [0, 0],
+      'k'
+  )
 
   # Placer les nombres sur la ligne graduée
-  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+  plt.scatter(
+      numbers,
+      np.zeros_like(numbers),
+      color='red'
+  )
 
   # Ajouter des étiquettes aux nombres
   for i, label in enumerate(labels):
-      plt.text(numbers[i], 0.02, label, ha='center')
+      plt.text(
+	  numbers[i],
+	  0.02,
+	  label, ha='center'
+      )
 
   # Masquer les axes
   plt.axis('off')
@@ -3233,24 +3344,43 @@ Voici le code pour générer l'exercice :
 #+BEGIN_SRC python
   num_to_square = [1 + i/10 for i in range(5)]
   list_of_intervals = []
+
+
   for n2s in num_to_square:
-    print(f"Dans quel intervalle appartient {n2s}**2 ?")
+    msg = "Dans quel intervalle appartient "
+    msg += f"{n2s}**2 ?"
+    print(msg)
+  
     interval = []
+
+  
     for borne in ("inf", "sup"):
-      msg = f"Borne {borne}érieure au dixième = "
+      msg = f"Borne {borne}érieure au "
+      msg += "dixième = "
       interval.append(float(input(msg)))
+
+    
     list_of_intervals.append(interval)
+
+
+  
 
   print("Voici la liste de tes réponses")
   print(list_of_intervals)
   print("Voici tes correspondances")
+
+
   for i in range(len(num_to_square)):
-    n2s, interval = num_to_square[i], list_of_intervals[i]
-    msg = f"{n2s}**2 = {round(n2s**2, 2)} appartient à "
+    n2s = num_to_square[i]
+    interval = list_of_intervals[i]
+    msg = f"{n2s}**2 = {round(n2s**2, 2)} "
+    msg += " appartient à "
     msg += f"l'intervalle {interval}"
     print(msg)
 #+END_SRC
 
+
+#+LATEX: \newpage
 
 + [[sec9.2.1:sol14][Voir solution de l'exercice 14]]
   #+LATEX: page~\pageref{page:sec9.2.1sol14}
@@ -3285,8 +3415,9 @@ labyrinthe obscur.}\footnote{Voir la page Wikipédia sur Galilée : \url{https:/
 
 Cette partie développe la rubrique intitulée :
 
-<< \(C_{3}\) : Donner un encadrement, d'amplitude\index{amplitude} donnée,
-d'un nombre réel des décimaux\index{nombres!décimaux}. >>
+\(C_{3}\) : << Donner un encadrement, d'amplitude\index{amplitude}
+donnée, d'un nombre réel des décimaux\index{nombres!décimaux}. >>
+
 
 dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:prgoff].
 [fn:prgoff] Pour consulter le programme officiel allez à l'adresse :
@@ -3333,36 +3464,69 @@ Voici le code pour générer l'exercice :
   import math
 
 
-  some_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 31, 37, 41]
-  prime_roots = [math.sqrt(sp) for sp in some_primes]
+  some_primes = [
+    2, 3, 5, 7, 11, 13,
+    17, 19, 23, 31, 37, 41
+  ]
+
+
+  prime_roots = [
+    math.sqrt(sp) for sp in some_primes
+  ]
+
+
   for i in range(8, len(prime_roots)):
     inf = default(prime_roots[i], i)
     sup = excess(prime_roots[i], i)
-    msg = f"Un encadrement de sqrt({some_primes[i]}) ~"
+
+    msg = "Un encadrement de "
+    msg += f"sqrt({some_primes[i]}) ~"
     print(msg, end=" ")
-    msg = f"{round(prime_roots[i], i)} d'amplitude 10**(-{i})"
+
+    msg = f"{round(prime_roots[i], i)} "
+    msg += f"d'amplitude 10**(-{i})"
     msg += " est :"
     print(msg, end=" ")
-    msg = f"{inf} <= sqrt({some_primes[i]}) <= {sup}"
+
+    msg = f"{inf} <= sqrt({some_primes[i]}) "
+    msg += f"<= {sup}"
     print(msg)
-    msg = f"Dit autrement, sqrt({some_primes[i]}) ~"
+
+    msg = "Dit autrement, "
+    msg += "sqrt({some_primes[i]}) ~"
     print(msg, end=" ")
+
     msg = f"{round(prime_roots[i], i)}"
     print(msg, end=" ")
-    print(f"appartient à l'intervalle [{inf}; {sup}]")
 
-  
+    msg = "appartient à l'intervalle "
+    msg += "[{inf}; {sup}]"
+    print(msg)
+
+
+
+
   def exo_amplitude():
-    score, method, born = 0, [default, excess], ["inf", "sup"]
+    score = 0
+    method = [default, excess]
+    born = ["inf", "sup"]
     motivation = "À toi de jouer !"
     print(motivation)
     instr = "Donne un encadrement à 10**"
+
+
     for i in range(5):
-      msg = f"{instr}(-{some_primes[i]}) près de "
+      msg = f"{instr}(-{some_primes[i]}) "
+      msg += "près de "
       msg += f"sqrt({some_primes[i]})"
       print(msg)
+
       for j in range(2):
-	t = method[j](prime_roots[i], some_primes[i])
+	t = method[j](
+	  prime_roots[i],
+	  some_primes[i]
+	)
+      
 	msg = f"Borne {born[j]}érieure à "
 	msg += f"{some_primes[i]} chiffres = "
 	r = float(input(msg))
@@ -3372,6 +3536,8 @@ Voici le code pour générer l'exercice :
 	else:
 	  print(f"La bonne réponse était {t}")
 #+END_SRC
+
+#+LATEX: \newpage
 
 Pour rappels tous les codes sont accessibles sur Google Colab à
 l'adresse communiquée dans la section concernée lorsque vous
@@ -3412,51 +3578,90 @@ Voici le code pour générer l'exercice :
 
 #+BEGIN_SRC python
   def approx_nums(some_numbers, decimals):
-    score, method, born = 0, [default, excess], ["inf", "sup"]
+    score, method = 0, [default, excess]
+    born = ["inf", "sup"]
     motivation = "À toi de jouer !"
     print(motivation)
     instr = "Donne un encadrement à 10**"
-  
+
     for num in some_numbers:
       boundaries = [
 	default(num, decimals),
 	excess(num, decimals)
       ]
-    
-      print(f"{instr}(-{decimals}) près de {num}")
+
+      msg = f"{instr}(-{decimals}) près de {num}"
+      print(msg)
+
     
       for j in range(2):
 	t = boundaries[j]
-	msg = f"Borne {born[j]}érieure à {decimals} "
-	msg += "chiffres = "
+	msg = f"Borne {born[j]}érieure à "
+	msg += f"{decimals} chiffres = "
 	r = float(input(msg))
 	if r == t:
 	  print("Bien joué !")
 	  score += 1
 	else:
 	  print(f"La bonne réponse était {t}")
-      x_pts, inf, sup = num, boundaries[0], boundaries[1]
+
+        
+      x_pts = num
+      inf, sup = boundaries[0], boundaries[1]
       d = decimals
       step = 10**(-decimals)
-      zoom(x_pts, inf, sup, step, decimals, size=(9.75, 1.25))
-    print(f"Score final = {score * 10}%")
+    
+      zoom(
+	x_pts,
+	inf,
+	sup,
+	step,
+	decimals,
+	size=(9.75, 1.25)
+      )
+
+    
+    msg = f"Score final = {score * 10}%"
+    print(msg)
 
 
+  
   phi = (1 + 5**0.5) / 2 # nombre d'or
   msg = "On appelle nombre d'or et on le note "
-  msg += f"\\Phi = (1 + sqrt(5)) / 2 ~ {phi}"
+  msg += r"\Phi = (1 + sqrt(5)) / 2 ~ "
+  msg += f"{phi}"
   print(msg)
+
   phi2, tau = phi**2, 2 * math.pi
-  msg = r"Vous pouvez remarquer que \Phi ** 2 = 1 + \Phi "
+  msg = "Vous pouvez remarquer que "
+  msg += r"\Phi ** 2 = 1 + \Phi "
   msg += "(vérifiez-le par le calcul !)"
   print(msg)
-  print(f"On appelle \\tau = 2\\pi ~ {tau}")
-  print(f"On ne présente plus \pi ~ {math.pi}")
-  print(f"On appelle constante d'Euler e ~ {math.e}")
-  some_numbers = [phi, phi2, math.e, math.pi, tau]
+
+  msg = r"On appelle \tau = 2\pi ~ "
+  msg += f"{tau}"
+  print(msg)
+
+  msg = r"On ne présente plus \pi ~ "
+  msg += f"{math.pi}"
+  print(msg)
+
+  msg = "On appelle constante d'Euler "
+  msg += f"e ~ {math.e}"
+  print(msg)
+
+
+  some_numbers = [
+    phi, phi2, math.e,
+    math.pi, tau
+  ]
+
+
   decimals = random.randint(2, 5)
   approx_nums(some_numbers, decimals)
 #+END_SRC
+
+#+LATEX: \newpage
 
 Pour rappels tous les codes sont accessibles sur Google Colab à
 l'adresse communiquée dans la section concernée lorsque vous
@@ -3505,8 +3710,8 @@ rapport avec la valeur des découvertes auxquelles il s’associe.}
 
 Cette partie développe la rubrique intitulée :
 
-<< \(C_{4}\) : Dans le cadre de la résolution de problèmes, arrondir en
-donnant le nombre de chiffres significatifs adapté à la situation
+\(C_{4}\) : << Dans le cadre de la résolution de problèmes, arrondir
+en donnant le nombre de chiffres significatifs adapté à la situation
 étudiée. >>
 
 dans le [[https://eduscol.education.fr/document/24553/download][programme officiel]][fn:progoffi].
@@ -3551,34 +3756,60 @@ Voici le code pour générer l'exemple :
 
 #+BEGIN_SRC python
   c = 299_792_458
-  msg = f"La vitesse de la lumière dans le vide est de {c} "
-  msg += "mètres par seconde."
+
+  msg = "La vitesse de la lumière dans le vide "
+  msg += f"est de {c} mètres par seconde."
   print(msg)
-  e_s = "L'écriture scientifique d'un nombre n = a x 10**k"
-  e_s += "\na appartient à l'intervalle [1; 10[ donc a < 10"
-  e_s += "\nk appartient à l'ensemble des entiers relatifs"
+
+  e_s = "L'écriture scientifique d'un nombre "
+  e_s = "n = a x 10**k"
+  e_s += "\na appartient à l'intervalle "
+  e_s += "[1; 10[ donc a < 10"
+  e_s += "\nk appartient à l'ensemble des "
+  e_s += "entiers relatifs"
+
   a, k = 2.99792458, 8
-  print(f"Son écriture scientifique est c = {a} x 10**{k} m/s")
-  msg = "Pour passer des mètres aux kilomètres il faut "
-  msg += "diviser par 1 000"
+
+  msg = "Son écriture scientifique est "
+  msg += f"c = {a} x 10**{k} m/s"
   print(msg)
-  print("Cela revient à multiplier par 10**(-3)")
-  print(f"D'où c = {a} x 10**{k-3} km/s")
-  msg = "Dans 1 heure il y 60 minutes et dans 1 minute "
-  msg += "il y a 60 secondes"
+
+  msg = "Pour passer des mètres aux kilomètres "
+  msg += "il faut diviser par 1 000"
   print(msg)
-  print("Donc dans 1 heure il y 60 x 60 = 3600 secondes")
-  print("Donc il faut multiplier par 3600")
-  msg = "Mais dans ce cas, autant faire d'une pierre, "
-  msg += "deux coups"
+
+  msg = "Cela revient à multiplier par 10**(-3)"
   print(msg)
-  msg = "Multiplier par 3600 et diviser par 1 000 revient "
-  msg += "à multiplier par 3.6"
+  msg = f"D'où c = {a} x 10**{k-3} km/s"
   print(msg)
+
+  msg = "Dans 1 heure il y 60 minutes et "
+  msg += "dans 1 minute il y a 60 secondes"
+  print(msg)
+
+  msg = "Donc dans 1 heure il y a "
+  msg += "60 x 60 = 3600 secondes"
+  print(msg)
+
+  msg = "Donc il faut multiplier par 3600"
+  print(msg)
+
+  msg = "Mais dans ce cas, autant faire "
+  msg += "d'une pierre, deux coups"
+  print(msg)
+
+  msg = "Multiplier par 3600 et diviser par "
+  msg += "1 000 revient à multiplier par 3.6"
+  print(msg)
+
   a *= 3.6
+
+
   if a > 10:
     a /= 10
     k -= 1
+
+  
   print(f"D'où c = {a} x 10**{k} km/h")
 #+END_SRC
 
@@ -3602,23 +3833,37 @@ C'est également sur Google Colab que vous pourrez tester tous les
 programmes qui vous permettent de pratiquer les capacités attendues
 de manière interactive.
 
+#+LATEX: \newpage
+
 Voici le code pour générer l'exercice :
 
 #+BEGIN_SRC python
   print("À toi de jouer !")
+
   mile = 1609.344
-  msg = f"Sachant que 1 mile = {mile} mètres"
+
+  msg = f"Sachant que 1 mile = {mile} "
+  msg += "mètres"
   print(msg)
-  msg = "Calcule la vitesse de la lumière en miles "
-  msg += "par heure."
+
+  msg = "Calcule la vitesse de la lumière "
+  msg += "en miles par heure."
   print(msg)
-  msg = "Prend le temps de poser les calculs sur "
-  msg += "un papier avant de répondre"
+
+  msg = "Prend le temps de poser les "
+  msg += "calculs sur un papier avant de "
+  msg += "répondre"
   print(msg.upper())
-  user_rep = float(input("Vitesse en miles par heure = "))
-  print(f"Selon toi c = {user_rep} mph (miles per hour)")
+
+  msg = "Vitesse en miles par heure = "
+  user_rep = float(input(msg))
+
+  msg = f"Selon toi c = {user_rep} mph "
+  msg += "(miles per hour)"
+  print(msg)
 #+END_SRC
 
+#+LATEX: \newpage
 
 + [[sec9.4.1:sol17][Voir solution de l'exercice 17]]
   #+LATEX: page~\pageref{page:sec9.4.1sol17}
@@ -3809,12 +4054,12 @@ Voici le code pour générer les 3 démonstrations :
       "Pour que 1/3 soit décimal",
       "il faudrait trouver a et n tels que",
       "1/3 = a/10**n.",
-      "En faisant 1 produit en croix cela revient à",
+      "En faisant 1 produit en croix on a ",
       "10**n = 3*a.",
-      "Maintenant le problème devient beaucoup ",
-      "plus simple.",
-      "Il suffit de prouver qu'aucune puissance ",
-      "de 10 n'est multiple de 3."
+      "Maintenant le problème devient ",
+      "beaucoup plus simple.",
+      "Il suffit de prouver qu'aucune ",
+      "puissance de 10 n'est multiple de 3."
       ]
 
   read_text(txt=intro)
@@ -3822,20 +4067,28 @@ Voici le code pour générer les 3 démonstrations :
   multiple_of_3 = [3*k for k in range(21)]
   print("Voici les multiples de 0 à 60")
   print(multiple_of_3)
+
   rem = input("Que remarquez-vous ? ")
-  more = input("Vous en voulez plus ? 0) Non 1) Oui\n")
+  msg = "Vous en voulez plus ? 0) Non 1) Oui\n"
+  more = input(msg)
+
 
   if more == "1":
     for k in range(21, 50):
       print(3*k, end=", ")
     print()
 
-  msg = "Quels sont les diviseurs (entiers positifs)"
-  msg += " de 10 ? "  
+
+  msg = "Quels sont les diviseurs "
+  msg += "(entiers positifs) de 10 ? "
+
   div = input(msg)
   div = div.split(",")
   div = [int(d) for d in div]
-  print(f"Selon vous, les diviseurs de 10 sont {div}")
+
+  msg = f"Selon vous, les diviseurs de 10 sont {div}"
+  print(msg)
+
   prime_proof = [
       "Les diviseurs de 10 sont 2 et 5",
       "Donc les diviseurs de n'importe ",
@@ -3851,16 +4104,19 @@ Voici le code pour générer les 3 démonstrations :
       "la division de 10 par 3",
       "vous constaterez qu'il y aura toujours ",
       "un reste non nul",
-      "et vous pourriez faire de même à l'infini "n
+      "et vous pourriez faire de même à l'infini "
       "avec toute puissance de 10"
   ]
 
+
   read_text(txt=prime_proof)
+
 
   div_proof = [
     f"10**{n} = 3 x {(10**n)//3} + {(10**n) % 3}"
     for n in range(10)
   ]
+
   read_text(txt=div_proof)
 
   decimal_proof = [
@@ -3870,15 +4126,20 @@ Voici le code pour générer les 3 démonstrations :
   read_text(txt=decimal_proof)
 
   magic_proof = [
-      "Supposons qu'il existe un nombre noté x = 0.333333...",
-      "Puisqu'il y a une infinité de 3 après la virgule alors",
-      "10x = 3.333333... ",
+      "Supposons qu'il existe un nombre noté ",
+      "x = 0.33...",
+      "Puisqu'il y a une infinité de 3 alors",
+      "10x = 3.333... ",
       "avec une infinité de 3 après la virgule",
-      "10x - x = 3 et donc 9x = 3 d'où x = 3/9 = 1/3",
+      "10x - x = 3 ",
+      "et donc 9x = 3 ",
+      "d'où x = 3/9 = 1/3",
       "CQFD"
   ]
   read_text(txt=magic_proof)
 #+END_SRC
+
+#+LATEX: \newpage
 
 Pour rappels tous les codes sont accessibles sur Google Colab à
 l'adresse communiquée dans la section concernée lorsque vous
@@ -4021,8 +4282,10 @@ Voici le code que vous pouvez retrouver sur Google Colab :
 #+BEGIN_SRC python
   def balayage(n):
     """
-    Cette fonction renvoie les bornes d'un encadrement
-    par balayage d'amplitude inférieure ou égale à 10**(-n)
+    Cette fonction renvoie les bornes
+    d'un encadrement par balayage
+    d'amplitude inférieure ou égale
+    à 10**(-n)
     """
     a = 1
     b = a + 10**(-n)
@@ -4031,16 +4294,19 @@ Voici le code que vous pouvez retrouver sur Google Colab :
       b = a + 10**(-n)
     return round(a, n), round(b, n)
 
+
   # Tests : attention parce qu'au-delà de n = 7
   # ça devient très long 
   for n in range(1, 7):
     infimum, supremum = balayage(n)
     ampli = 10**(-n)
-    msg = f"{infimum} < sqrt{2} < {supremum} est un "
-    msg += f"encadrement d'amplitude {ampli}"
+    msg = f"{infimum} < sqrt{2} < {supremum} "
+    msg += "est un encadrement d'amplitude "
+    msg += f"{ampli}"
     print(msg)
 #+END_SRC
 
+#+LATEX: \clearpage
 
 Pour rappels tous les codes sont accessibles sur Google Colab à
 l'adresse communiquée dans la section concernée lorsque vous
@@ -4153,7 +4419,10 @@ d’expliquer (…) une structure mathématique ancienne.}
     d'un nombre réel est simplement son écriture avec une infinité de
     chiffres après la virgule sans répétition régulière.
 
-    Par exemples :
+    #+LATEX: \clearpage
+    
+    Considérons les quelques exemples suivants :
+    
     1. Le nombre \(\pi\) qui intervient pour calculer le périmètre
        d'un cercle ou son aire : \[\pi \simeq 3,1415926536\dots\] est
        approché à 10 décimales.
@@ -4176,6 +4445,8 @@ d’expliquer (…) une structure mathématique ancienne.}
 [[https://fr.wikipedia.org/wiki/Leonhard_Euler]]
 [fn:cube] Voir page \pageref{page:sec2.6.5exo11}
 
+
+    #+LATEX: \clearpage
     
     Tous les nombres réels qui *NE* sont *PAS* rationnels connaissent
     un déveleppement décimal illimité. Cela signifie qu'on ne pourra
@@ -4193,7 +4464,7 @@ d’expliquer (…) une structure mathématique ancienne.}
 
 *** Périodicité du développement décimal d'un nombre rationnel
 
-    Pour le deuxième point on a déjà vu beaucoup d'exemple (cf la
+    Pour le deuxième point on a déjà vu beaucoup d'exemples (cf la
     petite astuce vue dans la section [[sec2.6.3:tip][Petite astuce]][fn:pa2]).
 
 
@@ -4440,8 +4711,9 @@ On reprend le [[sec2.1.6:cp][même schéma]][fn:schema] que dans l'exemple.
    #+BEGIN_SRC python
      def imply(A, B):
 	"""
-	Cette fonction prend 2 paramètres A et B en entrée
-	et renvoie la phrase logique A implique B
+	Cette fonction prend 2 paramètres
+	A et B en entrée et renvoie la
+	phrase logique A implique B
 	"""
 	return f"({A}) implique ({B})"
 
@@ -4465,8 +4737,9 @@ On reprend le [[sec2.1.6:cp][même schéma]][fn:schema] que dans l'exemple.
    #+BEGIN_SRC python
      def contrapose(A, B):
        """
-       Cette fonction prend 2 paramètres A et B en entrée 
-       et renvoie la phrase logique non B implique non A
+       Cette fonction prend 2 paramètres
+       A et B en entrée et renvoie la
+       phrase logique non B implique non A
        """
        return imply("non " + B, "non " + A)
 
@@ -4710,7 +4983,7 @@ and construction, generality and individuality.}
        \left\lvert\dfrac{8}{56} - \dfrac{7}{56}\right\rvert =
        \dfrac{1}{56} \simeq 0,017857\]
 4. Calcul de la distance entre \(\Phi\) et \(\sqrt{2}\) à 2 chiffres.
-   \[d\left(\Phi ; \sqrt{2}\right) = \Phi - \sqrt{2} \simeq 0,20\]
+   \[d\left(\Phi ; \sqrt{2}\right) = \Phi - \sqrt{2} \simeq 0,21\]
 5. Calcul de la distance entre \(\Phi\) et \(\sqrt{3}\) à 5 chiffres.
    \[d\left(\Phi ; \sqrt{3}\right) = \sqrt{3} - \Phi \simeq 0,11402\]
 
@@ -4960,31 +5233,52 @@ livre).
 #+BEGIN_SRC python
   from math import ceil, pi, trunc
 
+
   def decimal_frame(real, nb_digits):
     """
     Cette fonction prend en entrées : 
     real: un nombre réel à encadrer
-    nb_digits: le nombre de décimales de l'encadrement
-    Elle renvoie en sortie les bornes inférieures et
-    supérieures de cet encadrement décimal.
+    nb_digits: le nombre de décimales
+	       de l'encadrement
+    Elle renvoie en sortie les bornes
+    inférieures et supérieures de cet
+    encadrement décimal.
     """
-    # on décale la virgule de nb_digits vers la droite
+  
+    # on décale la virgule de nb_digits
+    # vers la droite
     real_power_nb_digits = real * 10**nb_digits 
+
     # on coupe
-    infimum = trunc(real_power_nb_digits) * 10**(-nb_digits)
+    infimum = trunc(real_power_nb_digits)
+    infimum *= 10 ** (-nb_digits)
     infimum = round(infimum, nb_digits)
-    supremum = ceil(real_power_nb_digits) * 10**(-nb_digits)
+
+    supremum = ceil(real_power_nb_digits)
+    supremum *= 10 ** (-nb_digits)
     supremum = round(supremum, nb_digits)
+
     return infimum, supremum
 
+
+
   # Tests
+
+  # Valeurs pour les tests
   tau, phi = 2*pi, (1+5**0.5)/2
   sqrts = [x**0.5 for x in [2, 3, 5, 7]]
   reals = [tau, phi] + sqrts
+
+
+  # boucle sur les valeurs
   for real in reals:
-    print(f"Encadrement du nombre réel {real} à :")
-    for nb_digits in range(1, 6): 
-      print(f"10**(-{nb_digits}) près :", end=" ")
+    msg = f"Encadrement du nombre réel {real} à :"
+    print(msg)
+
+
+    for nb_digits in range(1, 6):
+      msg = f"10**(-{nb_digits}) près :", end=" "
+      print(msg)
       print(decimal_frame(real, nb_digits))
 #+END_SRC
 
@@ -5129,7 +5423,8 @@ Trouvons l'écriture fractionnaire des nombres suivants :
 1. Le nombre 4 divise le carré de 10 mais pas 10. Le nombre 8 divise
    le carré de 4 mais pas 4. Le nombre 12 divise le carré de 6 mais
    pas 6. Le nombre 16 divise le carré de 8 mais pas 8. Le nombre 9
-   divise le carré de 12 mais pas 12.
+   divise le carré de 12 mais pas 12. Le nombre 25 divise le carré de
+   10 mais pas 10.
 2. Supposons par l'absurde que le nombre d'or
    \[\Phi = \dfrac{1 + \sqrt{5}}{2}\] soit rationnel.
    Alors
@@ -5141,15 +5436,34 @@ Trouvons l'écriture fractionnaire des nombres suivants :
    mais alors
    \[\dfrac{a + b}{b} = \dfrac{a^2}{b^2}\]
    conduit à
-   \[ab + b^2 = a\]
+   \[ab + b^2 = a^2\]
    soit
-   \[b^2 = a(b+1)\]
+   \[b^2 = a(a - b)\]
    ce qui est absurde car \(a\) ne divise pas \(b\) donc pas son carré
-   non plus et d'autre par
-   \[b + 1\]
-   ne divise pas \(b^2\) non plus.
+   non plus.
 
    *CQFD*
+
+   Pour rappel, si \(a\) divisait \(b\) alors il existerait
+   \(k\in\mathbb{Z}\) tel que :
+   \[b = ka\]
+   Par conséquent on aurait automatiquent :
+   \[b^2 = (ka)^2 = k^2a^2 = a(ak^2)\]
+
+   Formalisons :
+   + A = << \(a\) divise \(b\) >>
+   + B = << \(a^2\) divise \(b^2\) >>
+   + P = << A implique B >> (c'est ce qu'on vient de montrer)
+   + P = << si \(a\) divise \(b\) alors \(a^2\) divise \(b^2\) >>
+
+   Par contraposée :
+   + non(A) = << \(a\) ne divise pas \(b\) >>
+   + non(B) = << \(a^2\) ne divise pas \(b^2\) >>
+   + Q = CP(P) = << non(B) implique non(A) >>
+   + Q = CP(P) = << si \(a^2\) ne divise pas \(b^2\) alors \(a\) ne
+     divise pas \(b\) >>
+     
+   Donc si \(a\) ne divise pas \(b\) il ne peut pas diviser son carré.
 
 + [[sec2.6.7:exo12][Voir l'énoncé de l'exercice 12]]
   #+LATEX: page~\pageref{page:sec2.6.7exo12}
@@ -5229,7 +5543,10 @@ livre).
   import matplotlib.pyplot as plt
   import numpy as np
 
-  numbers = [-2, -0.5, 0, 1, np.sqrt(2), np.pi]
+  numbers = [
+      -2, -0.5, 0,
+      1, np.sqrt(2), np.pi
+  ]
   labels = [
       'P_0 (-2)', 'P_1 (-0.5)', 'P_2 (0)',
       'P_3 (1)', 'P_4 (sqrt{2})', r'P_5 (\pi)'
@@ -5238,14 +5555,27 @@ livre).
   plt.figure(figsize=(10, 1))
 
   # Ploter une ligne horizontale
-  plt.plot([min(numbers), max(numbers)], [0, 0], 'k')
+  plt.plot(
+      [min(numbers), max(numbers)],
+      [0, 0],
+      'k'
+  )
 
   # Placer les nombres sur la ligne graduée
-  plt.scatter(numbers, np.zeros_like(numbers), color='red')
+  plt.scatter(
+      numbers,
+      np.zeros_like(numbers),
+      color='red'
+  )
 
   # Ajouter des étiquettes aux nombres
   for i, label in enumerate(labels):
-      plt.text(numbers[i], 0.02, label, ha='center')
+      plt.text(
+	  numbers[i],
+	  0.02,
+	  label,
+	  ha='center'
+      )
 
   # Masquer les axes
   plt.axis('off')
@@ -5310,47 +5640,72 @@ de manière interactive.
   from math import floor, ceil
 
 
+
   def default(number, decimals):
     """
-    Cette fonction prend 2 paramètres en entrées :
-    number: le nombre qu'on cherche à arrondir par défaut
-    decimals: le nombre de chiffres après la virgule
-    Elle renvoie le nombre arrondi par défaut
-    à decimals décimales
+    Cette fonction prend 2 paramètres
+    en entrées :
+    + number: le nombre qu'on cherche
+	      à arrondir par défaut
+    + decimals: le nombre de chiffres
+		après la virgule
+    Elle renvoie le nombre arrondi
+    par défaut à decimals décimales
     """
+  
     num = floor(number * 10**decimals)
     den = 10**decimals
+  
     return num / den
+
+
 
   def excess(number, decimals):
     """
-    Cette fonction prend 2 paramètres en entrées :
-    number: le nombre qu'on cherche à arrondir par excès
-    decimals: le nombre de chiffres après la virgule
-    Elle renvoie le nombre arrondi par excès à
-    decimals décimales
+    Cette fonction prend 2 paramètres
+    en entrées :
+    + number: le nombre qu'on cherche à arrondir
+	      par excès
+    + decimals: le nombre de chiffres
+		après la virgule
+    Elle renvoie le nombre arrondi
+    par excès à decimals décimales
     """
+  
     if number == int(number):
       num = ceil(number * 10**decimals + 1)
     else: num = ceil(number * 10**decimals)
     den = 10**decimals
+  
     return num / den
+
+
 
   def get_boundary(nums, method, decimals):
     """
-    Cette fonction prend 3 paramètres en entrées :
-    nums: nombres dont on cherche la borne (inf ou sup)
-    method: la fonction utilisée (default ou excess)
-    decimals: le nombre de décimales
+    Cette fonction prend 3 paramètres
+    en entrées :
+    + nums: nombres dont on cherche la
+	    borne (inf ou sup)
+    + method: la fonction utilisée
+	      (default ou excess)
+    + decimals: le nombre de décimales
     Elle renvoie la liste des bornes
     (que des infs ou que des sups)
     """
-    bounds = [method(num, decimals) for num in nums]
+  
+    bounds = [
+      method(num, decimals) for num in nums
+    ]
+  
     return bounds
 
 
+
   num_to_square = [1 + i/10 for i in range(5)]
-  squares = [round(n2s**2, 2) for n2s in num_to_square]
+  squares = [
+    round(n2s**2, 2) for n2s in num_to_square
+  ]
   infs = get_boundary(squares, default, 1)
   sups = get_boundary(squares, excess, 1)
   list_of_intervals = [
@@ -5360,15 +5715,21 @@ de manière interactive.
   nums = []
   for i in range(len(squares)):
     nums.extend([infs[i], squares[i], sups[i]])
-    n2s, interval = num_to_square[i], list_of_intervals[i]
-    msg = f"{n2s}**2 = {squares[i]} appartient à "
-    msg += f"l'intervalle {interval}"
+    n2s = num_to_square[i]
+    interval = list_of_intervals[i]
+    msg = f"{n2s}**2 = {squares[i]} "
+    msg += "appartient à l'intervalle "
+    msg += f"{interval}"
     print(msg)
 
   plt.figure(figsize=(10, 1))
 
   # Tracer une ligne horizontale
-  plt.plot([min(nums), max(nums)], [0, 0], 'k')
+  plt.plot(
+    [min(nums), max(nums)],
+    [0, 0],
+    'k'
+  )
 
   # Placer les nombres sur la ligne graduée
   plt.scatter(
@@ -5389,7 +5750,12 @@ de manière interactive.
   sups_labels = [str(sup) for sup in sups]
   # Ajouter des étiquettes aux nombres
   for i, inf_label in enumerate(infs_labels):
-      plt.text(infs[i], 0.02, inf_label, ha='center')
+      plt.text(
+	infs[i],
+	0.02,
+	inf_label,
+	ha='center'
+      )
 
   for i, sqr_label in enumerate(sqrs_labels):
       plt.text(
